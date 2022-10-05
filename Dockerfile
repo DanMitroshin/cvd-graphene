@@ -1,8 +1,8 @@
 FROM python:3.8.7-alpine as base
 WORKDIR /app
-RUN apk add --no-cache build-base
-RUN apk add --no-cache postgresql-libs
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
+#RUN apk add --no-cache build-base
+#RUN apk add --no-cache postgresql-libs
+#RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
 COPY requirements.txt .
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 RUN apk add --no-cache libffi-dev openssl-dev python3-dev
