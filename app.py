@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from PyQt6.QtWidgets import (
     QMainWindow, QApplication, QListWidget, QVBoxLayout,
     QLabel, QCheckBox, QComboBox, QLineEdit, QStyle,
@@ -6,6 +6,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6 import QtWidgets
 from PyQt6.QtCore import Qt, QMetaType, QRect
+
+os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -45,6 +47,7 @@ class MainWindow(QMainWindow):
             border-radius: 10px;
             background-color: rgb(255, 255, 255);
             font-size: 32px;
+            max-width: 300px;
             }
         """)
 
