@@ -10,7 +10,7 @@ CMD apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 64
 CMD echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list.d/buster-backports.list
 CMD apt update
 CMD apt install -t buster-backports libseccomp2
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --privileged
 
 FROM base as release
 EXPOSE 7002
