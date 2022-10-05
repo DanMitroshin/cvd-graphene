@@ -6,10 +6,10 @@ WORKDIR /app
 COPY requirements.txt .
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 #RUN apk add --no-cache libffi-dev openssl-dev python3-dev
-RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
 RUN echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list.d/buster-backports.list
-RUN sudo apt update
-RUN sudo apt install -t buster-backports libseccomp2
+RUN apt update
+RUN apt install -t buster-backports libseccomp2
 RUN pip install -r requirements.txt
 
 FROM base as release
