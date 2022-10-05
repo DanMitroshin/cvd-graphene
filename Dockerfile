@@ -1,4 +1,4 @@
-FROM python:3.8.7-alpine as base
+FROM python:3.6-alpine as base
 WORKDIR /app
 RUN apk update && apk add
 RUN apt-get update && apt-get upgrade -y
