@@ -1,5 +1,7 @@
 FROM python:3.8.7-alpine as base
 WORKDIR /app
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y libvips
 #RUN apk add --no-cache build-base
 #RUN apk add --no-cache postgresql-libs
 #RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
