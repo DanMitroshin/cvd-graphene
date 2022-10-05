@@ -5,7 +5,7 @@ WORKDIR /app
 #RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
 COPY requirements.txt .
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
-RUN apk add --no-cache libffi-dev openssl-dev python3-dev
+#RUN apk add --no-cache libffi-dev openssl-dev python3-dev
 RUN pip install -r requirements.txt
 
 FROM base as release
