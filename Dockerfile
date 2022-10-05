@@ -1,5 +1,6 @@
 FROM python:3.8.7-alpine as base
 WORKDIR /app
+RUN apk update && apk add
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y libvips
 #RUN apk add --no-cache build-base
