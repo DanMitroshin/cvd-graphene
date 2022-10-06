@@ -10,3 +10,4 @@ idea
 
 # Data files
 __data
+*.txt

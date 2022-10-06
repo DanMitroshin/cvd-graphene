@@ -1,6 +1,6 @@
 from Core.components.communicators import AbstractCommunicator
 from Core.constants import DEVICE_STATUS
-from Core.exceptions.devices import BaseDeviceException, DefectiveDeviceException, SetupDeviceException, \
+from Core.exceptions.devices import BaseDeviceException, SetupDeviceException, \
     InactiveDeviceException
 
 

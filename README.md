@@ -14,3 +14,14 @@ PyQt6 realisation
    1. in Pycharm add config with start `app.py`
    2. or in cmd: `python app.py`
 5. **Done!**
+
+
+## Core module
+
+### Components hierarchy
+
+↓ **Communication methods** - python realization of send/receive/setup  
+↓ **Communicators** - algorithms of communication between device and main system  
+↓ **Devices** - analog of real device to communicate with  
+↓ **Controllers** - device controllers with realization of sequences of commands, algorithms, single commands and so on  
+↓ **System** - main administrator for management all communicators with realization of logging, analysis exceptions, run tasks and so on  

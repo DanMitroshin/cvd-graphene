@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QLabel, QCheckBox, QComboBox, QLineEdit, QStyle,
     QLineEdit, QSpinBox, QDoubleSpinBox, QSlider, QWidget, QHBoxLayout, QFrame, QPushButton
 )
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt, QMetaType, QRect
 
 from Core.exceptions.communicators import InactiveCommunicatorException
@@ -91,10 +91,16 @@ class MainWindow(QMainWindow):
         # Устанавливаем центральный виджет Window.
         self.setCentralWidget(container)
 
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.show_time)
+        self.timer.start(1000)
+
     def click_press(self):
         self.counter += 1
         self.label.setText(f"PRESSED: {self.counter}")
 
+    def show_time(self):
+        print("TIME:", datetime.datetime.now())
 
 class AbstractAppUIWidget(QWidget):
     pass
