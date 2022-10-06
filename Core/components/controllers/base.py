@@ -1,8 +1,12 @@
+from Core.components.devices import AbstractDevice
+
 
 class AbstractController(object):
     """
     Class for device controllers
     """
+
+    device: AbstractDevice = None
 
     def send(self, *args, **kwargs):
         """

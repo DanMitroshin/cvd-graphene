@@ -1,7 +1,7 @@
 from Core.components.communicators import AbstractCommunicator
 from Core.constants import DEVICE_STATUS
-from Core.exceptions.communicators import BaseCommunicatorException
-from Core.exceptions.devices import BaseDeviceException, DefectiveDeviceException
+from Core.exceptions.devices import BaseDeviceException, DefectiveDeviceException, SetupDeviceException, \
+    InactiveDeviceException
 
 
 class AbstractDevice(object):
@@ -9,22 +9,42 @@ class AbstractDevice(object):
     Device class with base method `exec_command`
 
     """
+    communicator: AbstractCommunicator = None
+
     def __init__(
             self,
-            communication_interface=None,
+            communicator=None,
     ):
-        self.communication_interface: AbstractCommunicator = communication_interface
+        if communicator is not None:
+            self.communicator: AbstractCommunicator = communicator
         self._last_command = None
         self._status = DEVICE_STATUS.INACTIVE
         self._errors = []
 
-    def _setup_device(self):
+    def setup(self):
         try:
-            self.communication_interface.setup_configuration()
+            self.communicator.setup()
             self._status = DEVICE_STATUS.ACTIVE
         except Exception as e:
             self._status = DEVICE_STATUS.HAS_ERRORS
-            self._errors.append(SavedError(e, description="Device setup error"))
+            self._errors.append(e)
+            raise SetupDeviceException from e
+
+    def is_valid(self, raise_exception=True):
+        e = None
+        if self._status == DEVICE_STATUS.INACTIVE:
+            e = InactiveDeviceException()
+            self._errors.append(e)
+        elif self._status == DEVICE_STATUS.HAS_ERRORS:
+            if bool(self._errors):
+                e = self._errors[-1]
+            else:
+                self._status = DEVICE_STATUS.ACTIVE
+
+        if e is not None and raise_exception:
+            raise e
+
+        return not bool(self._errors)
 
     # def on/off/
     def exec_command(self, command, value=None):
@@ -34,25 +54,20 @@ class AbstractDevice(object):
         :param value:
         :return:
         """
-        if self._status == DEVICE_STATUS.HAS_ERRORS:
-            raise DefectiveDeviceException
+        self.is_valid()
 
         self._last_command = command
         try:
             preprocessing_value = self._preprocessing_value(command, value)
-            answer = self.communication_interface.send(preprocessing_value)
+            answer = self.communicator.send(preprocessing_value)
 
             return self._postprocessing_value(answer)
 
-        except BaseDeviceException as e:
-            return self._handle_device_exception(e)
-        except BaseCommunicatorException as e:
-            return self._handle_interface_exception(e)
         except Exception as e:
-            raise e
+            return self._handle_exception(e)
 
-    def _handle_interface_exception(self, e: BaseCommunicatorException):
-        raise e
+    def _handle_exception(self, e: Exception):
+        raise BaseDeviceException from e
 
     def _handle_device_exception(self, e: BaseDeviceException):
         raise e

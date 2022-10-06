@@ -1,2 +1,4 @@
-class BaseCommunicatorException(Exception):
-    pass
+from .base import (
+    BaseCommunicatorException,
+    InactiveCommunicatorException,
+)

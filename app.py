@@ -7,6 +7,8 @@ from PyQt5.QtWidgets import (
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QMetaType, QRect
 
+from Core.exceptions.communicators import InactiveCommunicatorException
+
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 
@@ -110,15 +112,6 @@ class AppEventHandler(object):
 ###################################################################
 
 
-class SavedError(object):
-    def __init__(self, e: Exception, description="ERROR"):
-        self.error = e
-        self.description = description
-        self.created_at = datetime.datetime.utcnow()
-
-    def __str__(self):
-        return f"[{self.description}] {self.created_at} - {str(self.error)}"
-
 class Test:
 
     def handler_decorator(func):
@@ -143,9 +136,13 @@ class Test:
         print("CHECK COUNTER:", self.counter)
 
 
-t = Test()
-t.on_click()
+# t = Test()
+# t.on_click()
 
+# def bar():
+#     raise InactiveCommunicatorException(communicator_id="ref_234")
+#
+# bar()
 
 
 app = QApplication(sys.argv)

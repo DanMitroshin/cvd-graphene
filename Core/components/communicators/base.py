@@ -1,19 +1,48 @@
+from Core.components.communication_methods import BaseCommunicationMethod
 from Core.constants import COMMUNICATION_INTERFACE_STATUS
+from Core.exceptions.communicators import InactiveCommunicatorException, BaseCommunicatorException
+from Core.exceptions.communicators.base import SetupCommunicatorException
 
 
 class AbstractCommunicator(object):
+    communication_method = BaseCommunicationMethod()
+
     def __init__(
             self,
             speed=None,
             channel=None,
     ):
         self.speed = speed
+        # self.communication_method = BaseCommunicationMethod()
         self.channel = channel  # port
         self._status = COMMUNICATION_INTERFACE_STATUS.INACTIVE
-        self.setup_configuration()
+        self._errors = []
+        # self.setup_configuration()
 
-    def setup_configuration(self):
-        self._status = COMMUNICATION_INTERFACE_STATUS.ACTIVE
+    def setup(self):
+        try:
+            self._status = COMMUNICATION_INTERFACE_STATUS.ACTIVE
+            self.communication_method.setup()
+        except Exception as e:
+            self._errors.append(e)
+            self._status = COMMUNICATION_INTERFACE_STATUS.HAS_ERRORS
+            raise SetupCommunicatorException from e
+
+    def is_valid(self, raise_exception=True):
+        e = None
+        if self._status == COMMUNICATION_INTERFACE_STATUS.INACTIVE:
+            e = InactiveCommunicatorException()
+            self._errors.append(e)
+        elif self._status == COMMUNICATION_INTERFACE_STATUS.HAS_ERRORS:
+            if bool(self._errors):
+                e = self._errors[-1]
+            else:
+                self._status = COMMUNICATION_INTERFACE_STATUS.ACTIVE
+
+        if e is not None and raise_exception:
+            raise e
+
+        return not bool(self._errors)
 
     def send(self, value):
         """
@@ -22,26 +51,28 @@ class AbstractCommunicator(object):
         2. all oKey -> return value
         :return:
         """
-        pass
+        self.is_valid()
+
+        try:
+            preprocessing_value = self._preprocessing_value(value)
+            answer = self.communication_method.send(preprocessing_value)
+
+            return self._postprocessing_value(answer)
+
+        except Exception as e:
+            return self._handle_exception(e)
 
     def _preprocessing_value(self, value):
-        pass
+        return value
 
-    def _process_answer(self):
+    def _postprocessing_value(self, value):
         """
         Is answer is oKey?
         1. Answer OK ? -> _extract_value
         2. Else -> _handle_exception
         :return:
         """
-        pass
+        return value
 
-    def _extract_value(self):
-        """
-
-        :return: value from receiving answer
-        """
-        pass
-
-    def _handle_exception(self):
-        pass
+    def _handle_exception(self, e):
+        raise BaseCommunicatorException from e
