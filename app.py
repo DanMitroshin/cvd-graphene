@@ -164,6 +164,8 @@ class Test:
 
 app = QApplication([])
 w = MainWindow()
-w.show()
 # w.show()
-app.exec_()
+w.showFullScreen()
+w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
+# w.setWindowFlags(Qt.WindowType_Mask)
+app.exec()
