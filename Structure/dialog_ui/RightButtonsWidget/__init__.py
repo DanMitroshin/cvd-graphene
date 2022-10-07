@@ -31,7 +31,7 @@ class RightButtonsWidget(QWidget):
         # self.right_buttons_layout.setRowStretch(0, 10)
 
         self.layout.addWidget(self.button_settings, 1, 0)
-        self.layout.setRowMinimumHeight(1, 800)
+        self.layout.setRowMinimumHeight(1, 370)
         # self.right_buttons_layout.setRowStretch(1, 1)
 
         self.layout.addWidget(self.select_recipe, 2, 0)
