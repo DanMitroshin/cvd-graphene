@@ -8,11 +8,23 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt, QMetaType, QRect
 
 from Core.exceptions.communicators import InactiveCommunicatorException
+from Core.ui import StyleSheet
+from Structure.dialog_ui import UiMainWindow, MainWindow
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
+# s = StyleSheet({
+#     "close_button": {
+#         "height": "70px",
+#         "font-size": "20px",
+#         "background-color": "rgb(255, 150, 150)",
+#     }
+# })
+# print("SSSSSSSSS", s.close_button)
+# print("SSSSSSSSS 2", s.close_button1)
+# sys.exit()
 
-class MainWindow(QMainWindow):
+class MainWindow1(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -106,14 +118,6 @@ class AbstractAppUIWidget(QWidget):
     pass
 
 
-class AppEventHandler(object):
-    def __int__(self, *args, **kwargs):
-        pass
-
-    def on_click(self, *args):
-        pass
-
-    # def on_
 
 ###################################################################
 
@@ -149,6 +153,13 @@ class Test:
 #     raise InactiveCommunicatorException(communicator_id="ref_234")
 #
 # bar()
+
+# app = QtWidgets.QApplication(sys.argv)
+# MainWindow = QtWidgets.QMainWindow()
+# ui = UiMainWindow()
+# ui.setup_ui(MainWindow)
+# MainWindow.showFullScreen()
+# sys.exit(app.exec_())
 
 
 app = QApplication(sys.argv)
