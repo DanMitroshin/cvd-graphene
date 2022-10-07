@@ -26,12 +26,12 @@ class RightButtonsWidget(QWidget):
         self.edit_recipe = QPushButton("Edit\nrecipe")
         self.edit_recipe.setStyleSheet(styles.edit_recipe_button)
 
-        self.layout.addWidget(self.button_close, 0, 0)
+        self.layout.addWidget(self.button_close, 0, 0, QtCore.Qt.AlignTop)
         # self.right_buttons_layout.setRowMinimumHeight(0, 10)
         # self.right_buttons_layout.setRowStretch(0, 10)
 
-        self.layout.addWidget(self.button_settings, 1, 0)
-        self.layout.setRowMinimumHeight(1, 370)
+        self.layout.addWidget(self.button_settings, 1, 0, QtCore.Qt.AlignTop)
+        self.layout.setRowMinimumHeight(1, 100)
         # self.right_buttons_layout.setRowStretch(1, 1)
 
         self.layout.addWidget(self.select_recipe, 2, 0)
