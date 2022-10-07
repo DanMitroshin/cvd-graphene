@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout
+from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QLineEdit
 from .styles import styles
 
 
@@ -11,3 +11,5 @@ class PressureBlock(QWidget):
         self.setLayout(self.layout)
         self.setStyleSheet(styles.container)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
+        self.line = QLineEdit()
+        self.layout.addWidget(self.line)
