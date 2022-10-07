@@ -162,8 +162,8 @@ class Test:
 # sys.exit(app.exec_())
 
 
-app = QApplication(sys.argv)
+app = QApplication([])
 w = MainWindow()
-w.showFullScreen()
+w.show()
 # w.show()
 app.exec_()
