@@ -243,9 +243,9 @@ class MainWindow(QMainWindow):
         self.main_window = QHBoxLayout()
         self.main_widget = QWidget()
         # self.main_widget.setStyleSheet("background-color: rgb(240, 220, 255);")
-        self.main_widget.setStyleSheet(
-            "QWidget {background-color: rgb(255, 250, 255);}"
-        )
+        # self.main_widget.setStyleSheet(
+        #     "QWidget {background-color: rgb(255, 250, 255);}"
+        # )
         self.main_widget.setLayout(self.main_window)
 
         self.main_interface_layout_widget = MainBlockWidget(
