@@ -2,7 +2,8 @@ from Core.ui import StyleSheet
 
 styles = StyleSheet({
     "container": {
-        "min-width": "300px",
+        "name": "QWidget#temperature_block_widget",
+        # "min-width": "300px",
         "background-color": "rgb(240, 240, 210)",
     },
 })

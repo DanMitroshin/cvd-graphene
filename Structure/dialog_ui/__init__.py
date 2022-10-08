@@ -261,9 +261,9 @@ class MainWindow(QMainWindow):
         # self.setCentralWidget(container)
         self.setCentralWidget(self.main_widget)
 
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.show_time)
-        self.timer.start(1000)
+        # self.timer = QtCore.QTimer(self)
+        # self.timer.timeout.connect(self.show_time)
+        # self.timer.start(1000)
 
     def click_press(self):
         self.counter += 1

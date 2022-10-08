@@ -14,16 +14,20 @@ class RightButtonsWidget(QWidget):
         # self.setStyleSheet("background-color: rgb(0, 0, 255);")
 
         self.button_close = QPushButton("CLOSE X")
+        self.button_close.setObjectName("button_close")
         self.button_close.clicked.connect(on_close)
         self.button_close.setStyleSheet(styles.close_button)
 
         self.button_settings = QPushButton("SETTINGS")
+        self.button_settings.setObjectName("settings_button")
         self.button_settings.setStyleSheet(styles.settings_button)
 
         self.select_recipe = QPushButton("Select and\nrun recipe")
+        self.select_recipe.setObjectName("run_recipe_button")
         self.select_recipe.setStyleSheet(styles.run_recipe_button)
 
         self.edit_recipe = QPushButton("Edit\nrecipe")
+        self.edit_recipe.setObjectName("edit_recipe_button")
         self.edit_recipe.setStyleSheet(styles.edit_recipe_button)
 
         self.layout.addWidget(self.button_close, 0, 0, QtCore.Qt.AlignTop)

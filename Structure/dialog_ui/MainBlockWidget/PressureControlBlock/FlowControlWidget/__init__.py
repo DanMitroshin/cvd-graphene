@@ -26,6 +26,7 @@ class FlowControlWidget(QWidget):
 
         self.buttons = QHBoxLayout()
         self.button_on = QPushButton()
+        self.button_on.setObjectName("button_on_flow")
         self.button_on.setStyleSheet(button_on_style)
         self.button_off = QPushButton()
         self.button_off.setStyleSheet(button_off_style)

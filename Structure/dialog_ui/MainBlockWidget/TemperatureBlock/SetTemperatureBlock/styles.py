@@ -18,9 +18,9 @@ styles = StyleSheet({
     "label": {
         "font-size": "28px",
         # "background-color": "green",
-        "min-width": '10px',
+        # "min-width": '10px',
         "max-width": '60px',
-        "width": '60px',
+        # "width": '60px',
         # "border-radius": "0px",
     },
     "input": {
@@ -28,5 +28,6 @@ styles = StyleSheet({
         "font-size": "28px",
         "background-color": "rgb(210, 210, 210)",
         "width": "100%",
+        # "max-width": "100px",
     }
 })

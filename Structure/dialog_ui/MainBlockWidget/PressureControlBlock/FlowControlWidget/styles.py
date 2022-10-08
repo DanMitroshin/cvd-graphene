@@ -4,6 +4,9 @@ styles = StyleSheet({
     "container": {
         # "name": "QWidget",
         # "max-width": "240px",
+        # "width": '100%',
+        # "display": "flex",
+        # "flex": "1",
         "max-height": "170px",
         "background-color": "rgb(255, 255, 255)",
         "border-radius": "14px",
@@ -51,7 +54,7 @@ styles = StyleSheet({
 })
 
 button_on_style = """
-QPushButton {
+QPushButton#button_on_flow {
     height: 70px;
     width: 70px;
     border-radius: 35px;
@@ -60,7 +63,7 @@ QPushButton {
     border-width: 1px;
     border-color: rgba(0,0,100,255);
 }
-QPushButton:pressed {
+QPushButton#button_on_flow:pressed {
     background-color: rgb(0, 155, 0);
 }
 """

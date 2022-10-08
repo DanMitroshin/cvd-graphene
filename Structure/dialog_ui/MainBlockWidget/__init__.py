@@ -13,6 +13,7 @@ class MainBlockWidget(QWidget):
 
         self.layout = QHBoxLayout()
         self.setLayout(self.layout)
+        self.setObjectName("main_block_widget")
         self.setStyleSheet(styles.container)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
         # self.setStyleSheet("* {background-color: rgb(0, 0, 255);}")

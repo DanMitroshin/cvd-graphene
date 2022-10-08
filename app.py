@@ -161,6 +161,8 @@ class Test:
 # MainWindow.showFullScreen()
 # sys.exit(app.exec_())
 
+# print((int(899.99) // 100))
+# sys.exit()
 
 app = QApplication([])
 w = MainWindow()

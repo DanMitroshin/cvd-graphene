@@ -18,14 +18,14 @@ class PressureControlBlock(QWidget):
         self.show_pressure_block = ShowPressureBlock()
         self.layout.addWidget(self.show_pressure_block)
 
-        self.input = QLineEdit()
-        self.input.setStyleSheet("""
-        background-color: rgb(255, 255, 255);
-        max-width: 200px;
-        font-size: 24px;
-        """)
-        # self.input.clearFocus()
-        self.layout.addWidget(self.input)
+        # self.input = QLineEdit()
+        # self.input.setStyleSheet("""
+        # background-color: rgb(255, 255, 255);
+        # max-width: 200px;
+        # font-size: 24px;
+        # """)
+        # # self.input.clearFocus()
+        # self.layout.addWidget(self.input)
 
         self.pump_widget = FlowControlWidget(title="Pump")
         self.vent_widget = FlowControlWidget(title="Vent")

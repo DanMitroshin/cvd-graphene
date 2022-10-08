@@ -36,7 +36,7 @@ class SetTemperatureBlock(QWidget):
         # self.label_1.setSizePolicy(sp_label_1)
 
         self.label_2 = QLabel()
-        self.label_2.setText("C")
+        self.label_2.setText("°C")
         self.label_2.setStyleSheet(styles.label)
         # sp_label_2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         # sp_label_2.setHorizontalStretch(2)
