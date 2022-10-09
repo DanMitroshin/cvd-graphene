@@ -39,7 +39,15 @@ def test_1():
         # sleep(1)
     # SEND_STR = f'0010MV00D\r'
     command = f"02030001"
-    command += crc16x(command)
+    # command += crc16x(command)
+    # command = f"02030001"
+    hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
+
+    # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
+    # print("ALL COMM:", s + f(lo) + f(hi))
+    command += f(lo) + f(hi)
+    # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
+    # byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
     ans = wiringpi.serialPuts(serial, command)
     # print("Answer:", ans)
@@ -80,8 +88,8 @@ def test_2():
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
         command += f(lo) + f(hi)
-        # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
-        byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
+        byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
+        # byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
         print("BYTE COMMAND:", byte_command)
