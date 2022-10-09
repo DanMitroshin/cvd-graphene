@@ -92,8 +92,8 @@ def test_2():
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
-        # command += f(lo) + f(hi)
-        command += "F38B"
+        command += f(lo) + f(hi)
+        # command += "F38B"
         # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
         byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
         # byte_command = b'\x02\x03\x00\x01\x5C\x30'
