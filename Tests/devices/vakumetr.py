@@ -64,16 +64,16 @@ def test_3():
 
     print("Ports list:", portList)
 
-    val = input("select Port: COM")
-
-    for x in range(0, len(portList)):
-        if portList[x].startswith("COM" + str(val)):
-            portVar = "COM" + str(val)
-            print(portVar)
+    # val = input("select Port: COM")
+    #
+    # for x in range(0, len(portList)):
+    #     if portList[x].startswith("COM" + str(val)):
+    #         portVar = "COM" + str(val)
+    #         print(portVar)
 
     serialInst.baudrate = 115200
 
-    serialInst.port = portVar
+    serialInst.port = portList[-1]
 
     serialInst.open()
 
