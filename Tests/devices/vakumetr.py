@@ -29,7 +29,7 @@ def test_1():
 def test_2():
 
     RS485 = serial.Serial(
-        # port='COM17',
+        port='/dev/ttyAMA0',
         baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
