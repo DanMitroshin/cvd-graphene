@@ -38,7 +38,7 @@ def test_1():
     # for i in '1':
         # sleep(1)
     # SEND_STR = f'0010MV00D\r'
-    command = f"02030001"
+    command = f"01030001"
     # command += crc16x(command)
     # command = f"02030001"
     hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
@@ -49,8 +49,7 @@ def test_1():
     # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
     byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
-    # ans = wiringpi.serialPuts(serial, command)
-    ans = wiringpi.serialPuts(serial, byte_command)
+    ans = wiringpi.serialPuts(serial, command)  # ONLY STR!!!!!
     # print("Answer:", ans)
     # b = ""
     counter = 0
