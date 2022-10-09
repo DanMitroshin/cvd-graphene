@@ -7,6 +7,15 @@ def test_1():
     print("Serial:", serial)
     ans = wiringpi.serialPuts(serial, SEND_STR)
     print("Answer:", ans)
+    b = ""
+    counter = 0
+    while True:
+        b = wiringpi.serialGetchar(serial)
+        counter += 1
+        print(b, end='|')
+        if counter > 100 or b is None or b == -1:
+            break
+    print('')
     wiringpi.serialClose(serial)
 
 
