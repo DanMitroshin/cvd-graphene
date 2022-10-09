@@ -2,10 +2,12 @@ import wiringpi
 import serial
 from time import sleep
 
+PORT = "/dev/ttyUSB0"
+#  '/dev/ttyAMA0'
 
 def test_1():
     wiringpi.wiringPiSetup()
-    serial = wiringpi.serialOpen('/dev/ttyAMA0', 115200)  # Requires device/baud and returns an ID
+    serial = wiringpi.serialOpen(PORT, 115200)  # Requires device/baud and returns an ID
     print("Serial:", serial)
     # for i in '1':
         # sleep(1)
@@ -29,14 +31,15 @@ def test_1():
 def test_2():
 
     RS485 = serial.Serial(
-        port='/dev/ttyAMA0',
+        # port='/dev/ttyAMA0',
+        port=PORT,
+        writeTimeout=0,
+        write_timeout=0,
         baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
         timeout=0.001,
-        writeTimeout=0,
-        write_timeout=0,
     )
 
     while True:
@@ -76,7 +79,7 @@ def test_3():
 
     serialInst.baudrate = 115200
 
-    serialInst.port = '/dev/ttyAMA0'  # portList[-1]
+    serialInst.port = PORT  # portList[-1]
 
     serialInst.open()
 
@@ -84,8 +87,9 @@ def test_3():
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
-        test_3()
-        test_2()
+        # test_3()
+        # test_2()
+        test_1()
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
