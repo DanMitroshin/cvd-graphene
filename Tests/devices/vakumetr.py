@@ -3,6 +3,7 @@ from time import sleep
 
 
 def test_1():
+    wiringpi.wiringPiSetup()
     serial = wiringpi.serialOpen('/dev/ttyAMA0', 115200)  # Requires device/baud and returns an ID
     print("Serial:", serial)
     # for i in '1':
