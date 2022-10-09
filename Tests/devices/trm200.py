@@ -12,6 +12,23 @@ from Core.utils.algorithms import crc16
 PORT = "/dev/ttyUSB0"
 #  '/dev/ttyAMA0'
 
+
+def crc16x(data: str, poly: hex = 0xA001) -> str:
+    '''
+        CRC-16 MODBUS HASHING ALGORITHM
+    '''
+    crc = 0xFFFF
+    for byte in data:
+        crc ^= ord(byte)
+        for _ in range(8):
+            crc = ((crc >> 1) ^ poly
+                   if (crc & 0x0001)
+                   else crc >> 1)
+
+    hv = hex(crc).upper()[2:]
+    blueprint = '0000'
+    return blueprint if len(hv) == 0 else blueprint[:-len(hv)] + hv
+
 def test_1():
     wiringpi.wiringPiSetup()
     serial = wiringpi.serialOpen(PORT, 115200)  # Requires device/baud and returns an ID
@@ -51,15 +68,17 @@ def test_2():
     )
 
     while True:
-        n = 2
-        command = f"00{n}030001"
+        # n = 2
+        # command = f"00{n}030001"
+        command = f"002030001"
 
         # crc = ''.join(list(map(chr, crc16(command))))
         # crc = ''.join(list(map(lambda x: chr(x - 127), crc16(command))))
-        hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
+        # hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("GGG",b'0010MV0' + (hi).to_bytes(1, byteorder='big'))
-        byte_command = bytearray(command.encode("ASCII")) + bytes([hi, lo])
+        command += crc16x(command)
+        byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
         print("BYTE COMMAND:", byte_command)

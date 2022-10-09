@@ -167,6 +167,22 @@ class Test:
 # print((int(899.99) // 100))
 # sys.exit()
 
+def crc16x(data: str, poly: hex = 0xA001) -> str:
+    '''
+        CRC-16 MODBUS HASHING ALGORITHM
+    '''
+    crc = 0xFFFF
+    for byte in data:
+        crc ^= ord(byte)
+        for _ in range(8):
+            crc = ((crc >> 1) ^ poly
+                   if (crc & 0x0001)
+                   else crc >> 1)
+
+    hv = hex(crc).upper()[2:]
+    blueprint = '0000'
+    return blueprint if len(hv) == 0 else blueprint[:-len(hv)] + hv
+
 
 if __name__ == "__main__":
     print("TEST 1 ===>")
@@ -178,9 +194,13 @@ if __name__ == "__main__":
         # print("{0:02X} {1:02X}".format(hi, lo))
 
         # hi, lo = crc16(codecs.decode("0104080000000900000000", "hex"))  # CRC = b'\x58\x7A'
+        # hi, lo = crc16(bytearray("0104080000000900000000".encode("ASCII")))  # CRC = b'\x58\x7A'
+        # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
+        # ans = crc16x("002030001")  # CRC = b'\x58\x7A'
+        # print("CRC16:", ans)
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # # print("GGG",b'0010MV0' + (hi).to_bytes(1, byteorder='big'))
-        # print("GGG",b'0010MV0' + bytes([hi, lo]))
+        # print("GGG", bytearray("002030001".encode("ASCII")) + bytes([hi, lo]))
         #
         # crc16_ = libscrc.modbus(b'0010MV0')
         # h_crc = str(hex(crc16_))[2:]
