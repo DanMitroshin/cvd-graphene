@@ -22,7 +22,7 @@ def test_1():
         b = wiringpi.serialGetchar(serial)
         counter += 1
         if counter > 100 or b is None or b == -1:
-            print(chr(b), end='|')
+            print(b, end='|')
             break
     print('')
     wiringpi.serialClose(serial)
@@ -88,8 +88,8 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
         # test_3()
-        # test_2()
-        test_1()
+        test_2()
+        # test_1()
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
