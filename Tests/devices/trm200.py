@@ -2,7 +2,7 @@ import wiringpi
 import serial
 from time import sleep
 
-from .modbus_crc16 import crc16
+from Core.utils.algorithms import crc16
 
 PORT = "/dev/ttyUSB0"
 #  '/dev/ttyAMA0'

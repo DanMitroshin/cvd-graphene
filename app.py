@@ -10,6 +10,7 @@ from PyQt5.QtCore import Qt, QMetaType, QRect
 from Core.exceptions.communicators import InactiveCommunicatorException
 from Core.ui import StyleSheet
 from Structure.dialog_ui import UiMainWindow, MainWindow
+from Tests.devices.trm200 import test_2, test_4
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
@@ -164,6 +165,20 @@ class Test:
 # print((int(899.99) // 100))
 # sys.exit()
 
+
+if __name__ == "__main__":
+    print("TEST 1 ===>")
+    try:
+        # test_3()
+        test_2()
+        test_4()
+        # test_1()
+        print("TEST 1 ===> PASSED")
+    except Exception as e:
+        print("[ERROR]", e)
+        print("TEST 1 ===> FAILED")
+
+sys.exit(0)
 app = QApplication([])
 w = MainWindow()
 # w.show()
