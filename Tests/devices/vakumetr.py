@@ -77,7 +77,8 @@ def test_3():
     #         portVar = "COM" + str(val)
     #         print(portVar)
 
-    serialInst.baudrate = 115200
+    # serialInst.baudrate = 115200
+    serialInst.baudrate = 9600
 
     serialInst.port = PORT  # portList[-1]
 
