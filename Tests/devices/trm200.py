@@ -12,6 +12,8 @@ from Core.utils.algorithms import crc16
 PORT = "/dev/ttyUSB0"
 #  '/dev/ttyAMA0'
 
+def f(i):
+    return str(hex(i))[2:]
 
 def crc16x(data: str, poly: hex = 0xA001) -> str:
     '''
@@ -73,14 +75,13 @@ def test_2():
         # n = 2
         # command = f"00{n}030001"
         command = f"02030001"
+        hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
-        # crc = ''.join(list(map(chr, crc16(command))))
-        # crc = ''.join(list(map(lambda x: chr(x - 127), crc16(command))))
-        # hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
-        # print("GGG",b'0010MV0' + (hi).to_bytes(1, byteorder='big'))
-        command += crc16x(command)
-        byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
+        # print("ALL COMM:", s + f(lo) + f(hi))
+        command += f(lo) + f(hi)
+        # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
+        byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
         print("BYTE COMMAND:", byte_command)
