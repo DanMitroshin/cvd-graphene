@@ -95,6 +95,7 @@ class ValveLines(QWidget):
             min-width: 90px;
             height: 90px;
             min-height: 90px;
+            border-radius: 45px;
             background-color: #FFFFFF;
         """)
         #
