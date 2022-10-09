@@ -3,22 +3,24 @@ from time import sleep
 
 
 def test_1():
-    SEND_STR = '0020MV00D\r'
     serial = wiringpi.serialOpen('/dev/ttyAMA0', 9600)  # Requires device/baud and returns an ID
-    # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
     print("Serial:", serial)
-    ans = wiringpi.serialPuts(serial, SEND_STR)
-    print("Answer:", ans)
-    b = ""
-    counter = 0
-    sleep(2)
-    while True:
-        b = wiringpi.serialGetchar(serial)
-        counter += 1
-        print(b, end='|')
-        if counter > 100 or b is None or b == -1:
-            break
-    print('')
+    for i in '0123456789ABCDEF':
+        sleep(1)
+        SEND_STR = f'00{i}0MV00D\r'
+        # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
+        ans = wiringpi.serialPuts(serial, SEND_STR)
+        print("Answer:", ans)
+        b = ""
+        counter = 0
+        sleep(1)
+        while True:
+            b = wiringpi.serialGetchar(serial)
+            counter += 1
+            print(b, end='|')
+            if counter > 100 or b is None or b == -1:
+                break
+        print('')
     wiringpi.serialClose(serial)
 
 
