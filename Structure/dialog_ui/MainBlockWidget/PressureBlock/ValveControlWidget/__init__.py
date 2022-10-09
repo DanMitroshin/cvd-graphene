@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, \
     QVBoxLayout, QLineEdit, QHBoxLayout, QLabel
 
 from Structure.dialog_ui.components.butterfly_button import ButterflyButton
-from .styles import styles, button_style
+from .styles import styles, button_style, button_style1
 
 
 class ValveControlWidget(QWidget):
@@ -38,13 +38,16 @@ class ValveControlWidget(QWidget):
 class ValveControlButton(QPushButton):
     def __init__(self):
         super().__init__()
-        # self.setStyleSheet(styles.button_container)
-        # self.button = QPushButton(self)
-        # self.button.setObjectName("button_valve_control")
-        # self.button.setStyleSheet(button_style)
-        # self.button = QPushButton(self)
+        self.layout = QHBoxLayout()
+        self.setLayout(self.layout)
         self.setObjectName("button_valve_control")
         self.setStyleSheet(button_style)
+
+        # self.button = QPushButton()
+        # self.button.setObjectName("button_valve_control")
+        # self.button.setStyleSheet(button_style)
+        self.w = ValveLines()
+        self.layout.addWidget(self.w)
 
     def paintEvent1(self, event):
         try:
@@ -79,9 +82,58 @@ class ValveControlButton(QPushButton):
             qp.end()
         except Exception as e:
             print("Draw line error", e)
-        # painter = QtGui.QPainter(self.button)
-        # painter.setPen(QtCore.Qt.black)
-        # painter.translate(20, 100)
-        # painter.rotate(-90)
-        # painter.drawText(0, 0, "hellos")
-        # painter.end()
+
+
+class ValveLines(QWidget):
+    def __init__(self):
+        super().__init__()
+        # self.layout = QHBoxLayout()
+        # self.setLayout(self.layout)
+        # self.setObjectName("button_valve_control")
+        self.setStyleSheet("""
+            width: 90px;
+            min-width: 90px;
+            height: 90px;
+            min-height: 90px;
+            background-color: #FFFFFF;
+        """)
+        #
+        # # self.button = QPushButton()
+        # # self.button.setObjectName("button_valve_control")
+        # # self.button.setStyleSheet(button_style)
+        # self.w = QWidget()
+        # self.layout.addWidget(self.w)
+
+    def paintEvent(self, event):
+        try:
+            qp = QPainter()
+            # qp.begin(self.button)
+            qp.begin(self)
+
+            # a = randint(10, 100)
+            # d = a * math.tan(math.radians(30))
+            x, y = 0, 0
+
+            pos_1 = QPointF(x, y)
+            pos_2 = QPointF(30, 90)
+
+            pos_3 = QPointF(64, y)
+            pos_4 = QPointF(38, 90)
+
+            qp.setBrush(QColor(0, 0, 0))
+            path = QPainterPath()
+            path.moveTo(pos_1)
+            path.lineTo(pos_2)
+
+            path2 = QPainterPath()
+            path2.moveTo(pos_4)
+            path2.lineTo(pos_3)
+
+            # qp.rotate(7)
+            qp.drawPath(path)
+            qp.drawPath(path2)
+
+
+            qp.end()
+        except Exception as e:
+            print("Draw line error", e)
