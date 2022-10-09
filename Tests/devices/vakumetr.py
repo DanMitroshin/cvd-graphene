@@ -21,8 +21,8 @@ def test_1():
     while True:
         b = wiringpi.serialGetchar(serial)
         counter += 1
-        print(b, end='|')
         if counter > 100 or b is None or b == -1:
+            print(chr(b), end='|')
             break
     print('')
     wiringpi.serialClose(serial)
