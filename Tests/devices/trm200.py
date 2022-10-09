@@ -47,9 +47,10 @@ def test_1():
     # print("ALL COMM:", s + f(lo) + f(hi))
     command += f(lo) + f(hi)
     # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
-    # byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
+    byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
-    ans = wiringpi.serialPuts(serial, command)
+    # ans = wiringpi.serialPuts(serial, command)
+    ans = wiringpi.serialPuts(serial, byte_command)
     # print("Answer:", ans)
     # b = ""
     counter = 0
@@ -71,8 +72,8 @@ def test_2():
         port=PORT,
         writeTimeout=0,
         write_timeout=0,
-        # baudrate=115200,
-        baudrate=9600,
+        baudrate=115200,
+        # baudrate=9600,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
@@ -82,7 +83,7 @@ def test_2():
     while True:
         # n = 2
         # command = f"00{n}030001"
-        command = f"03030001"
+        command = f"02030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
