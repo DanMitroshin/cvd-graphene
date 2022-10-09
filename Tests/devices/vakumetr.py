@@ -34,7 +34,9 @@ def test_2():
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
-        timeout=0.001
+        timeout=0.001,
+        writeTimeout=0,
+        write_timeout=0,
     )
 
     while True:
