@@ -36,7 +36,7 @@ def test_1():
     # for i in '1':
         # sleep(1)
     # SEND_STR = f'0010MV00D\r'
-    command = f"002030001"
+    command = f"02030001"
     command += crc16x(command)
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
     ans = wiringpi.serialPuts(serial, command)
@@ -72,7 +72,7 @@ def test_2():
     while True:
         # n = 2
         # command = f"00{n}030001"
-        command = f"002030001"
+        command = f"02030001"
 
         # crc = ''.join(list(map(chr, crc16(command))))
         # crc = ''.join(list(map(lambda x: chr(x - 127), crc16(command))))

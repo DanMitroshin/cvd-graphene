@@ -194,7 +194,7 @@ if __name__ == "__main__":
         # print("{0:02X} {1:02X}".format(hi, lo))
 
         # hi, lo = crc16(codecs.decode("0104080000000900000000", "hex"))  # CRC = b'\x58\x7A'
-        # hi, lo = crc16(bytearray("0104080000000900000000".encode("ASCII")))  # CRC = b'\x58\x7A'
+        # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
         # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
         # ans = crc16x("002030001")  # CRC = b'\x58\x7A'
         # print("CRC16:", ans)
