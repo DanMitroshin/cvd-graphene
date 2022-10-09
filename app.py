@@ -211,7 +211,7 @@ if __name__ == "__main__":
         # binary_str = codecs.decode(h_crc, "hex")
         # print("BS ==> ", str(binary_str, 'ascii'))
         # print(bytearray.fromhex(str(hex(crc16_))[2:]).decode())
-        test_1()
+        # test_1()
         test_2()
         test_4()
         # test_1()

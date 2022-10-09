@@ -38,7 +38,7 @@ def test_1():
     # for i in '1':
         # sleep(1)
     # SEND_STR = f'0010MV00D\r'
-    command = f"01030001"
+    command = f"02030001"
     # command += crc16x(command)
     # command = f"02030001"
     hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
@@ -92,10 +92,10 @@ def test_2():
         byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
-        print("BYTE COMMAND:", byte_command)
+        print("|>> COMMAND:", command, byte_command)
         # RS485.write(bytearray(command.encode("ASCII")))
         RS485.write(byte_command)
-        sleep(0.005)
+        sleep(0.1)
         x = RS485.readline()
         print(x)
         sleep(1)
