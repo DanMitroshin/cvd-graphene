@@ -13,7 +13,7 @@ PORT = "/dev/ttyUSB0"
 #  '/dev/ttyAMA0'
 
 def f(i):
-    return str(hex(i))[2:]
+    return str(hex(i))[2:].upper()
 
 def crc16x(data: str, poly: hex = 0xA001) -> str:
     '''
