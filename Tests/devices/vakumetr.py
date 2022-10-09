@@ -47,10 +47,39 @@ def test_2():
         print(x)
 
 
+def test_3():
+    import time
+    import serial.tools.list_ports
+
+    ports = serial.tools.list_ports.comports()
+
+    command = "0020MV00D"
+
+    serialInst = serial.Serial()
+    portList = []
+
+    for onePort in ports:
+        portList.append(str(onePort))
+        print(str(onePort))
+
+    val = input("select Port: COM")
+
+    for x in range(0, len(portList)):
+        if portList[x].startswith("COM" + str(val)):
+            portVar = "COM" + str(val)
+            print(portVar)
+
+    serialInst.baudrate = 115200
+
+    serialInst.port = portVar
+
+    serialInst.open()
+
+
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
-        test_2()
+        test_3()
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
