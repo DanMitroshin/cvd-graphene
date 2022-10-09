@@ -35,9 +35,11 @@ def test_1():
     print("Serial:", serial)
     # for i in '1':
         # sleep(1)
-    SEND_STR = f'0010MV00D\r'
+    # SEND_STR = f'0010MV00D\r'
+    command = f"002030001"
+    command += crc16x(command)
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
-    ans = wiringpi.serialPuts(serial, SEND_STR)
+    ans = wiringpi.serialPuts(serial, command)
     # print("Answer:", ans)
     # b = ""
     counter = 0
