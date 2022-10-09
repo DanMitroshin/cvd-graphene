@@ -82,6 +82,7 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
         test_3()
+        test_2()
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
