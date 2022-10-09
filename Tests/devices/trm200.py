@@ -82,14 +82,14 @@ def test_2():
     while True:
         # n = 2
         # command = f"00{n}030001"
-        command = f"02030001"
+        command = f"03030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
         command += f(lo) + f(hi)
-        byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
-        # byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
+        # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
+        byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
         print("BYTE COMMAND:", byte_command)
