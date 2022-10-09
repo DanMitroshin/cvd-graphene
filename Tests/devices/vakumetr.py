@@ -62,6 +62,8 @@ def test_3():
         portList.append(str(onePort))
         print(str(onePort))
 
+    print("Ports list:", portList)
+
     val = input("select Port: COM")
 
     for x in range(0, len(portList)):
