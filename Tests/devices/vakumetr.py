@@ -73,7 +73,7 @@ def test_3():
 
     serialInst.baudrate = 115200
 
-    serialInst.port = portList[-1]
+    serialInst.port = '/dev/ttyAMA0'  # portList[-1]
 
     serialInst.open()
 
