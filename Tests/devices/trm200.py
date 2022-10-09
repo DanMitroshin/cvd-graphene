@@ -97,6 +97,7 @@ def test_4():
     s += crc
     print("ENC:", s.encode("ASCII"))
 
+
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
