@@ -73,9 +73,9 @@ def test_2():
         write_timeout=0,
         baudrate=115200,
         # baudrate=9600,
-        parity=serial.PARITY_NONE,
-        stopbits=serial.STOPBITS_ONE,
-        bytesize=serial.EIGHTBITS,
+        # parity=serial.PARITY_NONE,
+        # stopbits=serial.STOPBITS_ONE,
+        # bytesize=serial.EIGHTBITS,
         timeout=0.001,
     )
 
@@ -87,10 +87,11 @@ def test_2():
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
-        command += f(lo) + f(hi)
+        # command += f(lo) + f(hi)
+        command += f(hi) + f(lo)
         # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
         byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
-        byte_command = b'\x02\x03\x00\x01\x5C\x30'
+        # byte_command = b'\x02\x03\x00\x01\x5C\x30'
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
         print("|>> COMMAND:", command, byte_command)
