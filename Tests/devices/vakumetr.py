@@ -1,4 +1,5 @@
 import wiringpi
+import serial
 from time import sleep
 
 
@@ -25,10 +26,31 @@ def test_1():
     wiringpi.serialClose(serial)
 
 
+def test_2():
+
+    RS485 = serial.Serial(
+        port='COM17',
+        baudrate=115200,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        timeout=0.001
+    )
+
+    while True:
+        n = 1
+        command = f"00{n}0MV00D\r"
+        # print(command)
+        RS485.write(bytearray(command.encode("ASCII")))
+        sleep(0.005)
+        x = RS485.readline()
+        print(x)
+
+
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
-        test_1()
+        test_2()
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
