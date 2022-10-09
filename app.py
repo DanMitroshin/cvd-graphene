@@ -171,9 +171,23 @@ class Test:
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
+        import libscrc
+        import codecs
         # test_3()
-        hi, lo = crc16(b'\x01\x06\x03\xE9\x00\x00')  # CRC = b'\x58\x7A'
-        print("{0:02X} {1:02X}".format(hi, lo))
+        # hi, lo = crc16(b'\x01\x06\x03\xE9\x00\x00')  # CRC = b'\x58\x7A'
+        # print("{0:02X} {1:02X}".format(hi, lo))
+
+        # hi, lo = crc16(codecs.decode("0104080000000900000000", "hex"))  # CRC = b'\x58\x7A'
+        # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
+        # # print("GGG",b'0010MV0' + (hi).to_bytes(1, byteorder='big'))
+        # print("GGG",b'0010MV0' + bytes([hi, lo]))
+        #
+        # crc16_ = libscrc.modbus(b'0010MV0')
+        # h_crc = str(hex(crc16_))[2:]
+        # print("CRC:", crc16_, str(hex(crc16_)), str(hex(crc16_))[2:])
+        # binary_str = codecs.decode(h_crc, "hex")
+        # print("BS ==> ", str(binary_str, 'ascii'))
+        # print(bytearray.fromhex(str(hex(crc16_))[2:]).decode())
         test_2()
         test_4()
         # test_1()

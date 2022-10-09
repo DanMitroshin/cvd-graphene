@@ -1,6 +1,11 @@
-import wiringpi
+
+try:
+    import wiringpi
+except:
+    pass
 import serial
 from time import sleep
+import codecs
 
 from Core.utils.algorithms import crc16
 
@@ -50,10 +55,16 @@ def test_2():
         command = f"00{n}030001"
 
         # crc = ''.join(list(map(chr, crc16(command))))
-        crc = ''.join(list(map(lambda x: chr(x - 127), crc16(command))))
-        command += crc
-        # print(command)
-        RS485.write(bytearray(command.encode("ASCII")))
+        # crc = ''.join(list(map(lambda x: chr(x - 127), crc16(command))))
+        hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
+        # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
+        # print("GGG",b'0010MV0' + (hi).to_bytes(1, byteorder='big'))
+        byte_command = bytearray(command.encode("ASCII")) + bytes([hi, lo])
+        # print("GGG", b'0010MV0' + bytes([hi, lo]))
+        # command += crc
+        print("BYTE COMMAND:", byte_command)
+        # RS485.write(bytearray(command.encode("ASCII")))
+        RS485.write(byte_command)
         sleep(0.005)
         x = RS485.readline()
         print(x)
