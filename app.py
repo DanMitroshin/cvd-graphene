@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt, QMetaType, QRect
 
 from Core.exceptions.communicators import InactiveCommunicatorException
 from Core.ui import StyleSheet
+from Core.utils.algorithms import crc16
 from Structure.dialog_ui import UiMainWindow, MainWindow
 from Tests.devices.trm200 import test_2, test_4
 # from Tests.devices.vakumetr import test_1, test_2
@@ -171,6 +172,8 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
         # test_3()
+        hi, lo = crc16(b'\x01\x06\x03\xE9\x00\x00')  # CRC = b'\x58\x7A'
+        print("{0:02X} {1:02X}".format(hi, lo))
         test_2()
         test_4()
         # test_1()
