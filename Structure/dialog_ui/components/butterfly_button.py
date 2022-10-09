@@ -18,7 +18,6 @@ SIN_SIDE = 60 * (3 ** 0.5) / 2
 style_container = """
 QPushButton#butterfly_button {
     height: 60px;
-    cursor: pointer;
     min-width: 120px;
     margin: 0;
     padding: 0;
