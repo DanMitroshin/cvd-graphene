@@ -3,7 +3,7 @@ from time import sleep
 
 
 def test_1():
-    SEND_STR = '0010MV00D\r'
+    SEND_STR = '0020MV00D\r'
     serial = wiringpi.serialOpen('/dev/ttyAMA0', 9600)  # Requires device/baud and returns an ID
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
     print("Serial:", serial)
