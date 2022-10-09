@@ -79,6 +79,11 @@ def test_2():
         timeout=0.001,
     )
 
+    # command = f"02030001"
+    # hi, lo = crc16(codecs.decode(command, "hex"))
+    # command += f(lo) + f(hi)
+    # byte_command = codecs.decode(command, "hex")
+
     while True:
         # n = 2
         # command = f"00{n}030001"
@@ -88,7 +93,7 @@ def test_2():
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
         # command += f(lo) + f(hi)
-        command += f(hi) + f(lo)
+        command += f(lo) + f(hi)
         # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
         byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
         # byte_command = b'\x02\x03\x00\x01\x5C\x30'
