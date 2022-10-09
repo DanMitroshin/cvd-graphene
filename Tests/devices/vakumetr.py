@@ -35,8 +35,8 @@ def test_2():
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
         timeout=0.001,
-        writeTimeout=0,
-        write_timeout=0,
+        writeTimeout=0.001,
+        write_timeout=0.001,
     )
 
     while True:
@@ -47,6 +47,7 @@ def test_2():
         sleep(0.005)
         x = RS485.readline()
         print(x)
+        sleep(1)
 
 
 def test_3():
