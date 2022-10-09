@@ -48,7 +48,8 @@ def test_2():
         n = 2
         command = f"00{n}030001"
 
-        crc = ''.join(list(map(chr, crc16(command))))
+        # crc = ''.join(list(map(chr, crc16(command))))
+        crc = ''.join(list(map(lambda x: chr(x - 128), crc16(command))))
         command += crc
         # print(command)
         RS485.write(bytearray(command.encode("ASCII")))
@@ -91,15 +92,16 @@ def test_3():
 
 def test_4():
     s = f"002030001"
-    crc = ''.join(list(map(chr, crc16(s))))
+    crc = ''.join(list(map(lambda x: chr(x - 128), crc16(s))))
     print("CRC!", crc)
+    s += crc
     print("ENC:", s.encode("ASCII"))
 
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
         # test_3()
-        test_2()
+        # test_2()
         test_4()
         # test_1()
         print("TEST 1 ===> PASSED")
