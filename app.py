@@ -11,7 +11,7 @@ from Core.exceptions.communicators import InactiveCommunicatorException
 from Core.ui import StyleSheet
 from Core.utils.algorithms import crc16
 from Structure.dialog_ui import UiMainWindow, MainWindow
-from Tests.devices.trm200 import test_2, test_4
+from Tests.devices.trm200 import test_2, test_4, test_1
 # from Tests.devices.vakumetr import test_1, test_2
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
@@ -208,6 +208,7 @@ if __name__ == "__main__":
         # binary_str = codecs.decode(h_crc, "hex")
         # print("BS ==> ", str(binary_str, 'ascii'))
         # print(bytearray.fromhex(str(hex(crc16_))[2:]).decode())
+        test_1()
         test_2()
         test_4()
         # test_1()
