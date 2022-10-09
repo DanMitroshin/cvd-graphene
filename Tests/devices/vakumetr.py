@@ -11,7 +11,7 @@ def test_1():
     print("Answer:", ans)
     b = ""
     counter = 0
-    sleep(2000)
+    sleep(2)
     while True:
         b = wiringpi.serialGetchar(serial)
         counter += 1
