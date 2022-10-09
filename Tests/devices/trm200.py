@@ -49,7 +49,7 @@ def test_2():
         command = f"00{n}030001"
 
         # crc = ''.join(list(map(chr, crc16(command))))
-        crc = ''.join(list(map(lambda x: chr(x - 128), crc16(command))))
+        crc = ''.join(list(map(lambda x: chr(x - 127), crc16(command))))
         command += crc
         # print(command)
         RS485.write(bytearray(command.encode("ASCII")))
