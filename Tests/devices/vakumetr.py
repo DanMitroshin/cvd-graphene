@@ -7,7 +7,7 @@ def test_1():
     print("Serial:", serial)
     for i in '0123456789ABCDEF':
         sleep(1)
-        SEND_STR = f'00{i}0MV00D\r'
+        SEND_STR = f'01{i}0MV00D\r'
         # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
         ans = wiringpi.serialPuts(serial, SEND_STR)
         print("Answer:", ans)
