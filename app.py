@@ -11,7 +11,7 @@ from Core.exceptions.communicators import InactiveCommunicatorException
 from Core.ui import StyleSheet
 from Structure.dialog_ui import UiMainWindow, MainWindow
 from Tests.devices.trm200 import test_2, test_4
-from Tests.devices.vakumetr import test_1
+from Tests.devices.vakumetr import test_1, test_2
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
@@ -171,9 +171,9 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
         # test_3()
-        # test_2()
+        test_2()
         # test_4()
-        test_1()
+        # test_1()
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
