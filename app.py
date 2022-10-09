@@ -193,6 +193,12 @@ if __name__ == "__main__":
         # hi, lo = crc16(b'\x01\x06\x03\xE9\x00\x00')  # CRC = b'\x58\x7A'
         # print("{0:02X} {1:02X}".format(hi, lo))
         s = "02030001"
+        s = "7A"
+        s1 = 0x7A
+        # s1 = hex(35633330)
+        print(s1)
+        print("SDFSDFSD", bytes([s1]))
+        print("SSSS > ", codecs.decode(s, "hex"))
         hi, lo = crc16(codecs.decode(s, "hex"))  # CRC = b'\x58\x7A'
         # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
         # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
@@ -200,8 +206,8 @@ if __name__ == "__main__":
         # print("CRC16:", ans)
         def f(i):
             return str(hex(i))[2:]
-        print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
-        print("ALL COMM:", s + f(lo) + f(hi))
+        # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
+        # print("ALL COMM:", s + f(lo) + f(hi))
         # # print("GGG",b'0010MV0' + (hi).to_bytes(1, byteorder='big'))
         # print("GGG", bytearray("002030001".encode("ASCII")) + bytes([hi, lo]))
         #
