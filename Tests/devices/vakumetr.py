@@ -3,7 +3,7 @@ import wiringpi
 
 def test_1():
     SEND_STR = '0010MV00D\r'
-    serial = wiringpi.serialOpen('/dev/ttyAMA2', 9600)  # Requires device/baud and returns an ID
+    serial = wiringpi.serialOpen('/dev/ttyAMA1', 9600)  # Requires device/baud and returns an ID
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
     print("Serial:", serial)
     ans = wiringpi.serialPuts(serial, SEND_STR)
