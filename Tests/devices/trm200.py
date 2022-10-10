@@ -64,7 +64,7 @@ def test_1():
     wiringpi.serialClose(serial)
 
 
-def test_2():
+def test_trm_2():
 
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
@@ -106,7 +106,7 @@ def test_2():
         RS485.write(byte_command)
         sleep(0.1)
         x = RS485.readline()
-        print(x)
+        print("Answer", x)
         sleep(1)
 
 
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
         # test_3()
-        # test_2()
+        # test_trm_2()
         test_4()
         # test_1()
         print("TEST 1 ===> PASSED")
