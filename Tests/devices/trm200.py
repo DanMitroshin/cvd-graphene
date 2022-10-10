@@ -76,7 +76,7 @@ def test_trm_2():
         baudrate=115200,
         # baudrate=9600,
         parity=serial.PARITY_NONE,
-        stopbits=serial.STOPBITS_ONE,
+        stopbits=serial.STOPBITS_TWO,
         bytesize=serial.EIGHTBITS,
         timeout=0.02,
     )
@@ -88,16 +88,18 @@ def test_trm_2():
 
     # while True:
     for i in range(7, 48):
-        h = str(hex(i))[2:]
-        if len(h) < 2:
-            h = "0" + h
-        print("H:", h)
+        # h = str(hex(i))[2:]
+        # if len(h) < 2:
+        #     h = "0" + h
+        #
+        # print("H:", h)
         # n = 2
         # command = f"00{n}030001"
+        h = "02"
         command = f"{h}030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
-        print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
+        # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
         command += f(lo) + f(hi)
         # command += "F38B"
