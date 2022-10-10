@@ -120,10 +120,12 @@ def test_3():
     RS485 = serial.Serial(
         port=PORT,
         baudrate=19200,
+        writeTimeout=0,
+        write_timeout=0,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
-        timeout=0.1
+        timeout=0.1,
     )
 
     while True:
@@ -135,10 +137,12 @@ def test_3():
         #command = bytearray("0010MV00D\r".encode("ASCII"))
         print("command:", command)
         RS485.write(command)
-        time.sleep(0.1)
+        time.sleep(1)
+        in_wait = RS485.inWaiting()
+        print("In waiting:", in_wait)
         while RS485.inWaiting() > 0:
-            RecievedData = RS485.readline()
-            print("recieved:", RecievedData)
+            ReceivedData = RS485.readline()
+            print("received:", ReceivedData)
 
 
 if __name__ == "__main__":

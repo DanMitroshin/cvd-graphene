@@ -95,7 +95,7 @@ def test_2():
         command += f(lo) + f(hi)
         # command += "F38B"
         # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
-        byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
+        byte_command = codecs.decode(command + '\r', "hex")  # + bytes([hi, lo])
         # byte_command = b'\x02\x03\x00\x01\x5C\x30'
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
