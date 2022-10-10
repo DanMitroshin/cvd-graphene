@@ -9,7 +9,7 @@ import codecs
 
 from Core.utils.algorithms import crc16
 
-PORT = "/dev/ttyUSB0"
+PORT = "/dev/ttyUSB1"
 #  '/dev/ttyAMA0'
 
 def f(i):
@@ -120,8 +120,8 @@ def test_3():
     RS485 = serial.Serial(
         port=PORT,
         baudrate=19200,
-        writeTimeout=0,
-        write_timeout=0,
+        # writeTimeout=0,
+        # write_timeout=0,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
