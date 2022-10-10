@@ -95,7 +95,7 @@ def test_trm_2():
         # print("H:", h)
         # n = 2
         # command = f"00{n}030001"
-        h = "02"
+        h = "01"
         command = f"{h}030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
