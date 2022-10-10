@@ -94,8 +94,8 @@ def test_trm_2():
         # print("ALL COMM:", s + f(lo) + f(hi))
         command += f(lo) + f(hi)
         # command += "F38B"
-        byte_command = bytearray(command.encode("ASCII"))  # + bytes([hi, lo])
-        # byte_command = bytes.fromhex(f'{command}')
+        # byte_command = bytearray(command.encode("ASCII"))  # + bytes([hi, lo])
+        byte_command = bytearray(bytes.fromhex(f'{command}'))
         # byte_command = b'\x02\x03\x00\x01\x5C\x30'
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
