@@ -109,8 +109,8 @@ def test_akip_2():
     except BaseException:
         answer, errors = run_command(create_command(zero_current_actual))
         answer, errors = run_command(create_command(zero_voltage_actual))
-        answer, errors = run_command(create_command(zero_current_limit))
-        answer, errors = run_command(create_command(zero_voltage_limit))
+        # answer, errors = run_command(create_command(zero_current_limit))
+        # answer, errors = run_command(create_command(zero_voltage_limit))
         answer, errors = run_command(create_command(output_cmd(0)))
 
 
