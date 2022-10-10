@@ -86,10 +86,12 @@ def test_trm_2():
     # command += f(lo) + f(hi)
     # byte_command = codecs.decode(command, "hex")
 
-    while True:
+    # while True:
+    for i in range(48):
+        h = str(hex(i))[2:]
         # n = 2
         # command = f"00{n}030001"
-        command = f"02030001"
+        command = f"{h}030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
@@ -101,7 +103,7 @@ def test_trm_2():
         # byte_command = b'\x02\x03\x00\x01\x5C\x30'
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
-        print("|>> COMMAND:", command, byte_command)
+        print(f"|>>[h={h}] COMMAND:", command, byte_command)
         # RS485.write(bytearray(command.encode("ASCII")))
         RS485.write(byte_command)
         sleep(0.1)
