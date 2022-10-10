@@ -11,7 +11,7 @@ from Core.exceptions.communicators import InactiveCommunicatorException
 from Core.ui import StyleSheet
 from Core.utils.algorithms import crc16
 from Structure.dialog_ui import UiMainWindow, MainWindow
-from Tests.devices.current_source_akip import test_akip_2, test_akip_1
+from Tests.devices.current_source_akip import test_akip_2
 from Tests.devices.trm200 import test_2, test_4, test_1
 from Tests.devices.rrg import test_3
 # from Tests.devices.vakumetr import test_1, test_2
