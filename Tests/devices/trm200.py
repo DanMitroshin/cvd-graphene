@@ -69,14 +69,14 @@ def test_trm_2():
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
         port=PORT,
-        writeTimeout=0,
-        write_timeout=0,
+        # writeTimeout=0,
+        # write_timeout=0,
         baudrate=115200,
         # baudrate=9600,
         # parity=serial.PARITY_NONE,
         # stopbits=serial.STOPBITS_ONE,
         # bytesize=serial.EIGHTBITS,
-        timeout=0.001,
+        timeout=0.05,
     )
 
     # command = f"02030001"
@@ -97,7 +97,7 @@ def test_trm_2():
         # byte_command = bytearray(command.encode("ASCII")) # + bytes([hi, lo])
         # byte_command = codecs.decode(command, "hex")  # + bytes([hi, lo])
         # byte_command += bytearray('\r')
-        byte_command = bytes.fromhex(f'{command}\n')
+        byte_command = bytes.fromhex(f'{command}')
         # byte_command = b'\x02\x03\x00\x01\x5C\x30'
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc
@@ -106,7 +106,7 @@ def test_trm_2():
         RS485.write(byte_command)
         sleep(0.1)
         x = RS485.readline()
-        print("Answer", x)
+        print("Answer:", x)
         sleep(1)
 
 def check_port():
