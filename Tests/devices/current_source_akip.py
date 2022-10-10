@@ -41,7 +41,7 @@ def test_akip_2():
     )
     ADDRESS = 3
     command_remote = f"A00{ADDRESS}SYSTem:REMote;\n"
-    remote = f"SYSTem:REMote"
+    remote = f"SYST:REM"
     command_beep_on = f"A00{ADDRESS}SYST:BEEP 1;\n"
     command_beep_off = f"A00{ADDRESS}SYST:BEEP 0;\n"
 
