@@ -97,7 +97,7 @@ def test_trm_2():
         command = f"{h}030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
-        # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
+        print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
         command += f(lo) + f(hi)
         # command += "F38B"
