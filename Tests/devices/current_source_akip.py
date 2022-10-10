@@ -30,7 +30,8 @@ def test_akip_2():
 
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
-        port=get_port(),
+        # port=get_port(),
+        port=PORT,
         # writeTimeout=0,
         # write_timeout=0,
         baudrate=115200,
