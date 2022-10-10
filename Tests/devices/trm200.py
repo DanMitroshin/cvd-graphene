@@ -87,7 +87,7 @@ def test_trm_2():
     while True:
         # n = 2
         # command = f"00{n}030001"
-        command = f"02030001"
+        command = f"01030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
@@ -95,7 +95,7 @@ def test_trm_2():
         command += f(lo) + f(hi)
         # command += "F38B"
         # byte_command = bytearray(command.encode("ASCII"))  # + bytes([hi, lo])
-        byte_command = bytearray(bytes.fromhex(f'{command}'))
+        byte_command = bytes.fromhex(f'{command}')
         # byte_command = b'\x02\x03\x00\x01\x5C\x30'
         # print("GGG", b'0010MV0' + bytes([hi, lo]))
         # command += crc

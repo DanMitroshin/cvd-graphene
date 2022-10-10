@@ -11,7 +11,7 @@ from Core.exceptions.communicators import InactiveCommunicatorException
 from Core.ui import StyleSheet
 from Core.utils.algorithms import crc16
 from Structure.dialog_ui import UiMainWindow, MainWindow
-from Tests.devices.current_source_akip import test_akip_2
+from Tests.devices.current_source_akip import test_akip_2, get_serial_port
 from Tests.devices.trm200 import test_trm_2, test_4, test_1, check_port
 from Tests.devices.rrg import test_3
 # from Tests.devices.vakumetr import test_1, test_2
@@ -223,7 +223,8 @@ if __name__ == "__main__":
         # test_3()
         # test_akip_1()
         # test_akip_2()
-        check_port()
+        # check_port()
+        get_serial_port()
         test_trm_2()
         print("TEST 1 ===> PASSED")
     except Exception as e:

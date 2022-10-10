@@ -30,6 +30,15 @@ def get_port():
     return "/dev/ttyUSB0"
 
 
+def get_serial_port():
+    import subprocess
+    a = subprocess.run("dmesg | grep tty | grep FTDI", shell=True, capture_output=True)
+    line = a.stdout.decode("ASCII")
+    s = "ttyUSB"
+    index = line.find(s) + len(s)
+    return s + line[index]
+
+
 def test_akip_2():
     get_port()
     return
