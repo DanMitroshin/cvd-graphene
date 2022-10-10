@@ -71,14 +71,14 @@ def test_trm_2():
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
         port=PORT,
-        # writeTimeout=0,
-        # write_timeout=0,
+        writeTimeout=0.02,
+        write_timeout=0.02,
         baudrate=115200,
         # baudrate=9600,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
-        timeout=0.05,
+        timeout=0.02,
     )
 
     # command = f"02030001"
@@ -87,10 +87,11 @@ def test_trm_2():
     # byte_command = codecs.decode(command, "hex")
 
     # while True:
-    for i in range(48):
+    for i in range(7, 48):
         h = str(hex(i))[2:]
         if len(h) < 2:
             h = "0" + h
+        print("H:", h)
         # n = 2
         # command = f"00{n}030001"
         command = f"{h}030001"
