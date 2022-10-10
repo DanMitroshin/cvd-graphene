@@ -57,7 +57,7 @@ def test_akip_2():
     command_get_errors = f"A00{ADDRESS}SYSTem:ERRor?;\n"  #
 
     def create_command(c):
-        return f"A00{ADDRESS};\n"
+        return f"A00{ADDRESS}{c};\n"
 
     def run_command(command):
         RS485.write(bytearray(command.encode("ASCII")))
