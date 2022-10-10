@@ -1,3 +1,5 @@
+from Tests.devices.ports import get_serial_port
+
 try:
     import wiringpi
 except:
@@ -5,8 +7,11 @@ except:
 import serial
 from time import sleep
 
-PORT = "/dev/ttyUSB0"
+
+PORT = get_serial_port()
+# PORT = "/dev/ttyUSB0"
 #  '/dev/ttyAMA0'
+
 
 def get_port():
     import serial.tools.list_ports
@@ -28,18 +33,6 @@ def get_port():
         # portList.append(str(onePort))
         # print(str(onePort))
     return "/dev/ttyUSB0"
-
-
-def get_serial_port():
-    import subprocess
-    a = subprocess.run("dmesg | grep tty | grep FTDI", shell=True, capture_output=True)
-    line = a.stdout.decode("ASCII")
-    print("LINE", line)
-    s = "ttyUSB"
-    index = line.find(s) + len(s)
-    serial_port = s + line[index]
-    print("# SERIAL PORT:", serial_port)
-    return serial_port
 
 
 def test_akip_2():

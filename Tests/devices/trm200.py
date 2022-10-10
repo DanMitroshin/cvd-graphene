@@ -1,3 +1,4 @@
+from Tests.devices.ports import get_serial_port
 
 try:
     import wiringpi
@@ -9,7 +10,8 @@ import codecs
 
 from Core.utils.algorithms import crc16
 
-PORT = "/dev/ttyUSB0"
+# PORT = "/dev/ttyUSB0"
+PORT = get_serial_port()
 #  '/dev/ttyAMA0'
 
 def f(i):
@@ -73,9 +75,9 @@ def test_trm_2():
         # write_timeout=0,
         baudrate=115200,
         # baudrate=9600,
-        # parity=serial.PARITY_NONE,
-        # stopbits=serial.STOPBITS_ONE,
-        # bytesize=serial.EIGHTBITS,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
         timeout=0.05,
     )
 
@@ -87,7 +89,7 @@ def test_trm_2():
     while True:
         # n = 2
         # command = f"00{n}030001"
-        command = f"01030001"
+        command = f"02030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
