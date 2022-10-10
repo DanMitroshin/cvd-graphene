@@ -12,6 +12,7 @@ from Core.ui import StyleSheet
 from Core.utils.algorithms import crc16
 from Structure.dialog_ui import UiMainWindow, MainWindow
 from Tests.devices.trm200 import test_2, test_4, test_1
+from Tests.devices.rrg import test_3
 # from Tests.devices.vakumetr import test_1, test_2
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
@@ -192,20 +193,20 @@ if __name__ == "__main__":
         # test_3()
         # hi, lo = crc16(b'\x01\x06\x03\xE9\x00\x00')  # CRC = b'\x58\x7A'
         # print("{0:02X} {1:02X}".format(hi, lo))
-        s = "02030001"
-        s = "7A"
-        s1 = 0x7A
-        # s1 = hex(35633330)
-        print(s1)
-        print("SDFSDFSD", bytes([s1]))
-        print("SSSS > ", codecs.decode(s, "hex"))
-        hi, lo = crc16(codecs.decode(s, "hex"))  # CRC = b'\x58\x7A'
-        # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
-        # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
-        # ans = crc16x("002030001")  # CRC = b'\x58\x7A'
-        # print("CRC16:", ans)
-        def f(i):
-            return str(hex(i))[2:]
+        # s = "02030001"
+        # s = "7A"
+        # s1 = 0x7A
+        # # s1 = hex(35633330)
+        # print(s1)
+        # print("SDFSDFSD", bytes([s1]))
+        # print("SSSS > ", codecs.decode(s, "hex"))
+        # hi, lo = crc16(codecs.decode(s, "hex"))  # CRC = b'\x58\x7A'
+        # # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
+        # # hi, lo = crc16(bytearray("002030001".encode("ASCII")))  # CRC = b'\x58\x7A'
+        # # ans = crc16x("002030001")  # CRC = b'\x58\x7A'
+        # # print("CRC16:", ans)
+        # def f(i):
+        #     return str(hex(i))[2:]
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
         # # print("GGG",b'0010MV0' + (hi).to_bytes(1, byteorder='big'))
@@ -218,8 +219,9 @@ if __name__ == "__main__":
         # print("BS ==> ", str(binary_str, 'ascii'))
         # print(bytearray.fromhex(str(hex(crc16_))[2:]).decode())
         # test_1()
-        test_2()
-        test_4()
+        test_3()
+        # test_2()
+        # test_4()
         # test_1()
         print("TEST 1 ===> PASSED")
     except Exception as e:
