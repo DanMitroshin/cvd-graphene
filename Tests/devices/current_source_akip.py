@@ -8,13 +8,13 @@ from time import sleep
 PORT = "/dev/ttyUSB0"
 #  '/dev/ttyAMA0'
 
-def test_1():
+def test_akip_1():
     wiringpi.wiringPiSetup()
-    serial = wiringpi.serialOpen(PORT, 115200)  # Requires device/baud and returns an ID
+    serial = wiringpi.serialOpen(PORT, 19200)  # Requires device/baud and returns an ID
     print("Serial:", serial)
     # for i in '1':
         # sleep(1)
-    SEND_STR = f'0010MV00D\r'
+    SEND_STR = f"A007SYST:BEEP?0X0A"
     # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
     ans = wiringpi.serialPuts(serial, SEND_STR)
     # print("Answer:", ans)
