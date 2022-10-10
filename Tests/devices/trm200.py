@@ -112,7 +112,7 @@ def test_trm_2():
 def check_port():
     import subprocess
     a = subprocess.run("dmesg | grep tty | grep FTDI", shell=True, capture_output=True)
-    print("ANS", a, a.stdout)
+    print("ANS", a.stdout.decode("ASCII"))
 
 def test_3():
     import time
