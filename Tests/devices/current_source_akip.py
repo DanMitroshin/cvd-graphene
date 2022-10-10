@@ -42,6 +42,7 @@ def test_akip_2():
     ADDRESS = 3
     command_remote = f"A00{ADDRESS}SYSTem:REMote;\n"
     remote = f"SYST:REM"
+    output_cmd = lambda x: f"OUTP {x}"
     command_beep_on = f"A00{ADDRESS}SYST:BEEP 1;\n"
     command_beep_off = f"A00{ADDRESS}SYST:BEEP 0;\n"
 
@@ -74,18 +75,21 @@ def test_akip_2():
 
     # max_voltage_limit = "SOURce:VOLTage:PROTection:LEVel 13.75"  # 10-4-36 Max voltage limit
     max_voltage_limit = "SOUR:VOLT:PROT:LEV 13.75"  # 10-4-36 Max voltage limit
+    zero_voltage_limit = "SOUR:VOLT:PROT:LEV 0"  # 10-4-36 Max voltage limit
     # max_current_limit = "SOURce:CURRent:PROTection:LEVel 132"  # 10-4-43 Max current limit
     max_current_limit = "SOUR:CURR:PROT:LEV 132"  # 10-4-43 Max current limit
+    zero_current_limit = "SOUR:CURR:PROT:LEV 0"  # 10-4-43 Max current limit
     # max_voltage_actual = "SOURce:VOLTage 13.12"  # 10-4-34 Voltage limit for actual value
     max_voltage_actual = "SOUR:VOLT 13.12"  # 10-4-34 Voltage limit for actual value
+    zero_voltage_actual = "SOUR:VOLT 0"  # 10-4-34 Voltage limit for actual value
     # max_current_actual = "SOURce:CURRent 1.0"  # 10-4-40 Current limit for actual value
     max_current_actual = "SOUR:CURR 1.0"  # 10-4-40 Current limit for actual value
-    # zero_current_actual = "SOURce:CURRent 0"  # 10-4-40 Current limit for actual value
     zero_current_actual = "SOUR:CURR 0"  # 10-4-40 Current limit for actual value
 
-    SLEEP_TIME = 2.5
+    SLEEP_TIME = 1
     command_remote = create_command(remote)
     answer, errors = run_command(command_remote)
+    answer, errors = run_command(create_command(output_cmd(1)))
     sleep(SLEEP_TIME)
     answer, errors = run_command(create_command(max_voltage_limit))
     sleep(SLEEP_TIME)
@@ -104,6 +108,10 @@ def test_akip_2():
             sleep(SLEEP_TIME)
     except BaseException:
         answer, errors = run_command(create_command(zero_current_actual))
+        answer, errors = run_command(create_command(zero_voltage_actual))
+        answer, errors = run_command(create_command(zero_current_limit))
+        answer, errors = run_command(create_command(zero_voltage_limit))
+        answer, errors = run_command(create_command(output_cmd(0)))
 
 
 def test_3():
