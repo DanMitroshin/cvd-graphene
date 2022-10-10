@@ -95,13 +95,13 @@ def test_trm_2():
         # print("H:", h)
         # n = 2
         # command = f"00{n}030001"
-        h = "01"
+        h = "02"
         command = f"{h}030001"
         hi, lo = crc16(codecs.decode(command, "hex"))  # CRC = b'\x58\x7A'
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
-        # command += f(lo) + f(hi)
+        command += f(lo) + f(hi)
         # command += "F38B"
         # byte_command = bytearray(command.encode("ASCII"))  # + bytes([hi, lo])
         byte_command = bytes.fromhex(f'{command}')
@@ -111,10 +111,10 @@ def test_trm_2():
         print(f"|>>[h={h}] COMMAND:", command, byte_command)
         # RS485.write(bytearray(command.encode("ASCII")))
         RS485.write(byte_command)
-        sleep(0.1)
+        sleep(0.5)
         x = RS485.readline()
         print("Answer:", x)
-        sleep(1)
+        sleep(0.5)
 
 def check_port():
     import subprocess
