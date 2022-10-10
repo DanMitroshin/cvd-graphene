@@ -89,6 +89,8 @@ def test_trm_2():
     # while True:
     for i in range(48):
         h = str(hex(i))[2:]
+        if len(h) < 2:
+            h = "0" + h
         # n = 2
         # command = f"00{n}030001"
         command = f"{h}030001"
