@@ -143,6 +143,8 @@ def test_3():
         while RS485.inWaiting() > 0:
             ReceivedData = RS485.readline()
             print("received:", ReceivedData)
+        ReceivedData = RS485.readline()
+        print("received:", ReceivedData)
 
 
 if __name__ == "__main__":
