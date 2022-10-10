@@ -36,23 +36,66 @@ def test_akip_2():
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
         port=PORT,
-        writeTimeout=0,
-        write_timeout=0,
+        # writeTimeout=0,
+        # write_timeout=0,
         baudrate=115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
         timeout=0.001,
     )
+    ADDRESS = 3
+    command_remote = f"A00{ADDRESS}SYSTem:REMote;\n"
+    remote = f"SYSTem:REMote"
+    command_beep_on = f"A00{ADDRESS}SYST:BEEP 1;\n"
+    command_beep_off = f"A00{ADDRESS}SYST:BEEP 0;\n"
+
+    command_measure_current = f"A00{ADDRESS}MEASure:CURRent?;\n"  # 10-4-32
+    command_measure_voltage = f"A00{ADDRESS}MEASure:VOLTage?;\n"  # 10-4-31
+
+    command_set_voltage = f"A00{ADDRESS}SOURce:VOLTage 30;\n"  # 10-4-34 // 30V
+    command_get_voltage = f"A00{ADDRESS}SOURce:VOLTage?;\n"  # 10-4-35
+
+    command_set_current = f"A00{ADDRESS}SOURce:CURRent 1;\n"  # 10-4-40
+    command_get_current = f"A00{ADDRESS}SOURce:CURRent?;\n"  # 10-4-41
+
+    command_get_errors = f"A00{ADDRESS}SYSTem:ERRor?;\n"  #
+
+    def create_command(c):
+        return f"A00{ADDRESS};\n"
+
+    def run_command(command):
+        RS485.write(bytearray(command.encode("ASCII")))
+        _answer = RS485.readline()
+        command_get_errors = f"A00{ADDRESS}SYSTem:ERRor?;\n"
+        RS485.write(bytearray(command_get_errors.encode("ASCII")))
+        _errors = RS485.readline()
+        print(f"[COMMAND] {command}. Answer: {_answer} | Status: {_errors}")
+        return _answer, _errors
+        # print("ANSWER:", x)
+
+    max_voltage_limit = "SOURce:VOLTage:PROTection:LEVel 13.75"  # 10-4-36 Max voltage limit
+    max_current_limit = "SOURce:CURRent:PROTection:LEVel 132"  # 10-4-43 Max current limit
+    max_voltage_actual = "SOURce:VOLTage 13.12"  # 10-4-34 Voltage limit for actual value
+    max_current_actual = "SOURce:CURRent 1.0"  # 10-4-40 Current limit for actual value
+
+    command_remote = create_command(remote)
+    answer, errors = run_command(command_remote)
+    sleep(1)
+    answer, errors = run_command(create_command(max_voltage_limit))
+    sleep(1)
+    answer, errors = run_command(create_command(max_current_limit))
+    sleep(1)
+    answer, errors = run_command(create_command(max_voltage_actual))
+    sleep(1)
+    answer, errors = run_command(command_get_voltage)
+    print("|> CURRENT VOLTAGE:", answer)
+    sleep(1)
 
     while True:
-        n = 7
-        command = f"A00{n}SYST:BEEP?0X0A"
-        # print(command)
-        RS485.write(bytearray(command.encode("ASCII")))
-        sleep(0.005)
-        x = RS485.readline()
-        print("ANSWER:", x)
+        answer, errors = run_command(create_command(max_current_actual))
+        answer, errors = run_command(command_get_current)
+        print("|> CURRENT ACTUAL:", answer)
         sleep(1)
 
 
