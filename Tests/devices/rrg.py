@@ -125,13 +125,13 @@ def test_3():
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
-        timeout=0.1,
+        timeout=0.05,
     )
 
     while True:
         n = 1
         #command = bin(int('01030002000265CB', base=16))[2:]
-        command = bytes.fromhex('01030002000265CB\r')
+        command = bytes.fromhex('01030002000265CB')
         #command = bytearray("01030002000265CB")
         #command = (1000).to_bytes(2, byteorder='big')
         #command = bytearray("0010MV00D\r".encode("ASCII"))
@@ -140,11 +140,16 @@ def test_3():
         time.sleep(1)
         in_wait = RS485.inWaiting()
         print("In waiting:", in_wait)
+        r = b''
         while RS485.inWaiting() > 0:
             ReceivedData = RS485.readline()
-            print("received:", ReceivedData)
-        ReceivedData = RS485.readline()
-        print("received:", ReceivedData)
+            r += ReceivedData
+
+        print("RECEIVED DATA:", r)
+
+        # ReceivedData = RS485.readline()
+        # print("received:", ReceivedData)
+        time.sleep(1)
 
 
 if __name__ == "__main__":
