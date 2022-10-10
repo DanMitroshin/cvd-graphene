@@ -8,34 +8,29 @@ from time import sleep
 PORT = "/dev/ttyUSB0"
 #  '/dev/ttyAMA0'
 
-def test_akip_1():
-    wiringpi.wiringPiSetup()
-    serial = wiringpi.serialOpen(PORT, 19200)  # Requires device/baud and returns an ID
-    print("Serial:", serial)
-    # for i in '1':
-        # sleep(1)
-    SEND_STR = f"A007SYST:BEEP?0X0A"
-    # serial = wiringpi.serialOpen('/dev/ttyACM0', 9600)  # Requires device/baud and returns an ID
-    ans = wiringpi.serialPuts(serial, SEND_STR)
-    # print("Answer:", ans)
-    # b = ""
-    counter = 0
-    # sleep(1)
-    while True:
-        b = wiringpi.serialGetchar(serial)
-        counter += 1
-        if counter > 100 or b is None or b == -1:
-            print(b, end='|')
-            break
-    print('')
-    wiringpi.serialClose(serial)
+def get_port():
+    import serial.tools.list_ports
+    ports = serial.tools.list_ports.comports()
+    portList = []
+
+    for onePort in ports:
+        p = str(onePort)
+        try:
+            f = p.split('-')[0].strip()
+            if f.find('USB') >= 0:
+                return f
+        except:
+            continue
+        # portList.append(str(onePort))
+        # print(str(onePort))
+    return "/dev/ttyUSB0"
 
 
 def test_akip_2():
 
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
-        port=PORT,
+        port=get_port(),
         # writeTimeout=0,
         # write_timeout=0,
         baudrate=115200,
