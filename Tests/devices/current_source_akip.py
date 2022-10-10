@@ -75,25 +75,26 @@ def test_akip_2():
     max_current_actual = "SOURce:CURRent 1.0"  # 10-4-40 Current limit for actual value
     zero_current_actual = "SOURce:CURRent 0"  # 10-4-40 Current limit for actual value
 
+    SLEEP_TIME = 2.5
     command_remote = create_command(remote)
     answer, errors = run_command(command_remote)
-    sleep(1)
+    sleep(SLEEP_TIME)
     answer, errors = run_command(create_command(max_voltage_limit))
-    sleep(1)
+    sleep(SLEEP_TIME)
     answer, errors = run_command(create_command(max_current_limit))
-    sleep(1)
+    sleep(SLEEP_TIME)
     answer, errors = run_command(create_command(max_voltage_actual))
-    sleep(1)
+    sleep(SLEEP_TIME)
     answer, errors = run_command(command_get_voltage)
     print("|> CURRENT VOLTAGE:", answer)
-    sleep(1)
+    sleep(SLEEP_TIME)
     try:
         while True:
             answer, errors = run_command(create_command(max_current_actual))
             answer, errors = run_command(create_command(zero_current_actual))
             answer, errors = run_command(command_get_current)
             print("|> CURRENT ACTUAL:", answer)
-            sleep(1)
+            sleep(SLEEP_TIME)
     except BaseException:
         answer, errors = run_command(create_command(zero_current_actual))
 
