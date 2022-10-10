@@ -2,7 +2,7 @@ def get_serial_port():
     import subprocess
     a = subprocess.run("dmesg | grep tty | grep FTDI", shell=True, capture_output=True)
     line = a.stdout.decode("ASCII")
-    print("LINE", line)
+    # print("LINE", line)
     s = "ttyUSB"
     index = line.find(s) + len(s)
     serial_port = "/dev/" + s + line[index]
