@@ -101,7 +101,7 @@ def test_trm_2():
 
         # print("!!!!!!!!!! {0:02X} {1:02X}".format(hi, lo))
         # print("ALL COMM:", s + f(lo) + f(hi))
-        command += f(lo) + f(hi)
+        # command += f(lo) + f(hi)
         # command += "F38B"
         # byte_command = bytearray(command.encode("ASCII"))  # + bytes([hi, lo])
         byte_command = bytes.fromhex(f'{command}')
