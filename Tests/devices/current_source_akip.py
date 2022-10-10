@@ -78,6 +78,7 @@ def test_akip_2():
     max_current_limit = "SOURce:CURRent:PROTection:LEVel 132"  # 10-4-43 Max current limit
     max_voltage_actual = "SOURce:VOLTage 13.12"  # 10-4-34 Voltage limit for actual value
     max_current_actual = "SOURce:CURRent 1.0"  # 10-4-40 Current limit for actual value
+    zero_current_actual = "SOURce:CURRent 0"  # 10-4-40 Current limit for actual value
 
     command_remote = create_command(remote)
     answer, errors = run_command(command_remote)
@@ -91,12 +92,15 @@ def test_akip_2():
     answer, errors = run_command(command_get_voltage)
     print("|> CURRENT VOLTAGE:", answer)
     sleep(1)
-
-    while True:
-        answer, errors = run_command(create_command(max_current_actual))
-        answer, errors = run_command(command_get_current)
-        print("|> CURRENT ACTUAL:", answer)
-        sleep(1)
+    try:
+        while True:
+            answer, errors = run_command(create_command(max_current_actual))
+            answer, errors = run_command(create_command(zero_current_actual))
+            answer, errors = run_command(command_get_current)
+            print("|> CURRENT ACTUAL:", answer)
+            sleep(1)
+    except BaseException:
+        answer, errors = run_command(create_command(zero_current_actual))
 
 
 def test_3():
