@@ -61,11 +61,14 @@ def test_akip_2():
 
     def run_command(command):
         RS485.write(bytearray(command.encode("ASCII")))
+        timeout = 0.05
+        sleep(timeout)
         _answer = RS485.readline()
         command_get_errors = f"A00{ADDRESS}SYSTem:ERRor?;\n"
         RS485.write(bytearray(command_get_errors.encode("ASCII")))
+        sleep(timeout)
         _errors = RS485.readline()
-        print(f"[COMMAND] {command}. Answer: {_answer} | Status: {_errors}")
+        print(f"[COMMAND] {command.strip()}. Answer: {_answer} | Status: {_errors}")
         return _answer, _errors
         # print("ANSWER:", x)
 
@@ -91,7 +94,6 @@ def test_akip_2():
     try:
         while True:
             answer, errors = run_command(create_command(max_current_actual))
-            answer, errors = run_command(create_command(zero_current_actual))
             answer, errors = run_command(command_get_current)
             print("|> CURRENT ACTUAL:", answer)
             sleep(SLEEP_TIME)
