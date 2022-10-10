@@ -12,6 +12,10 @@ def get_port():
     import serial.tools.list_ports
     ports = serial.tools.list_ports.comports()
     portList = []
+    print("ALL PORTS:")
+    for onePort in ports:
+        portList.append(str(onePort))
+        print(str(onePort))
 
     for onePort in ports:
         p = str(onePort)
@@ -27,6 +31,8 @@ def get_port():
 
 
 def test_akip_2():
+    get_port()
+    return
 
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
