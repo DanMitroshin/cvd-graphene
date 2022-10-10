@@ -64,7 +64,7 @@ def test_akip_2():
         timeout = 0.05
         sleep(timeout)
         _answer = RS485.readline()
-        command_get_errors = f"A00{ADDRESS}SYSTem:ERRor?;\n"
+        command_get_errors = f"A00{ADDRESS}SYST:ERR?;\n"
         RS485.write(bytearray(command_get_errors.encode("ASCII")))
         sleep(timeout)
         _errors = RS485.readline()
@@ -72,11 +72,16 @@ def test_akip_2():
         return _answer, _errors
         # print("ANSWER:", x)
 
-    max_voltage_limit = "SOURce:VOLTage:PROTection:LEVel 13.75"  # 10-4-36 Max voltage limit
-    max_current_limit = "SOURce:CURRent:PROTection:LEVel 132"  # 10-4-43 Max current limit
-    max_voltage_actual = "SOURce:VOLTage 13.12"  # 10-4-34 Voltage limit for actual value
-    max_current_actual = "SOURce:CURRent 1.0"  # 10-4-40 Current limit for actual value
-    zero_current_actual = "SOURce:CURRent 0"  # 10-4-40 Current limit for actual value
+    # max_voltage_limit = "SOURce:VOLTage:PROTection:LEVel 13.75"  # 10-4-36 Max voltage limit
+    max_voltage_limit = "SOUR:VOLT:PROT:LEV 13.75"  # 10-4-36 Max voltage limit
+    # max_current_limit = "SOURce:CURRent:PROTection:LEVel 132"  # 10-4-43 Max current limit
+    max_current_limit = "SOUR:CURR:PROT:LEV 132"  # 10-4-43 Max current limit
+    # max_voltage_actual = "SOURce:VOLTage 13.12"  # 10-4-34 Voltage limit for actual value
+    max_voltage_actual = "SOUR:VOLT 13.12"  # 10-4-34 Voltage limit for actual value
+    # max_current_actual = "SOURce:CURRent 1.0"  # 10-4-40 Current limit for actual value
+    max_current_actual = "SOUR:CURR 1.0"  # 10-4-40 Current limit for actual value
+    # zero_current_actual = "SOURce:CURRent 0"  # 10-4-40 Current limit for actual value
+    zero_current_actual = "SOUR:CURR 0"  # 10-4-40 Current limit for actual value
 
     SLEEP_TIME = 2.5
     command_remote = create_command(remote)
