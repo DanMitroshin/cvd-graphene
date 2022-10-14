@@ -11,7 +11,7 @@ from time import sleep
 
 
 def test_rough_vakumetr_1():
-    SPIchannel = 3
+    SPIchannel = 0
     SPIspeed = 100000
     wiringpi.wiringPiSPISetup(SPIchannel, SPIspeed)
     send_data = b'000'
@@ -22,11 +22,11 @@ def test_rough_vakumetr_1():
 
 
 def test_rough_vakumetr_2():
-    SPIchannel = 3
-    SPIspeed = 100000
+    SPIchannel = 0
+    SPIspeed = 50000
     spi = spidev.SpiDev()
     spi.open(SPIchannel, 0)
-    spi.max_speed_hz = 50000
+    spi.max_speed_hz = SPIspeed
     print("Connected!")
     # spi.lsbfirst = False
     # spi.cshigh = False
@@ -34,12 +34,14 @@ def test_rough_vakumetr_2():
     # spi.bits_per_word = 8
     send_data = b'000'
 
-    txData = [0x00, 0x00]
-    rxData = spi.xfer(txData)
-    print("Receive:", end=' ')
-    for i in range(len(rxData)):
-        print(hex(rxData[i]), end=' ')
-    print('')
+    txData = [0x80, 0x00, 0x00, 0x00, 0x00]
+    while True:
+        rxData = spi.xfer(txData)
+        print("Receive:", end=' ')
+        for i in range(len(rxData)):
+            print(hex(rxData[i]), end=' ')
+        print('@END')
+        sleep(1)
 
     spi.close()
 
