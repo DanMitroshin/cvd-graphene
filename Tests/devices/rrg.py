@@ -8,6 +8,8 @@ from time import sleep
 import codecs
 
 from Core.utils.algorithms import crc16
+from .ports import get_serial_port
+print("SERIAL:", get_serial_port())
 
 PORT = "/dev/ttyUSB1"
 #  '/dev/ttyAMA0'
@@ -32,7 +34,7 @@ def crc16x(data: str, poly: hex = 0xA001) -> str:
     return blueprint if len(hv) == 0 else blueprint[:-len(hv)] + hv
 
 
-def test_1():
+def test_rrg_1():
     wiringpi.wiringPiSetup()
     serial = wiringpi.serialOpen(PORT, 115200)  # Requires device/baud and returns an ID
     print("Serial:", serial)

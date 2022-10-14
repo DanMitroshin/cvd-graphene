@@ -20,10 +20,37 @@ def test_rough_vakumetr_1():
         print("|> Receive:", receive_data)
         sleep(1)
 
+import string
+digs = string.digits + string.ascii_letters
 
+
+def int2base(x, base=2):
+    if x < 0:
+        sign = -1
+    elif x == 0:
+        return digs[0]
+    else:
+        sign = 1
+
+    x *= sign
+    digits = []
+
+    while x:
+        digits.append(digs[x % base])
+        x = x // base
+
+    if sign < 0:
+        digits.append('-')
+
+    digits.reverse()
+
+    return ''.join(digits)
+
+
+# WORK VERSION
 def test_rough_vakumetr_2():
     SPIchannel = 0
-    SPIspeed = 50000
+    SPIspeed = 10000
     spi = spidev.SpiDev()
     spi.open(SPIchannel, 0)
     spi.max_speed_hz = SPIspeed
@@ -34,13 +61,19 @@ def test_rough_vakumetr_2():
     # spi.bits_per_word = 8
     send_data = b'000'
 
-    txData = [0x80, 0x00, 0x00, 0x00, 0x00]
+    txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
     while True:
+        txData = [0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
         rxData = spi.xfer(txData)
         print("Receive:", end=' ')
-        for i in range(len(rxData)):
-            print(hex(rxData[i]), end=' ')
-        print('@END')
+        if len(rxData) >= 3:
+            s = ''.join(map(lambda x: int2base(x).zfill(8), rxData[:4]))
+            n = int(s[8:18], 2)
+            print(n) #, s, s[8:18])
+        #for i in range(len(rxData)):
+        #    #print(hex(rxData[i]), end=' ')
+        #    print(int2base(rxData[i]).zfill(8), end=' ')
+        #print('@END')
         sleep(1)
 
     spi.close()
