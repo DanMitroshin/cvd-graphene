@@ -117,7 +117,7 @@ import serial
 from crc import CrcCalculator, Crc8
 
 
-def test_3():
+def test_rrg_3():
 
     RS485 = serial.Serial(
         port=PORT,
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     try:
         # test_3()
         # test_2()
-        test_3()
+        test_rrg_3()
         # test_1()
         print("TEST 1 ===> PASSED")
     except Exception as e:
