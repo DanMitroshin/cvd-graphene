@@ -15,7 +15,7 @@ def test_rele_1():
     wiringpi.wiringPiSetupGpio()  # For GPIO pin numbering
     wiringpi.wiringPiSetup()  # For sequential pin numbering
     wiringpi.pinMode(channel, 1)  # Set pin 6 to 1 ( OUTPUT )
-    send = 1
+    send = 1  # 1 - closed, 0 - opened
     while True:
         wiringpi.digitalWrite(channel, send)  # Write 1 ( HIGH ) to pin 6
         receive_data = wiringpi.digitalRead(channel)  # Read pin 6

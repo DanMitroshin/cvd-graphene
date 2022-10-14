@@ -33,7 +33,7 @@ def test_rough_vakumetr_2():
     # spi.bits_per_word = 8
     send_data = b'000'
 
-    txData = [0x00]
+    txData = [0x00, 0x00]
     rxData = spi.xfer(txData)
     print("Receive:", end=' ')
     for i in range(len(rxData)):
