@@ -6,7 +6,7 @@ try:
 except:
     pass
 # import serial
-# from time import sleep
+from time import sleep
 # import codecs
 
 
@@ -18,6 +18,7 @@ def test_rough_vakumetr_1():
     while True:
         receive_data = wiringpi.wiringPiSPIDataRW(SPIchannel, send_data)
         print("|> Receive:", receive_data)
+        sleep(1)
 
 
 def test_rough_vakumetr_2():
@@ -46,7 +47,7 @@ def test_rough_vakumetr_2():
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
-        test_rough_vakumetr_2()
+        test_rough_vakumetr_1()
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
