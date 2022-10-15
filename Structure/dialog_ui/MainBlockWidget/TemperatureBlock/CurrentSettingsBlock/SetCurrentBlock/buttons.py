@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect
 
-from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
+from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS, LIGHT_GREEN
 from Core.ui import StyleSheet
 
 side = "60px"
@@ -26,15 +26,16 @@ style_button = """
 QPushButton#button_plus_minus {
     height: 60px;
     width: 60px;
-    max-width: 60px;
-    background-color: rgb(150, 255, 150);
-    font-size: 48px;
-    line-height: 48px;
-}
-QPushButton#button_plus_minus:pressed {
-    background-color: rgb(80, 200, 80);
-}
-"""
+    max-width: 60px;""" + \
+               f"background-color: {LIGHT_GREEN};" + \
+               """
+                   font-size: 48px;
+                   line-height: 48px;
+               }
+               QPushButton#button_plus_minus:pressed {
+                   background-color: rgb(80, 200, 80);
+               }
+               """
 
 
 class ButtonPlusMinus(QPushButton):

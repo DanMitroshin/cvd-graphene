@@ -6,6 +6,6 @@ styles = StyleSheet({
         # "width": "100%",
         "max-width": "350px",
         # "min-width": "350px",
-        "background-color": "rgb(40, 200, 210)",
+        # "background-color": "rgb(40, 200, 210)",
     },
 })

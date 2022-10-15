@@ -7,7 +7,7 @@ styles = StyleSheet({
         # "max-width": "5000px",
         # "width": "100%",
         # "height": '100%',
-        "background-color": "rgb(190, 190, 190)",
+        # "background-color": "rgb(190, 190, 190)",
     },
     "line": {
         "height": "2px",

@@ -16,7 +16,9 @@ class PressureControlBlock(QWidget):
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
 
         self.show_pressure_block = ShowPressureBlock()
-        self.layout.addWidget(self.show_pressure_block)
+        self.layout.addWidget(self.show_pressure_block,
+                              alignment=QtCore.Qt.AlignTop
+                              )
 
         # self.input = QLineEdit()
         # self.input.setStyleSheet("""

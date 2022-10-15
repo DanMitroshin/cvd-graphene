@@ -1,11 +1,13 @@
 from Core.ui import StyleSheet
+from Structure.dialog_ui.constants import LIGHT_GREEN
+
 
 styles = StyleSheet({
     "container": {
         # "name": "QWidget",
         "max-width": "240px",
         "min-width": "180px",
-        "background-color": "rgb(150, 250, 250)",
+        # "background-color": "rgb(150, 250, 250)",
     },
     "close_button": {
         "name": "QPushButton#button_close",
@@ -24,13 +26,13 @@ styles = StyleSheet({
         "min-height": "100px",
         "padding": "10px",
         "font-size": "24px",
-        "background-color": "rgb(150, 255, 150)",
+        "background-color": LIGHT_GREEN,
     },
     "edit_recipe_button": {
         "name": "QPushButton#edit_recipe_button",
         "min-height": "100px",
         "padding": "10px",
         "font-size": "24px",
-        "background-color": "rgb(150, 255, 150)",
+        "background-color": LIGHT_GREEN,
     },
 })

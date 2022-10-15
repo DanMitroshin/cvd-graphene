@@ -1,4 +1,5 @@
 from Core.ui import StyleSheet
+from Structure.dialog_ui.constants import LIGHT_GREEN
 
 styles = StyleSheet({
     "container": {
@@ -15,6 +16,7 @@ styles = StyleSheet({
     "temperature": {
         # "border-width": "0",
         "font-size": "42px",
+        # "background-color": LIGHT_GREEN,
         "background-color": "rgba(220, 220, 220, 255)",
         "padding": "6px",
     },

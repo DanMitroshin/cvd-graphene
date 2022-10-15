@@ -7,7 +7,7 @@ styles = StyleSheet({
         # "max-width": "5000px",
         # "width": "100%",
         # "height": '100%',
-        "background-color": "rgb(0, 240, 0)",
+        # "background-color": "rgb(0, 240, 0)",
     },
     "gas": {
         # "width": "70px",
@@ -18,14 +18,14 @@ styles = StyleSheet({
         "font-weight": "bold",
     },
     "up_label": {
-        "max-height": "50px",
+        "max-height": "60px",
         "min-width": "180px",
         # "width": "120px",
         "background-color": "rgb(255, 255, 255)",
         "font-size": "28px",
     },
     "down_label": {
-        "max-height": "50px",
+        "max-height": "60px",
         "min-width": "180px",
         # "width": "120px",
         "background-color": "rgb(180, 180, 180)",

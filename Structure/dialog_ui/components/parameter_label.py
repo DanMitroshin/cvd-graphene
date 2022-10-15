@@ -1,12 +1,15 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect
 
+from .latex_widget import LatexWidget
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
 from Core.ui import StyleSheet
 
 styles = StyleSheet({
     "container": {
         "max-height": "60px",
+        "min-height": "60px",
+
         # "max-width": "200px",
         # "width": '100%',
         "background-color": "rgb(200, 200, 200)",
@@ -20,6 +23,9 @@ styles = StyleSheet({
     },
 })
 
+# cl = LatexWidget
+cl = QLabel
+
 
 class ParameterLabel(QLabel):
     def __init__(self, parent=None):
@@ -29,7 +35,9 @@ class ParameterLabel(QLabel):
         # self.setLayout(self.layout)
         self.setStyleSheet(styles.container)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
-        self.setAlignment(QtCore.Qt.AlignCenter)
+
+        # self.setAlignment(QtCore.Qt.AlignCenter)
+
         # self.setText("P = 1,3 * 10000 mbar")
         self.setText("")
         shadow = QGraphicsDropShadowEffect()

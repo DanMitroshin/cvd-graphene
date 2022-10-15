@@ -1,4 +1,5 @@
 from Core.ui import StyleSheet
+from Structure.dialog_ui.constants import LIGHT_GREEN
 
 styles = StyleSheet({
     "container": {
@@ -10,7 +11,7 @@ styles = StyleSheet({
         # # "border-radius": "8px",
         # "border-width": "2px",
         # "border-color": "rgb(0, 0, 50)",
-        "background-color": "rgb(198, 181, 255)",
+        # "background-color": "rgb(198, 181, 255)",
     },
     "input": {
         "font-size": "32px",
@@ -33,6 +34,6 @@ styles = StyleSheet({
         "min-height": "100px",
         "padding": "10px",
         "font-size": "32px",
-        "background-color": "rgb(150, 255, 150)",
+        "background-color": LIGHT_GREEN,
     },
 })

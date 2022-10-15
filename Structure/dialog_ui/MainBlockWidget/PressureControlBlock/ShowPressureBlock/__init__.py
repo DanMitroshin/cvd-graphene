@@ -14,7 +14,7 @@ class ShowPressureBlock(ParameterLabel):
         # self.setLayout(self.layout)
         # self.setStyleSheet(styles.container)
         # self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
-        self.setText("P = 1,3 * 10000 mbar")
+        self.setText("$P = 1,3 * 10^(-3) mbar$")
         # shadow = QGraphicsDropShadowEffect()
         # # setting blur radius
         # shadow.setBlurRadius(SHADOW_BLUR_RADIUS)

@@ -10,6 +10,7 @@ styles = StyleSheet({
         "max-height": "170px",
         "background-color": "rgb(255, 255, 255)",
         "border-radius": "14px",
+        "margin-bottom": "20px",
     },
     "title": {
         "font-size": "30px",
