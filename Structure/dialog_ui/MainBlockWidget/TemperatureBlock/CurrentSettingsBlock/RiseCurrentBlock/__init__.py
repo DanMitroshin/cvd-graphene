@@ -22,7 +22,7 @@ class RiseCurrentBlock(QWidget):
         self.label_current = LatexWidget(
             text="$I_{final}$",
             rgb=RGB,
-            top_y=0.8,
+            top_y=0.9,
             # fon_size_mult=2
         )
         # self.label_current.setText("I_final")
