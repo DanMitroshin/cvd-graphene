@@ -34,7 +34,7 @@ class LatexWidget(QtWidgets.QWidget):
                  text="$F_2$",
                  parent=None,
                  rgb=None,
-                 fon_size_mult=1.6,
+                 fon_size_mult=1.5,
                  ):
         super(QtWidgets.QWidget, self).__init__(parent)
         if rgb is None:

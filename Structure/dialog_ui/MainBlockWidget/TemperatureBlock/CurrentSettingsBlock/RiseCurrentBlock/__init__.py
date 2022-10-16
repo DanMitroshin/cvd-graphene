@@ -22,7 +22,7 @@ class RiseCurrentBlock(QWidget):
         self.label_current = LatexWidget(
             text="$I_{final}$",
             rgb=RGB,
-            fon_size_mult=2
+            # fon_size_mult=2
         )
         # self.label_current.setText("I_final")
         self.label_current.setStyleSheet(styles.label)
@@ -35,7 +35,7 @@ class RiseCurrentBlock(QWidget):
         self.label_time = LatexWidget(
             text="$t_{rise}$",
             rgb=RGB,
-            fon_size_mult=2
+            # fon_size_mult=2
         )
         # self.label_time.setText("t_rise")
         self.label_time.setStyleSheet(styles.label)
