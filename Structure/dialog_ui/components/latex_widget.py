@@ -35,6 +35,7 @@ class LatexWidget(QtWidgets.QWidget):
                  parent=None,
                  rgb=None,
                  fon_size_mult=1.5,
+                 top_y=0.75,
                  ):
         super(QtWidgets.QWidget, self).__init__(parent)
         if rgb is None:
@@ -42,6 +43,7 @@ class LatexWidget(QtWidgets.QWidget):
         else:
             self.rgb = rgb
         self.fon_size_mult =fon_size_mult
+        self.top_y = top_y
         self._setText(text)
 
     def _setText(self, mathText):
@@ -59,7 +61,7 @@ class LatexWidget(QtWidgets.QWidget):
         text = self._figure.suptitle(
             mathText,
             x=0.1,
-            y=0.75,
+            y=self.top_y,
             horizontalalignment='left',
             verticalalignment='top',
             size=QtGui.QFont().pointSize() * self.fon_size_mult
