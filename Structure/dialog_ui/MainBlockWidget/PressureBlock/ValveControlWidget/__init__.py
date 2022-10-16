@@ -90,8 +90,8 @@ class ValveLines(QWidget):
             # d = a * math.tan(math.radians(30))
             x, y = 0, 0
 
-            pos_1 = QPointF(7, 0)
-            pos_2 = QPointF(30, 90)
+            pos_1 = QPointF(9, 0)
+            pos_2 = QPointF(30, 99)
 
             pos_3 = QPointF(64, y)
             pos_4 = QPointF(38, 90)
