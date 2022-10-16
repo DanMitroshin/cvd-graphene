@@ -2,6 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, \
     QVBoxLayout, QLineEdit, QHBoxLayout, QLabel
 
+from Structure.dialog_ui.components import ParameterLatexLabel, LatexWidget
 from Structure.dialog_ui.components.butterfly_button import ButterflyButton
 from .styles import styles
 
@@ -27,10 +28,16 @@ class GasStateWidget(QWidget):
         # self.line = QLineEdit()
         # self.layout.addWidget(self.line)
 
-        self.gas = QLabel()
-        self.gas.setText(gas)
+        # self.gas = QLabel()
+        # self.gas = ParameterLatexLabel()
+        self.gas = LatexWidget(
+            text=gas,
+            rgb=[240, 240, 240],
+            fon_size_mult=4
+        )
+        # self.gas.setText(gas)
         self.gas.setStyleSheet(styles.gas)
-        self.gas.setAlignment(QtCore.Qt.AlignCenter)
+        # self.gas.setAlignment(QtCore.Qt.AlignCenter)
 
         self.b = ButterflyButton()
 

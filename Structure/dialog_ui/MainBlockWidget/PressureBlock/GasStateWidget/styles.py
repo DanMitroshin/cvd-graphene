@@ -1,5 +1,7 @@
 from Core.ui import StyleSheet
 
+GAS_HEIGHT = "100px"
+
 styles = StyleSheet({
     "container": {
         "name": "QWidget#gas_state_widget",
@@ -13,6 +15,9 @@ styles = StyleSheet({
         # "width": "70px",
         # "width": "100%",
         # "background-color": "rgb(0, 240, 255)",
+        "max-height": GAS_HEIGHT,
+        "min-height": GAS_HEIGHT,
+        "height": GAS_HEIGHT,
         "min-width": "80px",
         "font-size": "48px",
         "font-weight": "bold",

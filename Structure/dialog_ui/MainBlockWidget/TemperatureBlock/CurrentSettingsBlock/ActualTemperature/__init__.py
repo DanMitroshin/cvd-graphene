@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect, QLabel
 
-from Structure.dialog_ui.components import ParameterLabel
+from Structure.dialog_ui.components import ParameterLatexLabel
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
 from .styles import styles
 
@@ -20,7 +20,7 @@ class ActualTemperature(QWidget):
         # shadow.setBlurRadius(SHADOW_BLUR_RADIUS)
         # self.setGraphicsEffect(shadow)
 
-        # self.temperature = ParameterLabel()
+        # self.temperature = ParameterLatexLabel()
         self.temperature = QLabel()
         self.temperature.setText("T = 300°C")
         self.temperature.setStyleSheet(styles.temperature)

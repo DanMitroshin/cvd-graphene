@@ -1,10 +1,11 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QLabel, QHBoxLayout, QLineEdit
 
-from Structure.dialog_ui.components import ParameterLabel
+from Structure.dialog_ui.components import ParameterLatexLabel, LatexWidget
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
 from .styles import styles
 
+RGB = [175, 175, 250]
 
 class RiseCurrentBlock(QWidget):
     def __init__(self, parent=None):
@@ -18,8 +19,12 @@ class RiseCurrentBlock(QWidget):
 
         self.input_layout = QGridLayout()
 
-        self.label_current = QLabel()
-        self.label_current.setText("I_final")
+        self.label_current = LatexWidget(
+            text="$I_{final}$",
+            rgb=RGB,
+            fon_size_mult=2.5
+        )
+        # self.label_current.setText("I_final")
         self.label_current.setStyleSheet(styles.label)
 
         self.label_current_1 = QLabel()
@@ -27,8 +32,12 @@ class RiseCurrentBlock(QWidget):
         self.label_current_1.setStyleSheet(styles.label)
         self.label_current_1.setAlignment(QtCore.Qt.AlignLeft)
 
-        self.label_time = QLabel()
-        self.label_time.setText("t_rise")
+        self.label_time = LatexWidget(
+            text="$t_{rise}$",
+            rgb=RGB,
+            fon_size_mult=2.5
+        )
+        # self.label_time.setText("t_rise")
         self.label_time.setStyleSheet(styles.label)
 
         self.label_time_1 = QLabel()

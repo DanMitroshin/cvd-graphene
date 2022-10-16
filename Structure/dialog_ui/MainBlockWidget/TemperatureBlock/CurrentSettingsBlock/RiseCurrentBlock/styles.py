@@ -22,9 +22,10 @@ styles = StyleSheet({
     },
     "label": {
         # "name": "QLabel#",
-        # "min-width": "5px",
+        "min-width": "100px",
         # "max-width": "40px",
         # "border-width": "0",
+        "min-height": "40px",
         "font-size": "32px",
         # "font-weight": "bold",
         # "background-color": "rgba(0, 0, 0, 0)",

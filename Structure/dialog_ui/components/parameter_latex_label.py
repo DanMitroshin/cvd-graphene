@@ -31,16 +31,19 @@ styles = StyleSheet({
 cl = QLabel
 
 
-class ParameterLabel(QLabel):
-    def __init__(self, parent=None):
+class ParameterLatexLabel(QWidget):
+    def __init__(self,
+                 parent=None,
+                 # rgb=(200, 200, 200),
+                 ):
         super().__init__(parent=parent)
 
-        # self.layout = QVBoxLayout()
-        # self.setLayout(self.layout)
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
         self.setStyleSheet(styles.container)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
-        # self.math = LatexWidget("", parent=self)
-        # self.layout.addWidget(self.math, alignment=QtCore.Qt.AlignCenter)
+        self.math = LatexWidget("", parent=self)
+        self.layout.addWidget(self.math, alignment=QtCore.Qt.AlignCenter)
 
         # self.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -52,8 +55,8 @@ class ParameterLabel(QLabel):
         # adding shadow to the label
         self.setGraphicsEffect(shadow)
 
-    # def setText(self, text):
-    #     self.math.hide()
-    #     self.math = LatexWidget(text, parent=self)
-    #     # self.layout.addWidget(self.math, alignment=QtCore.Qt.AlignCenter)
-    #     self.math.show()
+    def setText(self, text):
+        self.math.hide()
+        self.math = LatexWidget(text, parent=self)
+        # self.layout.addWidget(self.math, alignment=QtCore.Qt.AlignCenter)
+        self.math.show()
