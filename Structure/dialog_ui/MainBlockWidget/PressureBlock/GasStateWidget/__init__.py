@@ -33,7 +33,7 @@ class GasStateWidget(QWidget):
         self.gas = LatexWidget(
             text=gas,
             rgb=[240, 240, 240],
-            fon_size_mult=4
+            fon_size_mult=3.4
         )
         # self.gas.setText(gas)
         self.gas.setStyleSheet(styles.gas)
