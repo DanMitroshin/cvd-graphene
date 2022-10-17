@@ -43,4 +43,6 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         self.rs485.write(bytearray(command.encode("ASCII")))
         sleep(self.pause)
         x = self.rs485.readline()
-        return x.decode('ASCII')
+        answer = x.decode('ASCII')
+        print("COMMAND AND ANS: ", command, " |", answer)
+        return answer
