@@ -1,3 +1,4 @@
+import traceback
 
 from Core.components.communicators import AbstractCommunicator
 from Core.constants import DEVICE_STATUS
@@ -64,14 +65,13 @@ class AbstractDevice(object):
             return self._postprocessing_value(answer)
 
         except Exception as e:
+            s = traceback.format_exc()
+            print(s)
             return self._handle_exception(e)
 
     def _handle_exception(self, e: Exception):
         raise BaseDeviceException from e
 
-    def _handle_device_exception(self, e: BaseDeviceException):
-
-        raise e
 
     def _preprocessing_value(self, command, value):
         """
