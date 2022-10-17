@@ -1,6 +1,6 @@
 import uuid
 
-from Core.components.controllers import AccurateVakumetrController, ValveController
+from Core.components.controllers import AccurateVakumetrController, ValveController, CurrentSourceController
 from Core.components.controllers.base import AbstractController
 from Core.settings import VALVES_CONFIGURATION
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
@@ -24,7 +24,7 @@ class CvdSystem(object):
         self._valves = {}
         for valve_conf in VALVES_CONFIGURATION:
             self._valves[valve_conf["NAME"]] = ValveController(port=valve_conf["PORT"])
-        self.current_source_controller = None
+        self.current_source_controller = CurrentSourceController()
 
         self._controllers: list[AbstractController] = [
             self.accurate_vakumetr_controller,
@@ -36,13 +36,16 @@ class CvdSystem(object):
 
         # VALUES
         self.accurate_vakumetr_value = 0.0
+        self.current_value = 0.0
+        self.voltage_value = 0.0
 
     def setup(self):
         for controller in self._controllers:
             if controller is not None:
                 controller.setup()
 
-    def __del__(self):
+    def destructor(self):
+        print("System del | Controllers:", len(self._controllers))
         for controller in self._controllers:
             if controller is not None:
                 controller.destructor()
@@ -95,5 +98,10 @@ class CvdSystem(object):
             return False
         return valve.change_state()
 
+    def set_current(self, value):
+        return self.current_source_controller.set_current_value(value)
+
     def get_values(self):
         self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
+        self.current_value = self.current_source_controller.get_current_value()
+        self.voltage_value = self.current_source_controller.get_voltage_value()

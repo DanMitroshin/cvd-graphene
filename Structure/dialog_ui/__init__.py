@@ -277,6 +277,10 @@ class MainWindow(QMainWindow):
             self.system.change_valve_state)
         # self.system.change_valve_state("")
 
+    def __del__(self):
+        # print("Window del")
+        self.system.destructor()
+
     def click_press(self):
         self.counter += 1
         self.label.setText(f"PRESSED: {self.counter}")
@@ -290,6 +294,10 @@ class MainWindow(QMainWindow):
 
             self.main_interface_layout_widget.pressure_control_block.show_pressure_block.set_value(
                 self.system.accurate_vakumetr_value
+            )
+            # VOLTAGE
+            self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value(
+                self.system.voltage_value
             )
         except Exception as e:
             self.close()

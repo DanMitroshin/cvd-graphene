@@ -194,3 +194,5 @@ w.setVisible(True)
 # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
 # w.setWindowFlags(Qt.WindowType_Mask)
 app.exec()
+
+print("Exit")
