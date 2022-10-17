@@ -51,4 +51,4 @@ class CurrentSettingsBlock(QWidget):
 
     def set_current_value(self, value):
         self.current_value = value
-        self.voltage_label.setText(f"I = {self.current_value}A")
+        self.current_label.setText(f"I = {self.current_value}A")

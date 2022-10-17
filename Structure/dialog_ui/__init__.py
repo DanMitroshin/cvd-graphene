@@ -295,9 +295,13 @@ class MainWindow(QMainWindow):
             self.main_interface_layout_widget.pressure_control_block.show_pressure_block.set_value(
                 self.system.accurate_vakumetr_value
             )
+            print("VOLTAGE:", self.system.voltage_value)
             # VOLTAGE
             self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value(
                 self.system.voltage_value
+            )
+            self.main_interface_layout_widget.temperature_block.current_settings.set_current_value(
+                self.system.current_value
             )
         except Exception as e:
             self.close()
