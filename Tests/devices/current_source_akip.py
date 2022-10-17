@@ -1,4 +1,4 @@
-from .ports import get_serial_port
+# from .ports import get_serial_port
 
 try:
     import wiringpi
@@ -8,8 +8,8 @@ import serial
 from time import sleep
 
 
-PORT = get_serial_port()
-# PORT = "/dev/ttyUSB0"
+# PORT = get_serial_port()
+PORT = "/dev/ttyUSB1"
 #  '/dev/ttyAMA0'
 
 
