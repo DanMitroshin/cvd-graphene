@@ -1,4 +1,4 @@
-from Tests.devices.ports import get_serial_port
+from .ports import get_serial_port
 
 try:
     import wiringpi
@@ -36,8 +36,8 @@ def get_port():
 
 
 def test_akip_2():
-    get_port()
-    return
+    # get_port()
+    # return
 
     RS485 = serial.Serial(
         # port='/dev/ttyAMA0',
@@ -114,7 +114,7 @@ def test_akip_2():
     sleep(SLEEP_TIME)
     try:
         while True:
-            answer, errors = run_command(create_command(max_current_actual))
+            # answer, errors = run_command(create_command(max_current_actual))
             answer, errors = run_command(command_get_current)
             print("|> CURRENT ACTUAL:", answer)
             sleep(SLEEP_TIME)
@@ -126,42 +126,9 @@ def test_akip_2():
         answer, errors = run_command(create_command(output_cmd(0)))
 
 
-def test_3():
-    import time
-    import serial.tools.list_ports
-
-    ports = serial.tools.list_ports.comports()
-
-    command = "0020MV00D"
-
-    serialInst = serial.Serial()
-    portList = []
-
-    for onePort in ports:
-        portList.append(str(onePort))
-        print(str(onePort))
-
-    print("Ports list:", portList)
-
-    # val = input("select Port: COM")
-    #
-    # for x in range(0, len(portList)):
-    #     if portList[x].startswith("COM" + str(val)):
-    #         portVar = "COM" + str(val)
-    #         print(portVar)
-
-    # serialInst.baudrate = 115200
-    serialInst.baudrate = 9600
-
-    serialInst.port = PORT  # portList[-1]
-
-    serialInst.open()
-
-
 if __name__ == "__main__":
     print("TEST 1 ===>")
     # try:
-    test_3()
     test_akip_2()
     # test_1()
     print("TEST 1 ===> PASSED")

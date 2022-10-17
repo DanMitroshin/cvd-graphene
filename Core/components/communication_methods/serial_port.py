@@ -13,7 +13,7 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
                  stopbits=serial.STOPBITS_ONE,
                  bytesize=serial.EIGHTBITS,
                  timeout=0.001,
-                 pause=0.02,
+                 pause=0.04,
                  ):
         super().__init__()
         self.port = port
