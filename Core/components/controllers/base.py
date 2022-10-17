@@ -12,7 +12,9 @@ class AbstractController(object):
     device_class = None
 
     def __init__(self, *args, **kwargs):
-        self.device: AbstractDevice = self.device_class()
+        if self.device_class is not None:
+            self.device: AbstractDevice = self.device_class()
+
         self._active = True
         # target value and function for calling after sensor reach this value
         self._target_value = None
@@ -67,9 +69,10 @@ class AbstractController(object):
         Send command with getting value from device
         :return: answered value from device
         """
-        command = None
-        value = None
-        return self.device.exec_command(command=command, value=value)
+        raise NotImplementedError
+        # command = None
+        # value = None
+        # return self.device.exec_command(command=command, value=value)
 
     def get_last_answer(self):
         return self._last_answer

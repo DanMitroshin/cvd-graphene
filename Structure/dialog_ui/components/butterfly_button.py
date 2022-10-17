@@ -35,11 +35,11 @@ class ButterflyButton(QPushButton):
         self.setObjectName("butterfly_button")
         self.setStyleSheet(style_container)
         self._colors = {
-            True: QColor(138, 255, 165),
-            False: QColor(120, 120, 120)
+            True: QColor(0, 255, 60),
+            False: QColor(255, 0, 0)
         }
         self._active = False
-        self.clicked.connect(self.on_click)
+        # self.clicked.connect(self.on_click)
         self.setContentsMargins(0,0,0,0)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
 

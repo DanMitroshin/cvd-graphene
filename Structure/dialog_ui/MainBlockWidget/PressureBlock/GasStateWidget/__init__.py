@@ -11,6 +11,8 @@ class GasStateWidget(QWidget):
     def __init__(self, gas="O2"):
         super().__init__()
 
+        self.gas_name = gas
+
         self.line = QWidget(self)
         self.line.setStyleSheet(styles.line)
         self.line.setFixedWidth(self.width() - 120)
@@ -31,7 +33,7 @@ class GasStateWidget(QWidget):
         # self.gas = QLabel()
         # self.gas = ParameterLatexLabel()
         self.gas = LatexWidget(
-            text=gas,
+            text=f"${gas}$",
             rgb=[240, 240, 240],
             fon_size_mult=3.4
         )
@@ -61,10 +63,25 @@ class GasStateWidget(QWidget):
         self.info_layout.setSpacing(0)
         # self.layout.setSpacing(0)
 
-        self.layout.addWidget(self.gas,stretch=1, alignment=QtCore.Qt.AlignLeft)
+        self.layout.addWidget(self.gas, stretch=1, alignment=QtCore.Qt.AlignLeft)
         # self.layout.addStretch(10)
         self.layout.addWidget(self.info_layout_widget, stretch=1, alignment=QtCore.Qt.AlignCenter,)
         self.layout.addWidget(self.b, stretch=10, alignment=QtCore.Qt.AlignHCenter,)
+
+    def connect_valve_function(self, func):
+        # self.valve_change_func = lambda : func(self.gas_name)
+        # self.b.clicked.connect(self.valve_change_func)
+        # self.b.on_click = lambda x: x
+
+        def on_click():
+            ans = func(self.gas_name)
+            # print("GET ANS VALVE PRESS", ans)
+            if type(ans) in [bool, int]:
+                self.b._active = not ans
+                self.b.paintEvent(event=None)
+
+        self.b.clicked.connect(on_click)
+
 
 
 class AirStateWidget(QWidget):

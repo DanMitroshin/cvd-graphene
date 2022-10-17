@@ -1,7 +1,8 @@
 import uuid
 
-from Core.components.controllers import AccurateVakumetrController
+from Core.components.controllers import AccurateVakumetrController, ValveController
 from Core.components.controllers.base import AbstractController
+from Core.settings import VALVES_CONFIGURATION
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
 from Structure.system.constants import NOTIFICATIONS
 
@@ -20,12 +21,18 @@ class CvdSystem(object):
 
         # CONTROLLERS
         self.accurate_vakumetr_controller = AccurateVakumetrController()
+        self._valves = {}
+        for valve_conf in VALVES_CONFIGURATION:
+            self._valves[valve_conf["NAME"]] = ValveController(port=valve_conf["PORT"])
         self.current_source_controller = None
 
         self._controllers: list[AbstractController] = [
             self.accurate_vakumetr_controller,
             self.current_source_controller,
         ]
+
+        for valve in self._valves.values():
+            self._controllers.append(valve)
 
         # VALUES
         self.accurate_vakumetr_value = 0.0
@@ -76,6 +83,12 @@ class CvdSystem(object):
     def log_state(self):
         for controller in self._controllers:
             value = controller.get_value()
+
+    def change_valve_state(self, gas):
+        valve = self._valves.get(gas, None)
+        if valve is None:
+            return False
+        return valve.change_state()
 
     def get_values(self):
         self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()

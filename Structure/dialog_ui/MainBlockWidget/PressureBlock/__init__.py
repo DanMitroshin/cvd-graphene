@@ -33,17 +33,17 @@ class PressureBlock(QWidget):
         self.air = AirStateWidget()
         self.layout.addWidget(self.air)
 
-        self.o2 = GasStateWidget(gas="$O_2$")
+        self.o2 = GasStateWidget(gas="O_2")
         self.layout.addWidget(self.o2,)
 
-        self.n2 = GasStateWidget(gas="$N_2$")
+        self.n2 = GasStateWidget(gas="N_2")
         self.layout.addWidget(self.n2,)
 
-        self.ar = GasStateWidget(gas="$Ar$")
+        self.ar = GasStateWidget(gas="Ar")
         self.layout.addWidget(self.ar,)
 
-        self.c2 = GasStateWidget(gas="$C_2$")
+        self.c2 = GasStateWidget(gas="C_2")
         self.layout.addWidget(self.c2,)
 
-        self.f2 = GasStateWidget(gas="$F_2$")
+        self.f2 = GasStateWidget(gas="F_2")
         self.layout.addWidget(self.f2,)

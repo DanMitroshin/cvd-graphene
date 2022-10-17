@@ -12,7 +12,8 @@ class AbstractCommunicator(object):
             speed=None,
             port=None,
     ):
-        self.communication_method = self.communication_method_class()
+        if self.communication_method_class is not None:
+            self.communication_method = self.communication_method_class()
         self.speed = speed
         self.port = port
 

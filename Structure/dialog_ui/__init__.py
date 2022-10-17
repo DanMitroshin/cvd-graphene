@@ -270,6 +270,13 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.get_values_and_log_state)
         self.timer.start(1000)
 
+        ############################################
+        # CONNECT FUNCTIONS ########################
+
+        self.main_interface_layout_widget.pressure_block.o2.connect_valve_function(
+            self.system.change_valve_state)
+        # self.system.change_valve_state("")
+
     def click_press(self):
         self.counter += 1
         self.label.setText(f"PRESSED: {self.counter}")

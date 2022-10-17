@@ -17,7 +17,8 @@ class AbstractDevice(object):
             self,
             # communicator=None,
     ):
-        self.communicator: AbstractCommunicator = self.communicator_class()
+        if self.communicator_class is not None:
+            self.communicator: AbstractCommunicator = self.communicator_class()
         self._last_command = None
         self._status = DEVICE_STATUS.INACTIVE
         self._errors = []
