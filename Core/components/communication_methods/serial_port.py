@@ -1,0 +1,46 @@
+import serial
+from time import sleep
+
+from .base import BaseCommunicationMethod
+from ...settings import LOCAL_MODE, SERIAL_PORT
+
+
+class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
+    def __init__(self,
+                 port=SERIAL_PORT,
+                 baudrate=115200,
+                 parity=serial.PARITY_NONE,
+                 stopbits=serial.STOPBITS_ONE,
+                 bytesize=serial.EIGHTBITS,
+                 timeout=0.001,
+                 pause=0.02,
+                 ):
+        super().__init__()
+        self.port = port
+        self.baudrate = baudrate
+        self.parity = parity
+        self.stopbits = stopbits
+        self.bytesize = bytesize
+        self.timeout = timeout
+        self.pause = pause
+
+    def setup(self):
+        super().setup()
+        if LOCAL_MODE:
+            return
+        self.rs485 = serial.Serial(
+            port=self.port,
+            baudrate=self.baudrate,
+            parity=self.parity,
+            stopbits=self.stopbits,
+            bytesize=self.bytesize,
+            timeout=self.timeout,
+        )
+
+    def send(self, command):
+        if LOCAL_MODE:
+            return "0011MV079.999e2u"
+        self.rs485.write(bytearray(command.encode("ASCII")))
+        sleep(self.pause)
+        x = self.rs485.readline()
+        return x.decode('ASCII')

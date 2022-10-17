@@ -5,16 +5,17 @@ from Core.exceptions.communicators.base import SetupCommunicatorException
 
 
 class AbstractCommunicator(object):
-    communication_method = BaseCommunicationMethod()
+    communication_method_class: BaseCommunicationMethod = None
 
     def __init__(
             self,
             speed=None,
-            channel=None,
+            port=None,
     ):
+        self.communication_method = self.communication_method_class()
         self.speed = speed
-        # self.communication_method = BaseCommunicationMethod()
-        self.channel = channel  # port
+        self.port = port
+
         self._status = COMMUNICATION_INTERFACE_STATUS.INACTIVE
         self._errors = []
         # self.setup_configuration()
@@ -44,14 +45,14 @@ class AbstractCommunicator(object):
 
         return not bool(self._errors)
 
-    def send(self, value):
+    def send(self, value, raise_exception=True):
         """
         preprocess value -> send value -> get answer -> answer processing ->
         1. has mistakes -> raise error
         2. all oKey -> return value
         :return:
         """
-        self.is_valid()
+        self.is_valid(raise_exception=raise_exception)
 
         try:
             preprocessing_value = self._preprocessing_value(value)

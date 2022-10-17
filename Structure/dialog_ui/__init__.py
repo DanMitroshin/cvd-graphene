@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
 
 from Structure.dialog_ui.MainBlockWidget import MainBlockWidget
 from Structure.dialog_ui.RightButtonsWidget import RightButtonsWidget
+from Structure.system import CvdSystem
 
 
 class UiMainWindow(object):
@@ -240,6 +241,9 @@ class MainWindow(QMainWindow):
         ##############################################################################
         ##############################################################################
 
+        self.system = CvdSystem()
+        self.system.setup()
+
         self.main_window = QHBoxLayout()
         self.main_widget = QWidget()
         self.main_widget.setObjectName("main_widget")
@@ -262,9 +266,9 @@ class MainWindow(QMainWindow):
         # self.setCentralWidget(container)
         self.setCentralWidget(self.main_widget)
 
-        # self.timer = QtCore.QTimer(self)
-        # self.timer.timeout.connect(self.show_time)
-        # self.timer.start(1000)
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.get_values_and_log_state)
+        self.timer.start(1000)
 
     def click_press(self):
         self.counter += 1
@@ -272,6 +276,17 @@ class MainWindow(QMainWindow):
 
     def show_time(self):
         print("TIME:", datetime.datetime.now())
+
+    def get_values_and_log_state(self):
+        try:
+            self.system.get_values()
+
+            self.main_interface_layout_widget.pressure_control_block.show_pressure_block.set_value(
+                self.system.accurate_vakumetr_value
+            )
+        except Exception as e:
+            self.close()
+            print("ERROR", e)
 
 
 # if __name__ == "__main__":

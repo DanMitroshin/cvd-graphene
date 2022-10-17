@@ -1,5 +1,6 @@
 import uuid
 
+from Core.components.controllers import AccurateVakumetrController
 from Core.components.controllers.base import AbstractController
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
 from Structure.system.constants import NOTIFICATIONS
@@ -16,7 +17,23 @@ class CvdSystem(object):
         self._last_action_answer = None
         self._errors = []
         self._event_logs = []
-        self._controllers: list[AbstractController] = []
+
+        # CONTROLLERS
+        self.accurate_vakumetr_controller = AccurateVakumetrController()
+        self.current_source_controller = None
+
+        self._controllers: list[AbstractController] = [
+            self.accurate_vakumetr_controller,
+            self.current_source_controller,
+        ]
+
+        # VALUES
+        self.accurate_vakumetr_value = 0.0
+
+    def setup(self):
+        for controller in self._controllers:
+            if controller is not None:
+                controller.setup()
 
     def check_conditions(self):
         if 5 > 6:
@@ -59,3 +76,6 @@ class CvdSystem(object):
     def log_state(self):
         for controller in self._controllers:
             value = controller.get_value()
+
+    def get_values(self):
+        self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()

@@ -9,14 +9,13 @@ class AbstractDevice(object):
     Device class with base method `exec_command`
 
     """
-    communicator: AbstractCommunicator = None
+    communicator_class: AbstractCommunicator = None
 
     def __init__(
             self,
-            communicator=None,
+            # communicator=None,
     ):
-        if communicator is not None:
-            self.communicator: AbstractCommunicator = communicator
+        self.communicator: AbstractCommunicator = self.communicator_class()
         self._last_command = None
         self._status = DEVICE_STATUS.INACTIVE
         self._errors = []
@@ -79,7 +78,7 @@ class AbstractDevice(object):
         :param value:
         :return:
         """
-        return f"{command}_{value}"
+        return f"{command}{value}"
 
     def _postprocessing_value(self, value):
         return value

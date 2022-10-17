@@ -8,9 +8,10 @@ class AbstractController(object):
     Class for device controllers
     """
 
-    device: AbstractDevice = None
+    device_class = None
 
     def __init__(self, *args, **kwargs):
+        self.device: AbstractDevice = self.device_class()
         self._active = True
         # target value and function for calling after sensor reach this value
         self._target_value = None
@@ -26,6 +27,10 @@ class AbstractController(object):
 
     def setup(self):
         self.device.setup()
+
+    @property
+    def is_get_value(self):
+        return True
 
     def device_command(strong=False):
         """
