@@ -23,4 +23,4 @@ class ShowPressureBlock(ParameterLatexLabel):
 
     def set_value(self, value):
         self.value = str(value)
-        self.setText(f"$P = {value} mbar$")
+        self.setText(f"P = ${value}$ mbar")

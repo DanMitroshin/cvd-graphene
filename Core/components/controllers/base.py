@@ -1,4 +1,5 @@
 import time
+import traceback
 from Core.components.devices import AbstractDevice
 from Core.exceptions.controllers import ControllerInWaiting
 
@@ -74,6 +75,8 @@ class AbstractController(object):
         return self._last_answer
 
     def _handle_exception(self, e):
+        s = traceback.format_exc()
+        print(s)
         raise e
 
     def wait_seconds(self, seconds=None, after_wait=None, **kwargs):

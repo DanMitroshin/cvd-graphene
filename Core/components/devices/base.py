@@ -1,3 +1,4 @@
+
 from Core.components.communicators import AbstractCommunicator
 from Core.constants import DEVICE_STATUS
 from Core.exceptions.devices import BaseDeviceException, SetupDeviceException, \
@@ -69,6 +70,7 @@ class AbstractDevice(object):
         raise BaseDeviceException from e
 
     def _handle_device_exception(self, e: BaseDeviceException):
+
         raise e
 
     def _preprocessing_value(self, command, value):
