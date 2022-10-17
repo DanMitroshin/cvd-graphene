@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
 
 from Structure.dialog_ui.MainBlockWidget import MainBlockWidget
 from Structure.dialog_ui.RightButtonsWidget import RightButtonsWidget
+from Structure.dialog_ui.components import LogWidget
 from Structure.system import CvdSystem
 
 
@@ -270,12 +271,20 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.get_values_and_log_state)
         self.timer.start(1000)
 
+        self.log = None
+        self.log_widget = LogWidget(on_close=self.clear_log, parent=self)
+        self.log_widget.move(100, 100)
+
         ############################################
         # CONNECT FUNCTIONS ########################
 
         self.main_interface_layout_widget.pressure_block.o2.connect_valve_function(
             self.system.change_valve_state)
         # self.system.change_valve_state("")
+
+    def clear_log(self, uid):
+        self.system.clear_log(uid=uid)
+        self.log = None
 
     def __del__(self):
         # print("Window del")
@@ -295,7 +304,7 @@ class MainWindow(QMainWindow):
             self.main_interface_layout_widget.pressure_control_block.show_pressure_block.set_value(
                 self.system.accurate_vakumetr_value
             )
-            print("VOLTAGE:", self.system.voltage_value)
+            # print("VOLTAGE:", self.system.voltage_value)
             # VOLTAGE
             self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value(
                 self.system.voltage_value
@@ -304,8 +313,14 @@ class MainWindow(QMainWindow):
                 self.system.current_value
             )
         except Exception as e:
+            # self.errors.append()
             self.close()
             print("ERROR", e)
+        finally:
+            # print("FINALLY:", self.log, "| has logs:",  self.system.has_logs)
+            if self.log is None and self.system.has_logs:
+                self.log = self.system.first_log
+                self.log_widget.set_log(self.log)
 
 
 # if __name__ == "__main__":

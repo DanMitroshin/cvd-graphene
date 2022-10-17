@@ -15,7 +15,14 @@ class StyleSheet(object):
             answer = f"{name} {{ {answer} }}"
         return answer
 
-    def __getattr__ (self, item):
+    def union(self, s1, s2):
+        style1: dict = self.styles.get(s1, {})
+        style2: dict = self.styles.get(s2, {})
+        union_style = dict(style1)
+        union_style.update(style2)
+        return self.reformat_style(union_style)
+
+    def __getattr__(self, item):
         style = self.styles.get(item, None)
         if style is None:
             return ""

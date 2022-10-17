@@ -4,7 +4,7 @@ from Core.components.controllers import AccurateVakumetrController, ValveControl
 from Core.components.controllers.base import AbstractController
 from Core.settings import VALVES_CONFIGURATION
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
-from Structure.system.constants import NOTIFICATIONS
+from Core.constants import NOTIFICATIONS
 
 
 class CvdSystem(object):
@@ -39,6 +39,23 @@ class CvdSystem(object):
         self.current_value = 0.0
         self.voltage_value = 0.0
 
+        self._add_error_log("Тупая тупая ошибка где много букв self.accurate_vakumetr_value = self.accurate_vakume self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()")
+        self._add_log("Тупая тупая заметка!!!!!", log_type=NOTIFICATIONS.LOG)
+
+    @property
+    def has_logs(self):
+        return bool(self._event_logs)
+
+    @property
+    def first_log(self):
+        try:
+            return self._event_logs[0]
+        except:
+            return None
+
+    def clear_log(self, uid):
+        self._event_logs = list(filter(lambda x: x.uid != uid, self._event_logs))
+
     def setup(self):
         for controller in self._controllers:
             if controller is not None:
@@ -61,7 +78,7 @@ class CvdSystem(object):
         :return: new decorated function
         """
 
-        def wrapper(self: CvdSystem, *args, **kwargs):
+        def wrapper(self, *args, **kwargs):
             try:
                 self.check_conditions()
 
@@ -73,14 +90,14 @@ class CvdSystem(object):
 
         return wrapper
 
-    def _add_log(self, log, log_type):
+    def _add_log(self, log, log_type=NOTIFICATIONS.LOG):
         try:
             self._event_logs.append(self.EventLog(log, log_type=log_type))
         except Exception as e:
             print(f"Add event log error: {e}")
 
     def _add_error_log(self, e):
-        pass
+        self._add_log(e, log_type=NOTIFICATIONS.ERROR)
 
     def _handle_exception(self, e):
         self._add_error_log(e)
@@ -92,16 +109,21 @@ class CvdSystem(object):
         for controller in self._controllers:
             value = controller.get_value()
 
+    @action
     def change_valve_state(self, gas):
         valve = self._valves.get(gas, None)
         if valve is None:
             return False
         return valve.change_state()
 
+    @action
     def set_current(self, value):
         return self.current_source_controller.set_current_value(value)
 
     def get_values(self):
-        self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
-        self.current_value = self.current_source_controller.get_current_value()
-        self.voltage_value = self.current_source_controller.get_voltage_value()
+        try:
+            self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
+            self.current_value = self.current_source_controller.get_current_value()
+            self.voltage_value = self.current_source_controller.get_voltage_value()
+        except Exception as e:
+            self._add_error_log(e)

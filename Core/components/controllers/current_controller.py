@@ -56,7 +56,7 @@ class CurrentSourceController(AbstractController):
         answer = self.device.exec_command(command=command, value=value)
         sleep(0.05)
         errors = self.device.exec_command(command=GET_ERRORS_COMMAND)
-        print("|> CUR S:", answer, errors)
+        # print("|> CUR S:", answer, errors)
         if errors and errors.lower() != "0 no error":
             raise Exception(errors)
         return answer

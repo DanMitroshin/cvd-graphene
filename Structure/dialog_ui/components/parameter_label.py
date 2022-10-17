@@ -1,7 +1,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect
 
-from .latex_widget import LatexWidget
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
 from Core.ui import StyleSheet
 
