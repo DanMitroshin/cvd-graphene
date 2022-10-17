@@ -16,4 +16,7 @@ class AccurateVakumetrDevice(AbstractDevice):
         return self.exec_command("MV", "00")
 
     def _postprocessing_value(self, value):
-        return float(value)
+        try:
+            return float(value)
+        except:
+            return None

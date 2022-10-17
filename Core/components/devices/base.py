@@ -72,7 +72,6 @@ class AbstractDevice(object):
     def _handle_exception(self, e: Exception):
         raise BaseDeviceException from e
 
-
     def _preprocessing_value(self, command, value):
         """
         Connect command with value to one meaning to send for communication interface
