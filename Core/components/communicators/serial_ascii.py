@@ -26,7 +26,7 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
         return f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n"
 
     def _postprocessing_value(self, value: str):
-        print("GET VAL POST PROC:", value, type(value))
+        # print("GET VAL POST PROC:", value, type(value))
         if LOCAL_MODE:
             return ""
         return value.strip()

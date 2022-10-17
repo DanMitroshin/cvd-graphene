@@ -3,7 +3,7 @@ from .base import AbstractController
 from ..devices import CurrentSourceDevice
 
 MAX_CURRENT = 132.0
-
+CLEAR_COMMAND = "*CLS"
 REMOTE_COMMAND = f"SYST:REM"
 OUTPUT_1_COMMAND = f"OUTP 1"
 OUTPUT_0_COMMAND = f"OUTP 0"
@@ -30,6 +30,8 @@ class CurrentSourceController(AbstractController):
 
     def setup(self):
         super().setup()
+        self.exec_command(command=CLEAR_COMMAND)
+        sleep(SLEEP_TIME)
         self.exec_command(command=REMOTE_COMMAND)
         sleep(SLEEP_TIME)
         self.exec_command(command=OUTPUT_1_COMMAND)
