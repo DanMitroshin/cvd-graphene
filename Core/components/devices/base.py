@@ -32,6 +32,9 @@ class AbstractDevice(object):
             self._errors.append(e)
             raise SetupDeviceException from e
 
+    def destructor(self):
+        pass
+
     def is_valid(self, raise_exception=True):
         e = None
         if self._status == DEVICE_STATUS.INACTIVE:
@@ -80,7 +83,7 @@ class AbstractDevice(object):
         :param value:
         :return:
         """
-        return f"{command}{value}"
+        return f"{command}{value}".strip()
 
     def _postprocessing_value(self, value):
         return value

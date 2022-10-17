@@ -31,6 +31,9 @@ class AbstractController(object):
     def setup(self):
         self.device.setup()
 
+    def destructor(self):
+        self.device.destructor()
+
     @property
     def is_get_value(self):
         return True
@@ -69,10 +72,10 @@ class AbstractController(object):
         Send command with getting value from device
         :return: answered value from device
         """
-        raise NotImplementedError
-        # command = None
-        # value = None
-        # return self.device.exec_command(command=command, value=value)
+        # raise NotImplementedError
+        command = None
+        value = None
+        return self.device.exec_command(command=command, value=value)
 
     def get_last_answer(self):
         return self._last_answer

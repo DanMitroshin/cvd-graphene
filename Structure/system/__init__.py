@@ -42,6 +42,11 @@ class CvdSystem(object):
             if controller is not None:
                 controller.setup()
 
+    def __del__(self):
+        for controller in self._controllers:
+            if controller is not None:
+                controller.destructor()
+
     def check_conditions(self):
         if 5 > 6:
             raise BadNumbersConditionException

@@ -1,2 +1,3 @@
 from .accurate_vakumetr_controller import AccurateVakumetrController
 from .valve_controller import ValveController
+from .current_controller import CurrentSourceController

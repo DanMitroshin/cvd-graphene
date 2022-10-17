@@ -1,5 +1,6 @@
 from .base import AbstractCommunicator
 from ..communication_methods import SerialAsciiCommunicationMethod
+from ...settings import LOCAL_MODE
 
 
 class SerialAsciiCommunicator(AbstractCommunicator):
@@ -25,8 +26,6 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
         return f"A{str(self.port).zfill(self.ADDRESS_PORT_LEN)}{value};\n"
 
     def _postprocessing_value(self, value: str):
-        answer = value.split('\r')[0]
-        if len(answer) < 8:
+        if LOCAL_MODE:
             return ""
-        ans_length = int(answer[6:8])
-        return answer[8:8 + ans_length]
+        return value.strip()
