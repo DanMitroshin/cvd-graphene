@@ -122,7 +122,10 @@ class CvdSystem(object):
 
     @action
     def set_current(self, value):
-        return self.current_source_controller.set_current_value(value)
+        try:
+            return self.current_source_controller.set_current_value(value)
+        except Exception as e:
+            raise Exception(f"Ошибка выставления тока: " + str(e))
 
     def get_values(self):
         try:
