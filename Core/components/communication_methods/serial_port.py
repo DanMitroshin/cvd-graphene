@@ -44,5 +44,5 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         sleep(self.pause)
         x = self.rs485.readline()
         answer = x.decode('ASCII')
-        print("COMMAND AND ANS: ", command, " |", answer)
+        print("@ Q&A: ", command.strip(), " |", answer.strip())
         return answer
