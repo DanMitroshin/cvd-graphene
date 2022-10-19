@@ -12,7 +12,7 @@ class SetCurrentBlock(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-        self.value = 156.564352
+        self.value = 0.0
         self.layout = QGridLayout()
         self.setLayout(self.layout)
         self.setObjectName("set_current_block")
@@ -97,10 +97,23 @@ class SetCurrentBlock(QWidget):
         self.bm5.clicked.connect(self.minus_001)
         self.layout.addWidget(self.bm5, 2, 6)
 
-        self.set_first_value()
+        self.set_value()
+        self.set_value_function = None
 
-    def set_first_value(self):
+    def set_real_value(self, value):
+        if self.set_value_function is None:
+            print("Current set_value_function is None!")
+            return
+        new_value = self.set_value_function(value)
+        # print("New value:", new_value)
+        self.set_value(value=new_value)
+
+    def set_value(self, value=None):
         # v = str(self.value)
+        if value is None:
+            value = self.value
+        else:
+            self.value = round(value, 3)
         vi = int(self.value)
         self.d1.setText(str(vi // 100))
         self.d2.setText(str((vi % 100) // 10))
@@ -113,11 +126,13 @@ class SetCurrentBlock(QWidget):
             try:
                 v1 = self.value
                 func(self)
+                # raise Exception("HOPA!!!")
                 v2 = self.value
                 letter = "." if v1 == v2 else "$"
-                print(f"|> {func.__name__}:\t{letter}\t{v1} => {v2}")
+                # print(f"|> {func.__name__}:\t{letter}\t{v1} => {v2}")
             except Exception as e:
                 print("Err", e)
+                # raise Exception("Ошибка установки значения тока: " + str(e))
         return wrapper
 
     ########### 100
@@ -127,16 +142,18 @@ class SetCurrentBlock(QWidget):
         d = int(self.value) // 100
         if d == 9:
             return
-        self.value += 100
-        self.d1.setText(str(d + 1))
+        self.set_real_value(self.value + 100)
+        # self.value += 100
+        # self.d1.setText(str(d + 1))
 
     @change_value
     def minus_100(self):
         d = int(self.value) // 100
         if d == 0:
             return
-        self.value -= 100
-        self.d1.setText(str(d - 1))
+        self.set_real_value(self.value - 100)
+        # self.value -= 100
+        # self.d1.setText(str(d - 1))
 
     ############## 10
 
@@ -145,16 +162,18 @@ class SetCurrentBlock(QWidget):
         d = (int(self.value) % 100) // 10
         if d == 9:
             return
-        self.value += 10
-        self.d2.setText(str(d + 1))
+        self.set_real_value(self.value + 10)
+        # self.value += 10
+        # self.d2.setText(str(d + 1))
 
     @change_value
     def minus_10(self):
         d = (int(self.value) % 100) // 10
         if d == 0:
             return
-        self.value -= 10
-        self.d2.setText(str(d - 1))
+        self.set_real_value(self.value - 10)
+        # self.value -= 10
+        # self.d2.setText(str(d - 1))
 
     ############ 1
 
@@ -163,16 +182,18 @@ class SetCurrentBlock(QWidget):
         d = int(self.value) % 10
         if d == 9:
             return
-        self.value += 1
-        self.d3.setText(str(d + 1))
+        self.set_real_value(self.value + 1)
+        # self.value += 1
+        # self.d3.setText(str(d + 1))
 
     @change_value
     def minus_1(self):
         d = int(self.value) % 10
         if d == 0:
             return
-        self.value -= 1
-        self.d3.setText(str(d - 1))
+        self.set_real_value(self.value - 1)
+        # self.value -= 1
+        # self.d3.setText(str(d - 1))
 
     ########### 0.1
 
@@ -181,16 +202,18 @@ class SetCurrentBlock(QWidget):
         d = int(self.value * 10) % 10
         if d == 9:
             return
-        self.value += 0.1
-        self.d4.setText(str(d + 1))
+        self.set_real_value(self.value + 0.1)
+        # self.value += 0.1
+        # self.d4.setText(str(d + 1))
 
     @change_value
     def minus_01(self):
         d = int(self.value * 10) % 10
         if d == 0:
             return
-        self.value -= 0.1
-        self.d4.setText(str(d - 1))
+        self.set_real_value(self.value - 0.1)
+        # self.value -= 0.1
+        # self.d4.setText(str(d - 1))
 
     ############# 0.01
 
@@ -199,13 +222,15 @@ class SetCurrentBlock(QWidget):
         d = int(self.value * 100) % 10
         if d == 9:
             return
-        self.value += 0.01
-        self.d5.setText(str(d + 1))
+        self.set_real_value(self.value + 0.01)
+        # self.value += 0.01
+        # self.d5.setText(str(d + 1))
 
     @change_value
     def minus_001(self):
         d = int(self.value * 100) % 10
         if d == 0:
             return
-        self.value -= 0.01
-        self.d5.setText(str(d - 1))
+        self.set_real_value(self.value - 0.01)
+        # self.value -= 0.01
+        # self.d5.setText(str(d - 1))

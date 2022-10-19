@@ -96,7 +96,7 @@ class LogWidget(QWidget):
         self.hide()
 
     def set_log(self, log):
-        print("SET LOG:", log.uid)
+        print("SET LOG:", log)
         self.label.setText(log.log)
         self.uid = log.uid
         if log.log_type == NOTIFICATIONS.ERROR:

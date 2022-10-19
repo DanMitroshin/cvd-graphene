@@ -14,6 +14,9 @@ class CvdSystem(object):
             self.log = log
             self.log_type = log_type
 
+        def __str__(self):
+            return f"{self.uid} | {self.log_type} | {self.log}"
+
     def __init__(self):
         self._last_action_answer = None
         self._errors = []
@@ -39,8 +42,8 @@ class CvdSystem(object):
         self.current_value = 0.0
         self.voltage_value = 0.0
 
-        self._add_error_log("Тупая тупая ошибка где много букв self.accurate_vakumetr_value = self.accurate_vakume self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()")
-        self._add_log("Тупая тупая заметка!!!!!", log_type=NOTIFICATIONS.LOG)
+        # self._add_error_log("Тупая тупая ошибка где много букв self.accurate_vakumetr_value = self.accurate_vakume self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()")
+        # self._add_log("Тупая тупая заметка!!!!!", log_type=NOTIFICATIONS.LOG)
 
     @property
     def has_logs(self):
@@ -97,9 +100,10 @@ class CvdSystem(object):
             print(f"Add event log error: {e}")
 
     def _add_error_log(self, e):
-        self._add_log(e, log_type=NOTIFICATIONS.ERROR)
+        self._add_log(str(e), log_type=NOTIFICATIONS.ERROR)
 
     def _handle_exception(self, e):
+        print("Raise exception in handler!")
         self._add_error_log(e)
         self._errors.append(e)
         if isinstance(e, BaseConditionException):

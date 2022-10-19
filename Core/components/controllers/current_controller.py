@@ -3,6 +3,7 @@ from .base import AbstractController
 from ..devices import CurrentSourceDevice
 
 MAX_CURRENT = 132.0
+MAX_SET_CURRENT = 1.0 # MAX_CURRENT
 CLEAR_COMMAND = "*CLS"
 REMOTE_COMMAND = f"SYST:REM"
 OUTPUT_1_COMMAND = f"OUTP 1"
@@ -58,6 +59,8 @@ class CurrentSourceController(AbstractController):
         errors = self.device.exec_command(command=GET_ERRORS_COMMAND)
         # print("|> CUR S:", answer, errors)
         if errors and errors.lower() != "0 no error":
+            sleep(0.05)
+            self.device.exec_command(command=CLEAR_COMMAND)
             raise Exception(errors)
         return answer
 
@@ -65,8 +68,10 @@ class CurrentSourceController(AbstractController):
         return self.exec_command(command=GET_CURRENT_ACTUAL)
 
     def set_current_value(self, value: float = 0.0):
-        value = min(value, MAX_CURRENT)
-        return self.exec_command(command=SET_CURRENT_ACTUAL, value=value)
+        value = min(value, MAX_SET_CURRENT)
+        ans = self.exec_command(command=SET_CURRENT_ACTUAL, value=value)
+        # raise Exception("Ошибка установки значения тока: ...")
+        return value
 
     def get_voltage_value(self):
         return self.exec_command(command=GET_VOLTAGE_ACTUAL)

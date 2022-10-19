@@ -279,7 +279,10 @@ class MainWindow(QMainWindow):
         # CONNECT FUNCTIONS ########################
 
         self.main_interface_layout_widget.pressure_block.o2.connect_valve_function(
-            self.system.change_valve_state)
+            self.system.change_valve_state
+        )
+        self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
+            set_value_function = self.system.set_current
         # self.system.change_valve_state("")
 
     def clear_log(self, uid):
@@ -317,10 +320,13 @@ class MainWindow(QMainWindow):
             self.close()
             print("ERROR", e)
         finally:
+            try:
             # print("FINALLY:", self.log, "| has logs:",  self.system.has_logs)
-            if self.log is None and self.system.has_logs:
-                self.log = self.system.first_log
-                self.log_widget.set_log(self.log)
+                if self.log is None and self.system.has_logs:
+                    self.log = self.system.first_log
+                    self.log_widget.set_log(self.log)
+            except Exception as e:
+                print("Set log error:", e)
 
 
 # if __name__ == "__main__":
