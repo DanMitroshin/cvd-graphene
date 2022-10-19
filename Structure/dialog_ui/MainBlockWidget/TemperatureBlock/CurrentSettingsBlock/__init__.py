@@ -46,9 +46,9 @@ class CurrentSettingsBlock(QWidget):
         self.layout.addWidget(self.rise_current_block, QtCore.Qt.AlignCenter)
 
     def set_voltage_value(self, value):
-        self.voltage_value = value
-        self.voltage_label.setText(f"U = {self.voltage_value}V")
+        self.voltage_value = float(value)
+        self.voltage_label.setText(f"U = {round(self.voltage_value, 4)}V")
 
     def set_current_value(self, value):
-        self.current_value = value
-        self.current_label.setText(f"I = {self.current_value}A")
+        self.current_value = float(value)
+        self.current_label.setText(f"I = {round(self.current_value, 3)}A")

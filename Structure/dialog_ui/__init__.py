@@ -310,14 +310,15 @@ class MainWindow(QMainWindow):
             # print("VOLTAGE:", self.system.voltage_value)
             # VOLTAGE
             self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value(
-                round(self.system.voltage_value, 4)
+                self.system.voltage_value
             )
             self.main_interface_layout_widget.temperature_block.current_settings.set_current_value(
-                round(self.system.current_value, 3)
+                self.system.current_value
             )
         except Exception as e:
+            self.system._add_error_log(Exception("Ошибка считывания значения: " + str(e)))
             # self.errors.append()
-            self.close()
+            # self.close()
             print("ERROR", e)
         finally:
             try:
