@@ -69,6 +69,7 @@ class CurrentSourceController(AbstractController):
 
     def set_current_value(self, value: float = 0.0):
         value = min(value, MAX_SET_CURRENT)
+        print("Set value function:", value)
         ans = self.exec_command(command=SET_CURRENT_ACTUAL, value=value)
         # raise Exception("Ошибка установки значения тока: ...")
         return value

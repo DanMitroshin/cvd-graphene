@@ -9,6 +9,6 @@ class CurrentSourceDevice(AbstractDevice):
         self.communicator = SerialAsciiAkipCommunicator(port=CURRENT_SOURCE_PORT)
 
     def _preprocessing_value(self, command, value):
-        if not value:
+        if value is None:
             return command.strip()
         return f"{command} {value}".strip()
