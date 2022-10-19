@@ -46,6 +46,8 @@ class CurrentSourceController(AbstractController):
     def destructor(self):
         super().destructor()
         print("|> Current source destructor")
+        # self.exec_command(command=SET_ZERO_CURRENT_ACTUAL)
+        # sleep(SLEEP_TIME)
         self.exec_command(command=SET_ZERO_CURRENT_ACTUAL)
         sleep(SLEEP_TIME)
         self.exec_command(command=SET_ZERO_VOLTAGE_ACTUAL)
