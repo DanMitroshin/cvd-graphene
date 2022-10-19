@@ -1,3 +1,4 @@
+from time import sleep
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect, QLabel
 
@@ -101,6 +102,7 @@ class SetCurrentBlock(QWidget):
         self.set_value_function = None
 
     def set_real_value(self, value):
+        sleep(5)
         if value < 0.0:
             return
         if self.set_value_function is None:
@@ -112,7 +114,7 @@ class SetCurrentBlock(QWidget):
 
     def set_value(self, value=None):
         # v = str(self.value)
-        if value is None:
+        if value is None or type(value) not in [float, int]:
             value = self.value
         else:
             self.value = round(value, 3)
