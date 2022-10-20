@@ -1,6 +1,8 @@
 import datetime
+from time import sleep
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QThreadPool
 from PyQt5.QtWidgets import (
     QFrame, QPushButton, QLabel, QHBoxLayout, QVBoxLayout,
     QLineEdit, QWidget, QMainWindow, QGridLayout,
@@ -275,6 +277,9 @@ class MainWindow(QMainWindow):
         self.log_widget = LogWidget(on_close=self.clear_log, parent=self)
         self.log_widget.move(100, 100)
 
+        self.threadpool = QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        # self.close()
         ############################################
         # CONNECT FUNCTIONS ########################
 
@@ -302,6 +307,7 @@ class MainWindow(QMainWindow):
 
     def get_values_and_log_state(self):
         try:
+            # sleep(5)
             self.system.get_values()
 
             self.main_interface_layout_widget.pressure_control_block.show_pressure_block.set_value(

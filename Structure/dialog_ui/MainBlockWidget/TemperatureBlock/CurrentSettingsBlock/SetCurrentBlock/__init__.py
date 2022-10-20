@@ -102,7 +102,7 @@ class SetCurrentBlock(QWidget):
         self.set_value_function = None
 
     def set_real_value(self, value):
-        sleep(5)
+        # sleep(5)
         if value < 0.0:
             return
         if self.set_value_function is None:
