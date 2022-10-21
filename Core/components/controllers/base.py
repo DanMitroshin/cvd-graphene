@@ -74,6 +74,7 @@ class AbstractController(object):
     def _thread_read_command(self):
         if self._start_thread_read_time is None:
             self._start_thread_read_time = time.time()
+
         if time.time() - self._start_thread_read_time > self._critical_read_time:
             self._start_thread_read_time = None
             self._is_thread_reading = False
@@ -82,6 +83,7 @@ class AbstractController(object):
             read_value = self.device.read()
             print(f"|> Read value for C[{self._last_thread_command.command}]: {read_value}")
             if read_value:
+                self._start_thread_read_time = None
                 self._is_thread_reading = False
                 # print("READ FOR:", self._last_thread_command.command)
                 self._last_thread_command.on_answer(read_value)
