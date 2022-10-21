@@ -1,6 +1,6 @@
 from .base import AbstractCommunicator
 from ..communication_methods import SerialAsciiCommunicationMethod
-from ...settings import LOCAL_MODE
+from ...settings import LOCAL_MODE, ACCURATE_VAKUMETR_USB_PORT
 
 
 class SerialAsciiCommunicator(AbstractCommunicator):
@@ -9,8 +9,8 @@ class SerialAsciiCommunicator(AbstractCommunicator):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.communication_method = SerialAsciiCommunicationMethod(port='/dev/ttyUSB1')
-        self.communication_method = SerialAsciiCommunicationMethod()
+        self.communication_method = SerialAsciiCommunicationMethod(port=ACCURATE_VAKUMETR_USB_PORT)
+        # self.communication_method = SerialAsciiCommunicationMethod()
 
     def _preprocessing_value(self, value="MV00"):
         return f"{str(self.port).zfill(self.ADDRESS_PORT_LEN)}0{value}D\r"

@@ -246,6 +246,7 @@ class MainWindow(QMainWindow):
 
         self.system = CvdSystem()
         self.system.setup()
+        self.system.threads_setup()
 
         self.main_window = QHBoxLayout()
         self.main_widget = QWidget()
@@ -271,7 +272,7 @@ class MainWindow(QMainWindow):
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.get_values_and_log_state)
-        self.timer.start(1000)
+        self.timer.start(500)
 
         self.log = None
         self.log_widget = LogWidget(on_close=self.clear_log, parent=self)
@@ -289,6 +290,10 @@ class MainWindow(QMainWindow):
         self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_current
         # self.system.change_valve_state("")
+
+    def close(self) -> bool:
+        self.system.stop()
+        return super().close()
 
     def clear_log(self, uid):
         self.system.clear_log(uid=uid)

@@ -38,12 +38,22 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         )
 
     def send(self, command):
+        self._last_command = command
         if LOCAL_MODE:
+            return
             return "0011MV079.999e2u"
         self.rs485.write(bytearray(command.encode("ASCII")))
-        sleep(self.pause)
+        # sleep(self.pause)
         # sleep(1)
+        # x = self.rs485.readline()
+        # answer = x.decode('ASCII')
+        # print("@ Q&A: ", command.strip(), " |", answer.strip())
+        # return answer
+
+    def read(self, *args, **kwargs):
+        if LOCAL_MODE:
+            return ""
         x = self.rs485.readline()
         answer = x.decode('ASCII')
-        print("@ Q&A: ", command.strip(), " |", answer.strip())
+        # print("@ Q&A: ", self._last_command.strip(), " |", answer.strip())
         return answer

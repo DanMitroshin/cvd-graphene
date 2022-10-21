@@ -1,6 +1,7 @@
 import uuid
 import time
 from time import sleep
+from threading import Thread
 
 from Core.components.controllers import AccurateVakumetrController, ValveController, CurrentSourceController
 from Core.components.controllers.base import AbstractController
@@ -8,7 +9,6 @@ from Core.settings import VALVES_CONFIGURATION
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
 from Core.constants import NOTIFICATIONS
 
-from threading import Thread
 
 class CvdSystem(object):
     class EventLog:
@@ -24,13 +24,19 @@ class CvdSystem(object):
         self._last_action_answer = None
         self._errors = []
         self._event_logs = []
+        self._is_working = True
 
         # CONTROLLERS
         self.accurate_vakumetr_controller = AccurateVakumetrController()
         self._valves = {}
         for valve_conf in VALVES_CONFIGURATION:
             self._valves[valve_conf["NAME"]] = ValveController(port=valve_conf["PORT"])
-        self.current_source_controller = CurrentSourceController()
+
+        self.current_source_controller = CurrentSourceController(
+            on_change_current=self.on_change_current,
+            on_change_voltage=self.on_change_voltage,
+            on_set_current=None,  # ДОБАВИТЬ РЕАЛЬНОЕ ВЛИЯНИЕ - ПРОСТОЕ ВЫСТАВЛЕНИЕ АКТУАЛЬНОГО ЗНАЧЕНИЯ В UI
+        )
 
         self._controllers: list[AbstractController] = [
             self.accurate_vakumetr_controller,
@@ -67,8 +73,30 @@ class CvdSystem(object):
             if controller is not None:
                 controller.setup()
 
+    def threads_setup(self):
+        # for controller in self._controllers:
+        #     if controller is not None:
+        #         controller.setup()
+        self.current_source_controller.thread_setup(
+            self.is_working,
+            self._add_log,
+            self._add_error_log
+        )
+        self.current_source_controller.run()
+
+    def stop(self):
+        """
+        Function for execute before closing main ui program to destroy all threads
+        :return:
+        """
+        self._is_working = False
+
+    def is_working(self):
+        return self._is_working
+
     def destructor(self):
         print("System del | Controllers:", len(self._controllers))
+        self._is_working = False
         for controller in self._controllers:
             if controller is not None:
                 controller.destructor()
@@ -129,26 +157,34 @@ class CvdSystem(object):
 
     @action
     def change_valve_state(self, gas):
-        t = Thread(target=self.long_function)
-        t.start()
-        return 1
+        # t = Thread(target=self.long_function)
+        # t.start()
+        # return 1
         valve = self._valves.get(gas, None)
         if valve is None:
             return False
         return valve.change_state()
 
+    def on_change_current(self, value):
+        self.current_value = value
+
+    def on_change_voltage(self, value):
+        self.voltage_value = value
+
     @action
     def set_current(self, value):
-        try:
-            return self.current_source_controller.set_current_value(value)
-        except Exception as e:
-            raise Exception(f"Ошибка выставления тока: " + str(e))
+        return self.current_source_controller.set_current_value(value)
+        # try:
+        #     return self.current_source_controller.set_current_value(value)
+        # except Exception as e:
+        #     raise Exception(f"Ошибка выставления тока: " + str(e))
 
     def get_values(self):
         try:
-            self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
-            self.current_value = self.current_source_controller.get_current_value()
-            self.voltage_value = self.current_source_controller.get_voltage_value()
-            print("VOLT VAL:", self.voltage_value)
+            pass
+            # self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
+            # self.current_value = self.current_source_controller.get_current_value()
+            # self.voltage_value = self.current_source_controller.get_voltage_value()
+            # print("VOLT VAL:", self.voltage_value)
         except Exception as e:
             self._add_error_log(e)

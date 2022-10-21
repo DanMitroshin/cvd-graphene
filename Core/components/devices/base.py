@@ -73,6 +73,19 @@ class AbstractDevice(object):
             print(s)
             return self._handle_exception(e)
 
+    def read(self):
+        self.is_valid()
+
+        try:
+            return self._postprocessing_value(
+                self.communicator.read()
+            )
+
+        except Exception as e:
+            s = traceback.format_exc()
+            print("|> READ ERROR DEVICE", s)
+            return self._handle_exception(e)
+
     def _handle_exception(self, e: Exception):
         raise BaseDeviceException from e
 

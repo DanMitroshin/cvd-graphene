@@ -5,7 +5,7 @@ from Core.exceptions.communicators.base import SetupCommunicatorException
 
 
 class AbstractCommunicator(object):
-    communication_method_class: BaseCommunicationMethod = None
+    communication_method_class = None
 
     def __init__(
             self,
@@ -13,7 +13,7 @@ class AbstractCommunicator(object):
             port=None,
     ):
         if self.communication_method_class is not None:
-            self.communication_method = self.communication_method_class()
+            self.communication_method: BaseCommunicationMethod = self.communication_method_class()
         self.speed = speed
         self.port = port
 
@@ -59,6 +59,16 @@ class AbstractCommunicator(object):
             preprocessing_value = self._preprocessing_value(value)
             answer = self.communication_method.send(preprocessing_value)
 
+            return self._postprocessing_value(answer)
+
+        except Exception as e:
+            return self._handle_exception(e)
+
+    def read(self, raise_exception=True):
+        self.is_valid(raise_exception=raise_exception)
+
+        try:
+            answer = self.communication_method.read()
             return self._postprocessing_value(answer)
 
         except Exception as e:

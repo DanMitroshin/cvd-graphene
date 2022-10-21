@@ -5,6 +5,7 @@ class BaseCommunicationMethod:
     def __init__(self, *args, **kwargs):
         self.ready = False
         self.rs485 = None
+        self._last_command = ""
 
     def setup(self, *args, **kwargs):
         self.ready = True
@@ -13,6 +14,9 @@ class BaseCommunicationMethod:
     #     def wrapper()
 
     def send(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def read(self, *args, **kwargs):
         raise NotImplementedError
 
 

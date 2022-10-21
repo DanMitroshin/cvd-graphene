@@ -109,7 +109,7 @@ class SetCurrentBlock(QWidget):
             print("Current set_value_function is None!")
             return
         new_value = self.set_value_function(value)
-        # print("New value:", new_value)
+        print("New current source ui value:", new_value)
         self.set_value(value=new_value)
 
     def set_value(self, value=None):
