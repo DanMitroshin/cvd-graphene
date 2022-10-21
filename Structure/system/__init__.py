@@ -1,4 +1,6 @@
 import uuid
+import time
+from time import sleep
 
 from Core.components.controllers import AccurateVakumetrController, ValveController, CurrentSourceController
 from Core.components.controllers.base import AbstractController
@@ -6,6 +8,7 @@ from Core.settings import VALVES_CONFIGURATION
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
 from Core.constants import NOTIFICATIONS
 
+from threading import Thread
 
 class CvdSystem(object):
     class EventLog:
@@ -113,8 +116,22 @@ class CvdSystem(object):
         for controller in self._controllers:
             value = controller.get_value()
 
+    def long_function(self):
+        start = time.time()
+        for i in range(10):
+            counter = 0
+            for _ in range(30000000):
+                counter += 1
+            print("|>>>>> LONG", i, self.voltage_value)
+            sleep(1)
+        end = time.time()
+        print("|||>> EXIT:", end - start)
+
     @action
     def change_valve_state(self, gas):
+        t = Thread(target=self.long_function)
+        t.start()
+        return 1
         valve = self._valves.get(gas, None)
         if valve is None:
             return False
@@ -132,5 +149,6 @@ class CvdSystem(object):
             self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
             self.current_value = self.current_source_controller.get_current_value()
             self.voltage_value = self.current_source_controller.get_voltage_value()
+            print("VOLT VAL:", self.voltage_value)
         except Exception as e:
             self._add_error_log(e)

@@ -1,3 +1,4 @@
+import random
 from time import sleep
 from .base import AbstractController
 from ..devices import CurrentSourceDevice
@@ -77,4 +78,5 @@ class CurrentSourceController(AbstractController):
         return value
 
     def get_voltage_value(self):
+        return random.random()
         return self.exec_command(command=GET_VOLTAGE_ACTUAL)
