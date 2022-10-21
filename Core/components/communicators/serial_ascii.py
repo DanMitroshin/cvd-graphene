@@ -9,7 +9,8 @@ class SerialAsciiCommunicator(AbstractCommunicator):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.communication_method = SerialAsciiCommunicationMethod(port='/dev/ttyUSB1')
+        # self.communication_method = SerialAsciiCommunicationMethod(port='/dev/ttyUSB1')
+        self.communication_method = SerialAsciiCommunicationMethod()
 
     def _preprocessing_value(self, value="MV00"):
         return f"{str(self.port).zfill(self.ADDRESS_PORT_LEN)}0{value}D\r"
