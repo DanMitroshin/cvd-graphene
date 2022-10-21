@@ -80,16 +80,17 @@ class AbstractController(object):
             read_value = ""
         else:
             read_value = self.device.read()
+            print(f"|> Read value for C[{self._last_thread_command.command}]: {read_value}")
             if read_value:
                 self._is_thread_reading = False
-        # print("READ FOR:", self._last_thread_command.command)
-        self._last_thread_command.on_answer(read_value)
+                # print("READ FOR:", self._last_thread_command.command)
+                self._last_thread_command.on_answer(read_value)
         return read_value
 
     def _run(self):
         to_exit = False
         while True:
-            time.sleep(0.1)
+            time.sleep(0.2)
             try:
                 if self._is_thread_reading:
                     self._thread_read_command()
