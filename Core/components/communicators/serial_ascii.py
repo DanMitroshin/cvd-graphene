@@ -4,8 +4,12 @@ from ...settings import LOCAL_MODE
 
 
 class SerialAsciiCommunicator(AbstractCommunicator):
-    communication_method_class = SerialAsciiCommunicationMethod
+    # communication_method_class = SerialAsciiCommunicationMethod
     ADDRESS_PORT_LEN = 3
+
+    def __init__(self):
+        super(SerialAsciiCommunicator, self).__init__()
+        self.communication_method = SerialAsciiCommunicationMethod(port='/dev/ttyUSB1')
 
     def _preprocessing_value(self, value="MV00"):
         return f"{str(self.port).zfill(self.ADDRESS_PORT_LEN)}0{value}D\r"

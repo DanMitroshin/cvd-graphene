@@ -9,6 +9,6 @@ def get_serial_port():
         index = line.find(s) + len(s)
         serial_port = "/dev/" + s + line[index]
         # print("# SERIAL PORT:", serial_port)
-        return serial_port
+        return serial_port  # /dev/ttyUSB0
     except:
         return ""
