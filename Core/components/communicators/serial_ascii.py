@@ -16,6 +16,8 @@ class SerialAsciiCommunicator(AbstractCommunicator):
         return f"{str(self.port).zfill(self.ADDRESS_PORT_LEN)}0{value}D\r"
 
     def _postprocessing_value(self, value: str):
+        if value is None:
+            value = ""
         answer = value.split('\r')[0]
         if len(answer) < 8:
             return ""
@@ -32,6 +34,6 @@ class SerialAsciiAkipCommunicator(AbstractCommunicator):
 
     def _postprocessing_value(self, value: str):
         # print("GET VAL POST PROC:", value, type(value))
-        if LOCAL_MODE:
+        if LOCAL_MODE or value is None:
             return ""
         return value.strip()
