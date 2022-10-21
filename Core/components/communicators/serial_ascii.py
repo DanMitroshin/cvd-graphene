@@ -7,8 +7,8 @@ class SerialAsciiCommunicator(AbstractCommunicator):
     # communication_method_class = SerialAsciiCommunicationMethod
     ADDRESS_PORT_LEN = 3
 
-    def __init__(self):
-        super(SerialAsciiCommunicator, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.communication_method = SerialAsciiCommunicationMethod(port='/dev/ttyUSB1')
 
     def _preprocessing_value(self, value="MV00"):
