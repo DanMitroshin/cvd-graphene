@@ -41,8 +41,8 @@ class SerialAsciiCommunicationMethod(BaseCommunicationMethod):
         if LOCAL_MODE:
             return "0011MV079.999e2u"
         self.rs485.write(bytearray(command.encode("ASCII")))
-        # sleep(self.pause)
-        sleep(1)
+        sleep(self.pause)
+        # sleep(1)
         x = self.rs485.readline()
         answer = x.decode('ASCII')
         print("@ Q&A: ", command.strip(), " |", answer.strip())
