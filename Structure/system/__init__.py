@@ -77,6 +77,7 @@ class CvdSystem(object):
         # for controller in self._controllers:
         #     if controller is not None:
         #         controller.setup()
+        return
         self.current_source_controller.thread_setup(
             self.is_working,
             self._add_log,

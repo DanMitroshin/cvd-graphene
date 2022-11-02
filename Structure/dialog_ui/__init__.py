@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
 
 from Structure.dialog_ui.MainBlockWidget import MainBlockWidget
 from Structure.dialog_ui.RightButtonsWidget import RightButtonsWidget
+from Structure.dialog_ui.TableWidget import AppTableWidget
 from Structure.dialog_ui.components import LogWidget
 from Structure.system import CvdSystem
 
@@ -278,8 +279,10 @@ class MainWindow(QMainWindow):
         self.log_widget = LogWidget(on_close=self.clear_log, parent=self)
         self.log_widget.move(100, 100)
 
-        self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        self.table_widget = AppTableWidget(parent=self)
+
+        # self.threadpool = QThreadPool()
+        # print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
         # self.close()
         ############################################
         # CONNECT FUNCTIONS ########################
@@ -290,6 +293,8 @@ class MainWindow(QMainWindow):
         self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_current
         # self.system.change_valve_state("")
+
+
 
     def close(self) -> bool:
         self.system.stop()
