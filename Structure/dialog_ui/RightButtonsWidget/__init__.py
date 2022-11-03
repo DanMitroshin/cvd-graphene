@@ -4,7 +4,11 @@ from .styles import styles
 
 
 class RightButtonsWidget(QWidget):
-    def __init__(self, on_close=None):
+    def __init__(self,
+                 on_close=None,
+                 on_create_recipe=None,
+                 on_open_recipe=None,
+                 ):
         super().__init__()
 
         self.layout = QGridLayout()
@@ -24,10 +28,16 @@ class RightButtonsWidget(QWidget):
 
         self.select_recipe = QPushButton("Select and\nrun recipe")
         self.select_recipe.setObjectName("run_recipe_button")
+        self.select_recipe.clicked.connect(on_open_recipe)
         self.select_recipe.setStyleSheet(styles.run_recipe_button)
 
-        self.edit_recipe = QPushButton("Edit\nrecipe")
+        # self.select_recipe = QPushButton("Create\nrecipe")
+        # self.select_recipe.setObjectName("run_recipe_button")
+        # self.select_recipe.setStyleSheet(styles.run_recipe_button)
+
+        self.edit_recipe = QPushButton("Create\nrecipe")
         self.edit_recipe.setObjectName("edit_recipe_button")
+        self.edit_recipe.clicked.connect(on_create_recipe)
         self.edit_recipe.setStyleSheet(styles.edit_recipe_button)
 
         self.layout.addWidget(self.button_close, 0, 0, QtCore.Qt.AlignTop)

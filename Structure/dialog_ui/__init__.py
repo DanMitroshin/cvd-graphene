@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThreadPool
 from PyQt5.QtWidgets import (
     QFrame, QPushButton, QLabel, QHBoxLayout, QVBoxLayout,
-    QLineEdit, QWidget, QMainWindow, QGridLayout,
+    QLineEdit, QWidget, QMainWindow, QGridLayout, QFileDialog,
 )
 
 from Structure.dialog_ui.MainBlockWidget import MainBlockWidget
@@ -262,8 +262,11 @@ class MainWindow(QMainWindow):
 
         )
         self.main_window.addWidget(self.main_interface_layout_widget)
+
         self.right_buttons_layout_widget = RightButtonsWidget(
             on_close=self.close,
+            on_create_recipe=self.on_create_recipe,
+            on_open_recipe=self.on_open_recipe,
         )
         self.main_window.addWidget(self.right_buttons_layout_widget)
 
@@ -275,11 +278,17 @@ class MainWindow(QMainWindow):
         self.timer.timeout.connect(self.get_values_and_log_state)
         self.timer.start(500)
 
+        # TABLE WIDGET FOR RECIPE ###################################
+        self.table_widget = AppTableWidget(
+            parent=self,
+            save_recipe_file=self.system.save_recipe_file,
+            get_recipe_file_data=self.system.get_recipe_file_data,
+        )
+
+        # LOG NOTIFICATION WIDGET ###################################
         self.log = None
         self.log_widget = LogWidget(on_close=self.clear_log, parent=self)
         self.log_widget.move(100, 100)
-
-        self.table_widget = AppTableWidget(parent=self)
 
         # self.threadpool = QThreadPool()
         # print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
@@ -294,7 +303,20 @@ class MainWindow(QMainWindow):
             set_value_function = self.system.set_current
         # self.system.change_valve_state("")
 
+    def on_create_recipe(self):
+        try:
+            self.table_widget.on_create_recipe()
+        except Exception as e:
+            print("On create recipe function error:", e)
 
+    def on_open_recipe(self):
+        try:
+            file_path = QFileDialog.getOpenFileName(self, 'Выбрать рецепт', '')[0]
+            if file_path:
+                data = self.system.get_recipe_file_data(file_path)
+                self.table_widget.on_open_recipe_file(file_path, data)
+        except Exception as e:
+            print("On open recipe error:", e)
 
     def close(self) -> bool:
         self.system.stop()

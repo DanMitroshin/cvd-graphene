@@ -1,112 +1,33 @@
-import pandas as pd
-from math import isnan
+import os
+import string
+from random import choice
+
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QFileDialog,\
-    QTableWidget, QTableWidgetItem, QTableWidgetSelectionRange, QComboBox, QPushButton, QHBoxLayout
+    QTableWidget, QTableWidgetItem, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QHeaderView
 from PyQt5.QtCore import QSize, Qt
 
-from Core.settings import RRG_LIST, GAS_LIST
-
-COLUMNS = ["Процесс", "Аргумент 1", "Аргумент 2", "Аргумент 3", "Комментарий"]
-
-
-def safe_check(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            return f"Check error: {str(e)}"
-    return wrapper
+from Core.actions import ACTIONS, get_action_by_name, AppAction
+from Core.settings import TABLE_COLUMN_NAMES
+from .styles import styles
 
 
-class Argument:
-    arg_type = None
-    arg_default = None
-    arg_list = None
-
-    @safe_check
-    def check(self, value):
-        pass
+def random_str(length=5):
+    letters = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    return ''.join(choice(letters) for _ in range(length))
 
 
-class FloatArgument(Argument):
-    arg_type = float
-    arg_default = 0.0
-
-    @safe_check
-    def check(self, value):
-        value = float(value)
-
-
-class GasListArgument(Argument):
-    arg_type = list
-    arg_list = GAS_LIST
-
-    @safe_check
-    def check(self, value):
-        value = str(value).strip()
-        if value not in self.arg_list:
-            raise Exception(f"Gas {value} not in gas list")
-
-
-class RrgListArgument(Argument):
-    arg_type = list
-    arg_list = RRG_LIST
-
-    @safe_check
-    def check(self, value):
-        value = str(value).strip()
-        if value not in self.arg_list:
-            raise Exception(f"Rrg {value} not in rrg list")
-
-
-class AppAction:
-    args_info = []
-    args_amount = 0
-
-    def __init__(self, name, args_amount=None):
-        self.name = name
-        if args_amount is not None:
-            self.args_amount = args_amount
-
-    def check_args(self):
-        return None
-
-
-class RrgSelectAction(AppAction):
-    args_info = [GasListArgument]
-    args_amount = 1
-
-
-class OpenValveAction(RrgSelectAction):
-    pass
-
-
-class CloseValveAction(RrgSelectAction):
-    pass
-
-
-ACTIONS = [
-    AppAction("Pause"),
-    OpenValveAction("Open valve"),
-    CloseValveAction("Close valve"),
-    AppAction("Act 1", args_amount=2),
-    AppAction("Act 2", args_amount=3),
-    AppAction("Act 3", args_amount=1),
-    AppAction("Act 4", args_amount=1),
-    AppAction("Act ХХХ", args_amount=1),
-]
-
-
-def get_action_by_name(name):
-    for i, action in enumerate(ACTIONS):
-        if action.name == name:
-            return action, i
-    return None, 0
+def create_recipe_file_name():
+    return "recipe_" + random_str()
 
 
 class TableItem(object):
     def __init__(self, widget):
         self.widget = widget
+        # if isinstance(self.widget, QTableWidgetItem):
+        #     w = QTableWidgetItem()
+        #     w.s
+        #     widget.
 
     @property
     def is_item(self):
@@ -196,9 +117,21 @@ class TableRow(object):
 
 class AppTableWidget(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, save_recipe_file=None, get_recipe_file_data=None):
         # You must call the super class method
         super().__init__(parent)
+
+        self.save_recipe_file = save_recipe_file
+        self.get_recipe_file_data = get_recipe_file_data
+
+        self.file = None
+        self.path = None
+
+        self.file_path = None  # for directly open files
+
+        self.setObjectName("AppTableWidget")
+        self.setStyleSheet(styles.container)
+        self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
 
         # central_widget = QWidget(self)  # Create a central widget
         # self.setCentralWidget(central_widget)  # Install the central widget
@@ -208,7 +141,9 @@ class AppTableWidget(QWidget):
         # QApplication.desktop().width(),
         # QApplication.desktop().height()
         self.setMinimumSize(QSize(
-            QApplication.desktop().width() * 0.9, QApplication.desktop().height() * 0.9))  # Set sizes
+            QApplication.desktop().width() * 0.99,
+            QApplication.desktop().height() * 0.99
+        ))  # Set sizes
         self.row_count = 1
         self.rows = [TableRow(table=self, row_id=0)]
 
@@ -217,7 +152,7 @@ class AppTableWidget(QWidget):
         table.setRowCount(self.row_count)  # and one row
 
         # Set the table headers
-        table.setHorizontalHeaderLabels(COLUMNS)
+        table.setHorizontalHeaderLabels(TABLE_COLUMN_NAMES)
 
         # self.combo = QComboBox()
         # self.combo.te
@@ -232,35 +167,41 @@ class AppTableWidget(QWidget):
         table.horizontalHeaderItem(4).setToolTip("Комментарий")
 
         # Set the alignment to the headers
-        table.horizontalHeaderItem(0).setTextAlignment(Qt.AlignLeft)
-        # table.horizontalHeaderItem(1).setTextAlignment(Qt.AlignHCenter)
-        table.horizontalHeaderItem(4).setTextAlignment(Qt.AlignRight)
+        # table.horizontalHeaderItem(0).setTextAlignment(Qt.AlignLeft)
+        # # table.horizontalHeaderItem(1).setTextAlignment(Qt.AlignHCenter)
+        # table.horizontalHeaderItem(4).setTextAlignment(Qt.AlignRight)
 
-        # Fill the first line
-        # table.setItem(0, 0, QTableWidgetItem("Text in column 1",))
-        # table.setCellWidget(0, 0,  self.combo)
-        # table.setItem(0, 1, QTableWidgetItem("Text in column 2"))
-        # table.setItem(0, 2, QTableWidgetItem("Text in column 3"))
         self.table = table
-
-        # Do the resize of the columns by content
-        table.resizeColumnsToContents()
 
         add_row_button = QPushButton('+ добавить строку')
         add_row_button.clicked.connect(self._add_row)
+        add_row_button.setObjectName("table_button")
+        add_row_button.setStyleSheet(styles.table_button)
 
-        get_values_button = QPushButton('print values')
-        get_values_button.clicked.connect(self._get_values)
+        # get_values_button = QPushButton('print values')
+        # get_values_button.clicked.connect(self._get_values)
         buttons_layout = QHBoxLayout()
 
         save_button = QPushButton("SAVE RECIPE")
         save_button.clicked.connect(self.save_recipe)
+        save_button.setObjectName("table_button")
+        save_button.setStyleSheet(styles.table_button)
 
         close_button = QPushButton("CLOSE")
-        close_button.clicked.connect(self.show_dialog)
+        close_button.clicked.connect(self.on_close)
+        close_button.setObjectName("table_button")
+        close_button.setStyleSheet(styles.table_button)
 
+        name = QLineEdit()
+        name.setPlaceholderText("Название файла...")
+        name.setText(create_recipe_file_name())
+        self.file_name_widget = name
+        self.file_name_widget.setObjectName("table_name_input")
+        self.file_name_widget.setStyleSheet(styles.table_name_input)
+
+        buttons_layout.addWidget(self.file_name_widget)
         buttons_layout.addWidget(save_button)
-        buttons_layout.addWidget(get_values_button)
+        # buttons_layout.addWidget(get_values_button)
         buttons_layout.addWidget(close_button)
 
         grid_layout.addLayout(buttons_layout, 0, 0)
@@ -269,6 +210,49 @@ class AppTableWidget(QWidget):
         # grid_layout.addWidget(get_values_button, 1, 1)
 
         self._update_table()
+        self.hide()
+
+    def _update_table_ui(self):
+        horizontalHeader = self.table.horizontalHeader()
+        # resize the first column to 100 pixels
+        for i in range(4):
+            horizontalHeader.resizeSection(i, 180)
+        # adjust the second column to its contents
+        # horizontalHeader.setSectionResizeMode(
+        #     1, QHeaderView.ResizeToContents)
+        # adapt the third column to fill all available space
+        # horizontalHeader.setSectionResizeMode(
+        #     4, QHeaderView.Stretch)
+        # Do the resize of the columns by content
+        self.table.resizeColumnsToContents()
+        horizontalHeader.setSectionResizeMode(
+            4, QHeaderView.Stretch)
+
+    def on_create_recipe(self):
+        self.show()
+        print("On create recipe show!!!")
+
+    def on_open_recipe_file(self, file_path, data):
+        try:
+            self.file_path = file_path
+            self.row_count = len(data)
+            self.table.setRowCount(self.row_count)
+            self.rows = []
+            for i, row in enumerate(data):
+                table_row = TableRow(table=self, row_id=i, items=row)
+                self.rows.append(table_row)
+            self._update_table()
+            # self.rows = [TableRow(table=self, row_id=0)]
+            file_name = os.path.basename(file_path)
+            self.file_name_widget.setText(file_name)
+            self.file_name_widget.setEnabled(False)
+            self.show()
+        except Exception as e:
+            print("Open recipe file error UI:", e)
+
+    def set_target_file(self, path=None, file=None):
+        self.file = file
+        self.path = path
 
     def update_row(self, row_id, items):
         for i, item in enumerate(items):
@@ -283,11 +267,12 @@ class AppTableWidget(QWidget):
                 self.table.setCellWidget(row_id, i, item.widget)
             # table.setItem(0, 1, QTableWidgetItem("Text in column 2"))
             # table.setItem(0, 2, QTableWidgetItem("Text in column 3"))
-            self.table.resizeColumnsToContents()
+            # self.table.resizeColumnsToContents()
 
     def _update_table(self):
         for i, row in enumerate(self.rows):
             self.update_row(i, row)
+        self._update_table_ui()
         # self.table.resizeColumnsToContents()
 
     def _add_row(self):
@@ -324,38 +309,39 @@ class AppTableWidget(QWidget):
 
     def save_recipe(self):
         try:
+            has_file_path = bool(self.file_path)
+
+            if not self.path and not has_file_path:
+                path = QFileDialog.getExistingDirectory(self, "Выберите папку", "")
+                if path:
+                    self.path = path
+                else:
+                    return
+            file_name = self.file_name_widget.text()
+            if file_name.endswith('.xlsx'):
+                self.file = file_name
+            else:
+                self.file = file_name + '.xlsx'
+
             arr = self._get_values()
-            if arr is None:
-                return
-            df = pd.DataFrame(arr, columns=COLUMNS)
-            # df.
-            path = "recipes/test3.xlsx"
-            df.to_excel(excel_writer=path)
-            excel_data_df = pd.read_excel(path, header=None)
-            # for a in excel_data_df:
-            #     print("AA", a)
-            cols = excel_data_df.columns.ravel()
-            arr = []
-            for col in cols[1:]:
-                a = excel_data_df[col].tolist()[1:]
-                for i in range(len(a)):
-                    if isnan(a[i]):
-                        a[i] = ""
-                arr.append(a)
-            print("M", arr)
+            self.save_recipe_file(
+                file=self.file,
+                path=self.path,
+                file_path=self.file_path,
+                data=arr
+            )
         except Exception as e:
-            print("Save err", e)
-
-    def show_dialog(self):
-
-        fname = QFileDialog.getOpenFileName(self, 'Open file', '')[0]
-        print("CHOOSE FILE:", fname)
-
-        # f = open(fname, 'r')
-        #
-        # with f:
-        #     data = f.read()
-        #     self.textEdit.setText(data)
+            print("Save file error:", e)
 
     def on_close(self):
+        self.file = None
+        self.path = None
+        self.file_path = None
+        self.file_name_widget.setText(create_recipe_file_name())
+        self.file_name_widget.setEnabled(True)
         self.hide()
+
+        self.row_count = 1
+        self.rows = [TableRow(table=self, row_id=0, items=None)]
+        self.table.setRowCount(self.row_count)  # and one row
+        self._update_table()

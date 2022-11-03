@@ -19,3 +19,6 @@ VALVES_CONFIGURATION = [
 
 RRG_LIST = list(map(lambda x: x.get('NAME'), VALVES_CONFIGURATION))
 GAS_LIST = list(map(lambda x: x.get('NAME'), filter(lambda x: x.get("IS_GAS", False), VALVES_CONFIGURATION)))
+
+
+TABLE_COLUMN_NAMES = ["Процесс", "Аргумент 1", "Аргумент 2", "Аргумент 3", "Комментарий"]

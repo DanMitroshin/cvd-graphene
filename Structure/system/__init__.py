@@ -1,11 +1,15 @@
 import uuid
 import time
+import os
+from math import isnan
+
+import pandas as pd
 from time import sleep
 from threading import Thread
 
 from Core.components.controllers import AccurateVakumetrController, ValveController, CurrentSourceController
 from Core.components.controllers.base import AbstractController
-from Core.settings import VALVES_CONFIGURATION
+from Core.settings import VALVES_CONFIGURATION, TABLE_COLUMN_NAMES
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
 from Core.constants import NOTIFICATIONS
 
@@ -189,3 +193,47 @@ class CvdSystem(object):
             # print("VOLT VAL:", self.voltage_value)
         except Exception as e:
             self._add_error_log(e)
+
+    def save_recipe_file(self, path: str = None, file: str = None, file_path=None, data=None):
+        if file_path is None and (file is None or len(file) < 8):
+            self._handle_exception(Exception(f"Ошибка сохранения {file}: название файла не может быть меньше 8 символов"))
+            return
+        try:
+            df = pd.DataFrame(data, columns=TABLE_COLUMN_NAMES)
+            total_path = file_path if file_path else os.path.join(path, file)  # "recipes/test3.xlsx"
+            df.to_excel(excel_writer=total_path)
+        except Exception as e:
+            self._handle_exception(Exception(f"Ошибка сохранения {file}: {str(e)}"))
+        else:
+            self._add_log(f"Файл {file} сохранён")
+
+    def get_recipe_file_data(self, file_path: str):
+        file_name = None
+        try:
+            file_name = os.path.basename(file_path)
+            print("FILE P:", file_path, file_name)
+            excel_data_df = pd.read_excel(file_path, header=None)
+            # for a in excel_data_df:
+            #     print("AA", a)
+            # print("1")
+            cols = excel_data_df.columns.ravel()
+            # print("2")
+            arr = []
+            for col in cols[1:]:
+            # for index, row in excel_data_df.iterrows():
+                print("3")
+                # print(row)
+                # a = row
+                a = excel_data_df[col].tolist()[1:]
+                print("4", a)
+                for i in range(len(a)):
+                    # try:
+                    if i + 1 > len(arr):
+                        arr.append([])
+                    if type(a[i]) != str and isnan(a[i]):
+                        a[i] = ""
+                    arr[i].append(str(a[i]))
+            print("M", arr)
+            return arr
+        except Exception as e:
+            self._handle_exception(Exception(f"Ошибка открытия {file_name}: {str(e)}"))
