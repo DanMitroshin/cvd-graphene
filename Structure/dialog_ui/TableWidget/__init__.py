@@ -3,6 +3,7 @@ import string
 from random import choice
 
 from PyQt5 import QtCore
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QFileDialog,\
     QTableWidget, QTableWidgetItem, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QHeaderView
 from PyQt5.QtCore import QSize, Qt
@@ -115,6 +116,10 @@ class TableRow(object):
         self._table_update()
 
 
+custom_font = QFont()
+custom_font.setPointSize(18)
+
+
 class AppTableWidget(QWidget):
 
     def __init__(self, parent=None, save_recipe_file=None, get_recipe_file_data=None):
@@ -140,6 +145,9 @@ class AppTableWidget(QWidget):
         self.setLayout(grid_layout)
         # QApplication.desktop().width(),
         # QApplication.desktop().height()
+
+        self.setFont(custom_font)
+
         self.setMinimumSize(QSize(
             QApplication.desktop().width() * 0.99,
             QApplication.desktop().height() * 0.99
@@ -150,6 +158,7 @@ class AppTableWidget(QWidget):
         table = QTableWidget()  # Create a table
         table.setColumnCount(5)  # Set three columns
         table.setRowCount(self.row_count)  # and one row
+        table.setFont(custom_font)
 
         # Set the table headers
         table.setHorizontalHeaderLabels(TABLE_COLUMN_NAMES)
@@ -217,6 +226,7 @@ class AppTableWidget(QWidget):
         # resize the first column to 100 pixels
         for i in range(4):
             horizontalHeader.resizeSection(i, 180)
+            horizontalHeader.setFont(custom_font)
         # adjust the second column to its contents
         # horizontalHeader.setSectionResizeMode(
         #     1, QHeaderView.ResizeToContents)
@@ -227,6 +237,9 @@ class AppTableWidget(QWidget):
         self.table.resizeColumnsToContents()
         horizontalHeader.setSectionResizeMode(
             4, QHeaderView.Stretch)
+
+        for i in range(self.row_count):
+            self.table.setRowHeight(i, 48)
 
     def on_create_recipe(self):
         self.show()
