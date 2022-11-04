@@ -101,7 +101,7 @@ def test_rough_vakumetr_3():
             s = ''.join(map(lambda x: int2base(x).zfill(8), rxData[:4]))
             n = int(s[8:18], 2)
             print(n) #, s, s[8:18])
-        sleep(1)
+        sleep(0.01)
 
     spi.close()
 
