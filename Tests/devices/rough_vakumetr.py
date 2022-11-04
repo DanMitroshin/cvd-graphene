@@ -52,7 +52,7 @@ def test_rough_vakumetr_2():
     SPIchannel = 0
     SPIspeed = 10000
     spi = spidev.SpiDev()
-    spi.open(SPIchannel, 0)
+    spi.open(SPIchannel, 0)  # 0 - выбор чипа
     spi.max_speed_hz = SPIspeed
     print("Connected!")
     # spi.lsbfirst = False
