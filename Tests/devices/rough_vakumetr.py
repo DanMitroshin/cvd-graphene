@@ -78,7 +78,7 @@ def test_rough_vakumetr_2():
 
 # TEST ЦАП
 def test_rough_vakumetr_3():
-    SPIchannel = 0
+    SPIchannel = 1
     SPIspeed = 10000
     spi = spidev.SpiDev()
     spi.open(SPIchannel, 0)  # 0 - выбор чипа
