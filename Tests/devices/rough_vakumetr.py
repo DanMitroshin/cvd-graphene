@@ -2,9 +2,13 @@
 
 try:
     import wiringpi
-    import spidev
 except:
     pass
+
+try:
+    import spidev
+except Exception as e:
+    print("Spidev import error:", e)
 # import serial
 from time import sleep
 # import codecs
@@ -109,15 +113,15 @@ def test_rough_vakumetr_3():
 
 if __name__ == "__main__":
     print("TEST 1 ===>")
-    test_rough_vakumetr_3()
-    # try:
-    #     # test_rough_vakumetr_2()  # WORK VERSION
-    #     test_rough_vakumetr_3()
-    #     # s = '0000010000000000'
-    #     # h = int2base(int(s, 2), base=16)
-    #     # h = int(hex(int(s, 2)), 16)
-    #     # print(h, type(h), type(0x44))
-    #     print("TEST 1 ===> PASSED")
-    # except Exception as e:
-    #     print("[ERROR]", e)
-    #     print("TEST 1 ===> FAILED")
+    # test_rough_vakumetr_3()
+    try:
+        # test_rough_vakumetr_2()  # WORK VERSION
+        test_rough_vakumetr_3()
+        # s = '0000010000000000'
+        # h = int2base(int(s, 2), base=16)
+        # h = int(hex(int(s, 2)), 16)
+        # print(h, type(h), type(0x44))
+        print("TEST 1 ===> PASSED")
+    except Exception as e:
+        print("[ERROR]", e)
+        print("TEST 1 ===> FAILED")
