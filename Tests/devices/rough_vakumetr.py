@@ -76,10 +76,44 @@ def test_rough_vakumetr_2():
     spi.close()
 
 
+# TEST ЦАП
+def test_rough_vakumetr_3():
+    SPIchannel = 1
+    SPIspeed = 10000
+    spi = spidev.SpiDev()
+    spi.open(SPIchannel, 0)  # 0 - выбор чипа
+    spi.max_speed_hz = SPIspeed
+    print("Connected!")
+    # spi.lsbfirst = False
+    # spi.cshigh = False
+    # spi.mode = 0b01
+    # spi.bits_per_word = 8
+
+    txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
+    while True:
+        s = '0000010000000000'
+        txData = [int(s, 2)]
+        rxData = spi.xfer(txData)
+        print("Receive:", rxData)
+        print("Receive:", end=' ')
+        if len(rxData) >= 3:
+            s = ''.join(map(lambda x: int2base(x).zfill(8), rxData[:4]))
+            n = int(s[8:18], 2)
+            print(n) #, s, s[8:18])
+        sleep(1)
+
+    spi.close()
+
+
 if __name__ == "__main__":
     print("TEST 1 ===>")
     try:
-        test_rough_vakumetr_2()
+        # test_rough_vakumetr_2()  # WORK VERSION
+        test_rough_vakumetr_3()
+        # s = '0000010000000000'
+        # h = int2base(int(s, 2), base=16)
+        # h = int(hex(int(s, 2)), 16)
+        # print(h, type(h), type(0x44))
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
