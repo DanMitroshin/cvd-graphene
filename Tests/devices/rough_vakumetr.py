@@ -94,6 +94,7 @@ def test_rough_vakumetr_3():
         s = '0000010000000000'
         # txData = [int(s, 2)]
         txData = [0x01, 0x00]
+        txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
         rxData = spi.xfer(txData)
         print("Receive:", rxData)
         print("Receive:", end=' ')
