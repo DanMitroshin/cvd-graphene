@@ -65,15 +65,12 @@ def test_rough_vakumetr_2():
     while True:
         txData = [0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
         rxData = spi.xfer(txData)
+        print("Receive:", rxData)
         print("Receive:", end=' ')
         if len(rxData) >= 3:
             s = ''.join(map(lambda x: int2base(x).zfill(8), rxData[:4]))
             n = int(s[8:18], 2)
             print(n) #, s, s[8:18])
-        #for i in range(len(rxData)):
-        #    #print(hex(rxData[i]), end=' ')
-        #    print(int2base(rxData[i]).zfill(8), end=' ')
-        #print('@END')
         sleep(1)
 
     spi.close()
