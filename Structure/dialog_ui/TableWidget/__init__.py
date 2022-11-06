@@ -4,9 +4,10 @@ from random import choice
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QFileDialog,\
-    QTableWidget, QTableWidgetItem, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QHeaderView
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QFileDialog, \
+    QTableWidget, QTableWidgetItem, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QHeaderView, QTimeEdit, \
+    QDoubleSpinBox
+from PyQt5.QtCore import QSize, Qt, QTime
 
 from Core.actions import ACTIONS, get_action_by_name, AppAction
 from Core.settings import TABLE_COLUMN_NAMES
@@ -64,11 +65,33 @@ class TableRow(object):
                 self.items = [TableItem(self.combo)] + [
                     TableItem(QTableWidgetItem(s)) for s in items[1:]
                 ]
-                if len(action.args_info) >= 1 and action.args_info[0].arg_type == list:
-                    combo2 = QComboBox()
-                    combo2.addItems(action.args_info[0].arg_list)
-                    combo2.setCurrentIndex(min(0, action.args_info[0].arg_list.index(items[1])))
-                    self.items[1] = TableItem(combo2)
+                for i, arg in enumerate(action.args_info):
+                    if arg.arg_type == list:
+                        combo2 = QComboBox()
+                        combo2.addItems(arg.arg_list)
+                        combo2.setCurrentIndex(max(0, arg.arg_list.index(items[i + 1])))
+                        self.items[i + 1] = TableItem(combo2)
+                    elif arg.arg_type == float:
+                        widget = QDoubleSpinBox()
+                        v = 0.0
+                        try:
+                            v = float(items[i + 1])
+                        except:
+                            pass
+                        widget.setValue(v)
+                        widget.setDecimals(arg.decimals if hasattr(arg, 'decimals') else 3)
+                        self.items[i + 1] = TableItem(widget)
+                    elif "time" == arg.key:
+                        h, m = 0, 0
+                        try:
+                            h, m = list(map(int, items[i + 1].strip().split(':')))
+                        except:
+                            pass
+                        t: QTime = QTime()
+                        t.setHMS(h, m, 0, 0)
+                        twidget = QTimeEdit()
+                        twidget.setTime(t)
+                        self.items[i + 1] = TableItem(twidget)
 
         if self.items is None:
             self._set_default_table_items()
@@ -110,6 +133,13 @@ class TableRow(object):
                 combo2.addItems(arg.arg_list)
                 combo2.setCurrentIndex(0)
                 self.items[j + 1] = TableItem(combo2)
+            elif arg.key == "time":
+                self.items[j + 1] = TableItem(QTimeEdit())
+            elif arg.arg_type == float:
+                widget = QDoubleSpinBox()
+                widget.setValue(arg.arg_default if arg.arg_default else 0.0)
+                widget.setDecimals(arg.decimals if hasattr(arg, 'decimals') else 3)
+                self.items[j + 1] = TableItem(widget)
             elif arg.arg_default is not None:
                 self.items[j + 1] = TableItem(QTableWidgetItem(str(arg.arg_default)))
 
@@ -303,6 +333,17 @@ class AppTableWidget(QWidget):
                     it = self.table.item(row, col)
                     it2 = self.table.cellWidget(row, col)
                     if it2 is not None:
+                        if isinstance(it2, QTimeEdit):
+                        # if hasattr(it2, 'time'):
+                            t: QTime = it2.time()
+                            # t.setHMS(1, 1, 0, 0)
+                            # print("TIME SAVE:", t.hour(), t.minute(), t.second())
+                            row_arr.append(f"{t.hour()}:{t.minute()}")
+                            continue
+                        elif isinstance(it2, QDoubleSpinBox):
+                            row_arr.append(f"{it2.value()}")
+                            continue
+
                         row_arr.append(it2.currentText())
                         continue
                     if it is None:

@@ -17,7 +17,7 @@ VALVES_CONFIGURATION = [
     {'PORT': 13, "NAME": "AIR", "IS_GAS": False},
 ]
 
-RRG_LIST = list(map(lambda x: x.get('NAME'), VALVES_CONFIGURATION))
+VALVE_LIST = list(map(lambda x: x.get('NAME'), VALVES_CONFIGURATION))
 GAS_LIST = list(map(lambda x: x.get('NAME'), filter(lambda x: x.get("IS_GAS", False), VALVES_CONFIGURATION)))
 
 

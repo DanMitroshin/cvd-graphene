@@ -1,4 +1,5 @@
-from Core.settings import GAS_LIST, RRG_LIST
+from Core.constants import ACTION_NAMES, TABLE_ACTIONS_NAMES
+from Core.settings import GAS_LIST, VALVE_LIST
 
 
 def safe_check(func):
@@ -11,6 +12,7 @@ def safe_check(func):
 
 
 class Argument:
+    key = None
     arg_type = None
     arg_default = None
     arg_list = None
@@ -18,6 +20,19 @@ class Argument:
     @safe_check
     def check(self, value):
         pass
+
+
+class SccmArgument(Argument):
+    arg_type = float
+    decimals = 5
+    arg_default = 0.0
+
+    @safe_check
+    def check(self, value):
+        value = float(value)
+        range_list = [0, 100]
+        if range_list[0] <= value <= range_list[1]:
+            raise Exception(f"Percent value {value}% not in range {range_list}")
 
 
 class FloatArgument(Argument):
@@ -40,52 +55,87 @@ class GasListArgument(Argument):
             raise Exception(f"Gas {value} not in gas list")
 
 
-class RrgListArgument(Argument):
+class ValveListArgument(Argument):
     arg_type = list
-    arg_list = RRG_LIST
+    arg_list = VALVE_LIST
 
     @safe_check
     def check(self, value):
         value = str(value).strip()
         if value not in self.arg_list:
-            raise Exception(f"Rrg {value} not in rrg list")
+            raise Exception(f"Valve {value} not in valve list")
+
+
+class TimeEditArgument(Argument):
+    key = "time"
+
+    @safe_check
+    def check(self, value):
+        pass
 
 
 class AppAction:
     args_info = []
     args_amount = 0
+    key = None
+    name = None
 
-    def __init__(self, name, args_amount=None):
-        self.name = name
-        if args_amount is not None:
-            self.args_amount = args_amount
+    def __init__(self, name=None, key=None, args_info=None):
+        if name is not None:
+            self.name = name
+        if key is not None:
+            self.key = key
+        if args_info is not None:
+            self.args_info = args_info
+
+        self.args_amount = len(self.args_info)
 
     def check_args(self):
         return None
 
 
-class RrgSelectAction(AppAction):
-    args_info = [GasListArgument]
-    args_amount = 1
+class TurnOnPumpAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.TURN_ON_PUMP
+    key = ACTION_NAMES.TURN_ON_PUMP
 
 
-class OpenValveAction(RrgSelectAction):
-    pass
+class OpenValveAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.OPEN_VALVE
+    key = ACTION_NAMES.OPEN_VALVE
+    args_info = [ValveListArgument]
 
 
-class CloseValveAction(RrgSelectAction):
-    pass
+class CloseValveAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.CLOSE_VALVE
+    key = ACTION_NAMES.CLOSE_VALVE
+    args_info = [ValveListArgument]
+
+
+class CloseAllValvesAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.CLOSE_ALL_VALVES
+    key = ACTION_NAMES.CLOSE_ALL_VALVES
+
+
+class SetRrgValueAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.SET_RRG_VALUE
+    key = ACTION_NAMES.SET_RRG_VALUE
+    args_info = [GasListArgument, SccmArgument]
+
+
+class SetRrgValueWithPauseAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.SET_RRG_VALUE_WITH_PAUSE
+    key = ACTION_NAMES.SET_RRG_VALUE_WITH_PAUSE
+    args_info = [GasListArgument, SccmArgument, TimeEditArgument]
+
 
 
 ACTIONS = [
-    AppAction("Pause"),
-    OpenValveAction("Open valve"),
-    CloseValveAction("Close valve"),
-    AppAction("Act 1", args_amount=2),
-    AppAction("Act 2", args_amount=3),
-    AppAction("Act 3", args_amount=1),
-    AppAction("Act 4", args_amount=1),
-    AppAction("Act ХХХ", args_amount=1),
+    TurnOnPumpAction(),
+    OpenValveAction(),
+    CloseValveAction(),
+    CloseAllValvesAction(),
+    SetRrgValueAction(),
+    SetRrgValueWithPauseAction(),
 ]
 
 
