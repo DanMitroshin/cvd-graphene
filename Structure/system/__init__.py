@@ -14,15 +14,17 @@ from Structure.system.exceptions.conditions import BadNumbersConditionException,
 from Core.constants import NOTIFICATIONS
 
 
-class CvdSystem(object):
-    class EventLog:
-        def __init__(self, log, log_type=NOTIFICATIONS.LOG):
-            self.uid = uuid.uuid4()
-            self.log = log
-            self.log_type = log_type
+class EventLog:
+    def __init__(self, log, log_type=NOTIFICATIONS.LOG):
+        self.uid = uuid.uuid4()
+        self.log = log
+        self.log_type = log_type
 
-        def __str__(self):
-            return f"{self.uid} | {self.log_type} | {self.log}"
+    def __str__(self):
+        return f"{self.uid} | {self.log_type} | {self.log}"
+
+
+class CvdSystem(object):
 
     def __init__(self):
         self._last_action_answer = None
@@ -131,7 +133,7 @@ class CvdSystem(object):
 
     def _add_log(self, log, log_type=NOTIFICATIONS.LOG):
         try:
-            self._event_logs.append(self.EventLog(log, log_type=log_type))
+            self._event_logs.append(EventLog(log, log_type=log_type))
         except Exception as e:
             print(f"Add event log error: {e}")
 

@@ -24,18 +24,39 @@ class Argument:
 
 class SccmArgument(Argument):
     arg_type = float
-    decimals = 5
+    key = "float"
+    decimals = 2
     arg_default = 0.0
 
     @safe_check
     def check(self, value):
         value = float(value)
-        range_list = [0, 100]
+        range_list = [0, 200]
         if range_list[0] <= value <= range_list[1]:
-            raise Exception(f"Percent value {value}% not in range {range_list}")
+            raise Exception(f"SCCM value {value} not in range {range_list}")
 
 
 class FloatArgument(Argument):
+    arg_type = float
+    arg_default = 0.0
+
+    @safe_check
+    def check(self, value):
+        value = float(value)
+
+
+class IntKeyArgument(Argument):
+    key = "int"
+    arg_type = int
+    arg_default = 0
+
+    @safe_check
+    def check(self, value):
+        value = int(value)
+
+
+class FloatKeyArgument(Argument):
+    key = "float"
     arg_type = float
     arg_default = 0.0
 
@@ -128,6 +149,52 @@ class SetRrgValueWithPauseAction(AppAction):
     args_info = [GasListArgument, SccmArgument, TimeEditArgument]
 
 
+class PumpOutCameraAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.PUMP_OUT_CAMERA
+    key = ACTION_NAMES.PUMP_OUT_CAMERA
+    args_info = [FloatArgument, TimeEditArgument]
+
+
+class VentilateCameraAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.VENTILATE_CAMERA
+    key = ACTION_NAMES.VENTILATE_CAMERA
+    args_info = [IntKeyArgument, IntKeyArgument]
+
+
+class RampAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.RAMP
+    key = ACTION_NAMES.RAMP
+    args_info = [FloatKeyArgument, TimeEditArgument]
+
+
+class SetTemperatureAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.SET_TEMPERATURE
+    key = ACTION_NAMES.SET_TEMPERATURE
+    args_info = [IntKeyArgument, TimeEditArgument]
+
+
+class PauseAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.PAUSE
+    key = ACTION_NAMES.PAUSE
+    args_info = [TimeEditArgument]
+
+
+class FullOpenPumpAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.FULL_OPEN_PUMP
+    key = ACTION_NAMES.FULL_OPEN_PUMP
+    args_info = []
+
+
+class FullClosePumpAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.FULL_CLOSE_PUMP
+    key = ACTION_NAMES.FULL_CLOSE_PUMP
+
+
+class StabilizePressureAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.STABILIZE_PRESSURE
+    key = ACTION_NAMES.STABILIZE_PRESSURE
+    args_info = [FloatArgument, TimeEditArgument]
+
 
 ACTIONS = [
     TurnOnPumpAction(),
@@ -136,6 +203,14 @@ ACTIONS = [
     CloseAllValvesAction(),
     SetRrgValueAction(),
     SetRrgValueWithPauseAction(),
+    PumpOutCameraAction(),
+    VentilateCameraAction(),
+    RampAction(),
+    SetTemperatureAction(),
+    PauseAction(),
+    FullOpenPumpAction(),
+    FullClosePumpAction(),
+    StabilizePressureAction(),
 ]
 
 

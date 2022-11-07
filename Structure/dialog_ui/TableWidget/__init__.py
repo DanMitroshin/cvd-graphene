@@ -6,7 +6,7 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QFileDialog, \
     QTableWidget, QTableWidgetItem, QLineEdit, QComboBox, QPushButton, QHBoxLayout, QHeaderView, QTimeEdit, \
-    QDoubleSpinBox
+    QDoubleSpinBox, QSpinBox
 from PyQt5.QtCore import QSize, Qt, QTime
 
 from Core.actions import ACTIONS, get_action_by_name, AppAction
@@ -38,6 +38,42 @@ class TableItem(object):
         return False
 
 
+TIME_MINUTES_DIGITS_MAX = 4
+TIME_SECONDS_DIGITS_MAX = 2
+
+
+class AppQTimeEdit(QLineEdit):
+    def __init__(self, parent=None, text="0:00"):
+        super().__init__(parent=parent)
+        self.setInputMask(f"{'0' * TIME_MINUTES_DIGITS_MAX}:{'0' * TIME_SECONDS_DIGITS_MAX}")
+        self.setText(text)
+        # self.textChanged.connect(self._on_change)
+
+    def setText(self, a0: str) -> None:
+        m, s = '0', '0'
+        try:
+            m, s = list(map(str, map(int, a0.strip().split(':'))))
+        except:
+            pass
+        text = f"{m.zfill(TIME_MINUTES_DIGITS_MAX)}:{s.zfill(TIME_SECONDS_DIGITS_MAX)}"
+        super().setText(text)
+
+    # def _on_change(self):
+    #     self.setText(self.text())
+
+
+class AppQSpinBox(QSpinBox):
+    def __init__(self, parent=None, maximum=1000000):
+        super().__init__(parent=parent)
+        self.setMaximum(maximum)
+
+
+class AppQDoubleSpinBox(QDoubleSpinBox):
+    def __init__(self, parent=None, maximum=200):
+        super().__init__(parent=parent)
+        self.setMaximum(maximum)
+
+
 class TableRow(object):
 
     def __init__(self, table, row_id, items=None):
@@ -65,14 +101,15 @@ class TableRow(object):
                 self.items = [TableItem(self.combo)] + [
                     TableItem(QTableWidgetItem(s)) for s in items[1:]
                 ]
+                # QTableWidgetItem().setW
                 for i, arg in enumerate(action.args_info):
                     if arg.arg_type == list:
                         combo2 = QComboBox()
                         combo2.addItems(arg.arg_list)
                         combo2.setCurrentIndex(max(0, arg.arg_list.index(items[i + 1])))
                         self.items[i + 1] = TableItem(combo2)
-                    elif arg.arg_type == float:
-                        widget = QDoubleSpinBox()
+                    elif arg.key == "float":
+                        widget = AppQDoubleSpinBox()
                         v = 0.0
                         try:
                             v = float(items[i + 1])
@@ -81,17 +118,47 @@ class TableRow(object):
                         widget.setValue(v)
                         widget.setDecimals(arg.decimals if hasattr(arg, 'decimals') else 3)
                         self.items[i + 1] = TableItem(widget)
-                    elif "time" == arg.key:
+                    elif arg.key == "time":
                         h, m = 0, 0
                         try:
-                            h, m = list(map(int, items[i + 1].strip().split(':')))
+                            h, m = list(items[i + 1].strip().split(':'))
+                            if h:
+                                try:
+                                    h = int(h)
+                                except:
+                                    h = 0
+                            else:
+                                h = 0
+
+                            if m:
+                                try:
+                                    m = int(m)
+                                except:
+                                    m = 0
+                            else:
+                                m = 0
+
                         except:
                             pass
-                        t: QTime = QTime()
-                        t.setHMS(h, m, 0, 0)
-                        twidget = QTimeEdit()
-                        twidget.setTime(t)
+                        # t: QTime = QTime()
+                        # t.setHMS(h, m, 0, 0)
+                        # twidget = QTimeEdit()
+                        # twidget.setTime(t)
+
+                        text = f"{h}:{m}"
+                        twidget = AppQTimeEdit(text=text)
+
                         self.items[i + 1] = TableItem(twidget)
+                    elif arg.key == "int":
+                        digit = 0
+                        try:
+                            digit = int(items[i + 1])
+                        except:
+                            pass
+                        widget = AppQSpinBox()
+                        widget.setValue(digit)
+
+                        self.items[i + 1] = TableItem(widget)
 
         if self.items is None:
             self._set_default_table_items()
@@ -134,9 +201,12 @@ class TableRow(object):
                 combo2.setCurrentIndex(0)
                 self.items[j + 1] = TableItem(combo2)
             elif arg.key == "time":
-                self.items[j + 1] = TableItem(QTimeEdit())
-            elif arg.arg_type == float:
-                widget = QDoubleSpinBox()
+                # self.items[j + 1] = TableItem(QTimeEdit())
+                self.items[j + 1] = TableItem(AppQTimeEdit())
+            elif arg.key == "int":
+                self.items[j + 1] = TableItem(AppQSpinBox())
+            elif arg.key == "float":
+                widget = AppQDoubleSpinBox()
                 widget.setValue(arg.arg_default if arg.arg_default else 0.0)
                 widget.setDecimals(arg.decimals if hasattr(arg, 'decimals') else 3)
                 self.items[j + 1] = TableItem(widget)
@@ -189,6 +259,7 @@ class AppTableWidget(QWidget):
         table.setColumnCount(5)  # Set three columns
         table.setRowCount(self.row_count)  # and one row
         table.setFont(custom_font)
+        # table.setWordWrap(False)  # ABOUT WORD WRAP: https://stackoverflow.com/questions/53759776/pyqt-qtablewidget-wordwrap-lines
 
         # Set the table headers
         table.setHorizontalHeaderLabels(TABLE_COLUMN_NAMES)
@@ -333,14 +404,18 @@ class AppTableWidget(QWidget):
                     it = self.table.item(row, col)
                     it2 = self.table.cellWidget(row, col)
                     if it2 is not None:
-                        if isinstance(it2, QTimeEdit):
+                        if isinstance(it2, AppQTimeEdit):  # QTimeEdit
                         # if hasattr(it2, 'time'):
-                            t: QTime = it2.time()
+                        #     t: QTime = it2.time()
                             # t.setHMS(1, 1, 0, 0)
                             # print("TIME SAVE:", t.hour(), t.minute(), t.second())
-                            row_arr.append(f"{t.hour()}:{t.minute()}")
+                            # row_arr.append(f"{t.hour()}:{t.minute()}")
+                            row_arr.append(f"{it2.text()}")
                             continue
-                        elif isinstance(it2, QDoubleSpinBox):
+                        elif isinstance(it2, AppQDoubleSpinBox):
+                            row_arr.append(f"{it2.value()}")
+                            continue
+                        elif isinstance(it2, AppQSpinBox):
                             row_arr.append(f"{it2.value()}")
                             continue
 
