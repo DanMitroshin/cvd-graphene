@@ -11,7 +11,8 @@ from Core.components.controllers import AccurateVakumetrController, ValveControl
 from Core.components.controllers.base import AbstractController
 from Core.settings import VALVES_CONFIGURATION, TABLE_COLUMN_NAMES
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
-from Core.constants import NOTIFICATIONS
+from Core.constants import NOTIFICATIONS, RECIPE_STATES
+from Structure.system.recipe_runner import RecipeRunner
 
 
 class EventLog:
@@ -31,6 +32,17 @@ class CvdSystem(object):
         self._errors = []
         self._event_logs = []
         self._is_working = True
+
+        self._recipe = None
+        self._recipe_runner = RecipeRunner(
+            # ...
+            on_success_end_recipe=self._on_success_end_recipe,
+            set_current_recipe_step=self._set_current_recipe_step,
+        )
+        self._recipe_thread = None
+        self._recipe_history = []
+        self._recipe_current_step = ""
+        self._recipe_state = RECIPE_STATES.STOP
 
         # CONTROLLERS
         self.accurate_vakumetr_controller = AccurateVakumetrController()
@@ -107,6 +119,8 @@ class CvdSystem(object):
         for controller in self._controllers:
             if controller is not None:
                 controller.destructor()
+        if self._recipe_thread is not None:
+            self._recipe_thread.join()
 
     def check_conditions(self):
         if 5 > 6:
@@ -151,17 +165,6 @@ class CvdSystem(object):
         for controller in self._controllers:
             value = controller.get_value()
 
-    def long_function(self):
-        start = time.time()
-        for i in range(10):
-            counter = 0
-            for _ in range(30000000):
-                counter += 1
-            print("|>>>>> LONG", i, self.voltage_value)
-            sleep(1)
-        end = time.time()
-        print("|||>> EXIT:", end - start)
-
     @action
     def change_valve_state(self, gas):
         # t = Thread(target=self.long_function)
@@ -181,10 +184,6 @@ class CvdSystem(object):
     @action
     def set_current(self, value):
         return self.current_source_controller.set_current_value(value)
-        # try:
-        #     return self.current_source_controller.set_current_value(value)
-        # except Exception as e:
-        #     raise Exception(f"Ошибка выставления тока: " + str(e))
 
     def get_values(self):
         try:
@@ -195,6 +194,16 @@ class CvdSystem(object):
             # print("VOLT VAL:", self.voltage_value)
         except Exception as e:
             self._add_error_log(e)
+
+    @property
+    def recipe_state(self):
+        return self._recipe_runner.recipe_state
+
+    def on_pause_recipe(self):
+        self._recipe_runner.set_recipe_state(RECIPE_STATES.PAUSE)
+
+    def on_stop_recipe(self):
+        self._recipe_runner.set_recipe_state(RECIPE_STATES.STOP)
 
     def save_recipe_file(self, path: str = None, file: str = None, file_path=None, data=None):
         if file_path is None and (file is None or len(file) < 8):
@@ -213,21 +222,12 @@ class CvdSystem(object):
         file_name = None
         try:
             file_name = os.path.basename(file_path)
-            print("FILE P:", file_path, file_name)
+            # print("FILE P:", file_path, file_name)
             excel_data_df = pd.read_excel(file_path, header=None)
-            # for a in excel_data_df:
-            #     print("AA", a)
-            # print("1")
             cols = excel_data_df.columns.ravel()
-            # print("2")
             arr = []
             for col in cols[1:]:
-            # for index, row in excel_data_df.iterrows():
-                print("3")
-                # print(row)
-                # a = row
                 a = excel_data_df[col].tolist()[1:]
-                print("4", a)
                 for i in range(len(a)):
                     # try:
                     if i + 1 > len(arr):
@@ -235,7 +235,39 @@ class CvdSystem(object):
                     if type(a[i]) != str and isnan(a[i]):
                         a[i] = ""
                     arr[i].append(str(a[i]))
-            print("M", arr)
+            # print("RECIPE GET ARRAY DATA", arr)
             return arr
         except Exception as e:
             self._handle_exception(Exception(f"Ошибка открытия {file_name}: {str(e)}"))
+
+    def _on_success_end_recipe(self):
+        try:
+            self._add_log("Рецепт успешно выполнен")
+            # self._recipe_thread.join()
+            self._recipe_thread = None
+            self._recipe = None
+        except Exception as e:
+            print("On success end recipe error:", e)
+
+    def run_recipe(self, recipe):
+        if type(recipe) != list:
+            self._add_error_log(Exception("Чтение рецепта завершилось с ошибками"))
+            return False
+
+        self._recipe = recipe
+        self._recipe_runner.set_recipe(self._recipe)
+        ready = self._recipe_runner.check_recipe()
+        if ready:
+            self._recipe_thread = Thread(target=self._recipe_runner.run_recipe)
+            self._recipe_thread.start()
+        print("|>> WHAT'S READY:", ready)
+        return ready
+
+    def _set_current_recipe_step(self, name, index=None):
+        index = index if index else (len(self._recipe_history) + 1)
+        self._recipe_current_step = {'name': name, 'index': index}
+        self._recipe_history.append(self._recipe_current_step)
+
+    @property
+    def current_recipe_step(self):
+        return self._recipe_current_step

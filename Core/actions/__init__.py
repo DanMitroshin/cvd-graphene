@@ -7,7 +7,7 @@ def safe_check(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            return f"Check error: {str(e)}"
+            return f"{str(e)}"
     return wrapper
 
 

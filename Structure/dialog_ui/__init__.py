@@ -13,231 +13,13 @@ from Structure.dialog_ui.RightButtonsWidget import RightButtonsWidget
 from Structure.dialog_ui.TableWidget import AppTableWidget
 from Structure.dialog_ui.components import LogWidget
 from Structure.system import CvdSystem
-
-
-class UiMainWindow(object):
-
-    def setup_ui(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.setWindowModality(QtCore.Qt.NonModal)
-        # self.setWindowTitle("My App")
-
-        # line_style = QStyle()
-        # line_style.sty
-
-        line = QFrame(MainWindow)
-        # line.setObjectName(QMetaType.Type.QString)
-        line.setObjectName("ll")
-        line.setLineWidth(100)
-        line.setFixedHeight(100)
-        line.setStyleSheet("background-color: rgb(255, 0, 50);")
-        # line.setGeometry(QRect(0, 10, 100, 110))
-        # line.setStyle()
-        # line.setFrameShape(QFrame.Shape.HLine)
-        # line.setFrameShadow(QFrame.Shadow.Sunken)
-        self.line = line
-
-        self.line = QFrame()
-        self.line.setMinimumWidth(100)
-        self.line.setFixedHeight(20)
-        # self.line.setGeometry(QRect(60, 110, 751, 20))
-        self.line.setFrameShape(QFrame.Shape.HLine)
-        self.line.setFrameShadow(QFrame.Shadow.Sunken)
-        self.line.setSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum,
-                                QtWidgets.QSizePolicy.Policy.Minimum)
-
-        self.label = QLabel()
-        # self.label.setStyleSheet('color:"red";font-size: 32;')
-        self.label.setStyleSheet("""
-                QWidget {
-                    border: 2px solid black;
-                    border-radius: 10px;
-                    background-color: rgb(255, 255, 255);
-                    font-size: 32px;
-                    max-width: 300px;
-                    }
-                """)
-
-        self.input = QLineEdit(MainWindow)
-        self.input.textChanged.connect(self.label.setText)
-
-        layout = QHBoxLayout()
-        layout_v = QVBoxLayout()
-        layout.addWidget(self.line)
-        layout.addWidget(self.input)
-        layout.addWidget(self.label)
-
-        self.button_close = QPushButton("нажать для закрытия программы")
-        self.button_close.clicked.connect(self.close)
-        self.button_close.setStyleSheet("""
-                QPushButton {
-                    height: 200px;
-                    font-size: 20px;
-                }
-                """)
-        layout_v.addLayout(layout)
-        self.button = QPushButton("Press Me!")
-        self.button.setStyleSheet("""
-                        QPushButton {
-                            height: 100px;
-                            font-size: 16px;
-                        }
-                        """)
-        self.counter = 0
-        self.button.clicked.connect(self.click_press)
-
-        layout_v.addWidget(self.button)
-        layout_v.addWidget(self.button_close)
-
-        container = QWidget()
-        container.setLayout(layout_v)
-
-        # Устанавливаем центральный виджет Window.
-        self.setCentralWidget(container)
-
-    def setup_ui(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.setWindowModality(QtCore.Qt.NonModal)
-        # MainWindow.resize(534, 364)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
-        self.gridLayout.setObjectName("gridLayout")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setEnabled(True)
-        font = QtGui.QFont()
-        font.setPointSize(36)
-        self.label.setFont(font)
-        self.label.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
-        self.label.setObjectName("label")
-        self.gridLayout.addWidget(self.label, 0, 0, 1, 3)
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        font = QtGui.QFont()
-        font.setPointSize(20)
-        self.label_2.setFont(font)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 2)
-        self.calendarWidget = QtWidgets.QCalendarWidget(self.centralwidget)
-        self.calendarWidget.setObjectName("calendarWidget")
-        self.gridLayout.addWidget(self.calendarWidget, 1, 2, 3, 1)
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.plainTextEdit.setObjectName("plainTextEdit")
-        self.gridLayout.addWidget(self.plainTextEdit, 2, 0, 1, 2)
-        self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.dateEdit.setFont(font)
-        self.dateEdit.setObjectName("dateEdit")
-        self.gridLayout.addWidget(self.dateEdit, 3, 0, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.pushButton.setFont(font)
-        self.pushButton.setObjectName("pushButton")
-        self.gridLayout.addWidget(self.pushButton, 3, 1, 1, 1)
-        self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
-        self.progressBar.setProperty("value", 24)
-        self.progressBar.setObjectName("progressBar")
-        self.gridLayout.addWidget(self.progressBar, 4, 0, 1, 3)
-        self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        font = QtGui.QFont()
-        font.setPointSize(24)
-        self.label_3.setFont(font)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout.addWidget(self.label_3, 5, 0, 1, 3)
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 534, 18))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        self.retranslate_ui(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def retranslate_ui(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Тест приложения на Python с модулем PyQt5"))
-        self.label.setText(_translate("MainWindow", "Трекер события !@#"))
-        self.label_2.setText(_translate("MainWindow", "Описание события:"))
-        self.pushButton.setText(_translate("MainWindow", "Следить"))
-        self.label_3.setText(_translate("MainWindow", "До наступления события осталось: ХХ дней )))"))
+from Core.constants import RECIPE_STATES
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("My App")
-
-        # line_style = QStyle()
-        # line_style.sty
-
-        line = QFrame()
-        # line.setObjectName(QMetaType.Type.QString)
-        line.setObjectName("ll")
-        line.setLineWidth(100)
-        line.setFixedHeight(100)
-        # line.setStyleSheet("background-color: rgb(255, 0, 50);")
-        # line.setGeometry(QRect(0, 10, 100, 110))
-        # line.setStyle()
-        # line.setFrameShape(QFrame.Shape.HLine)
-        # line.setFrameShadow(QFrame.Shadow.Sunken)
-        self.line = line
-
-        self.line = QFrame()
-        self.line.setMinimumWidth(100)
-        self.line.setFixedHeight(20)
-        # self.line.setGeometry(QRect(60, 110, 751, 20))
-        self.line.setFrameShape(QFrame.Shape.HLine)
-        self.line.setFrameShadow(QFrame.Shadow.Sunken)
-        self.line.setSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum,
-                                QtWidgets.QSizePolicy.Policy.Minimum)
-
-        self.label = QLabel()
-        # self.label.setStyleSheet('color:"red";font-size: 32;')
-        # self.label.setStyleSheet("""
-        # QWidget {
-        #     border: 2px solid black;
-        #     border-radius: 10px;
-        #     background-color: rgb(255, 255, 255);
-        #     font-size: 32px;
-        #     max-width: 300px;
-        #     }
-        # """)
-
-        self.input = QLineEdit()
-        self.input.textChanged.connect(self.label.setText)
-
-        layout = QHBoxLayout()
-        layout_v = QVBoxLayout()
-        layout.addWidget(self.line)
-        layout.addWidget(self.input)
-        layout.addWidget(self.label)
-
-        self.button_close = QPushButton("CLOSE X")
-        self.button_close.clicked.connect(self.close)
-        # self.button_close.setStyleSheet("""
-        #     height: 100px;
-        #     font-size: 20px;
-        # """)
-        layout_v.addLayout(layout)
-        self.button = QPushButton("Press Me!")
-        # self.button.setStyleSheet("""
-        #         QPushButton {
-        #             height: 100px;
-        #             font-size: 16px;
-        #         }
-        #         """)
-        self.counter = 0
-        self.button.clicked.connect(self.click_press)
-
-        layout_v.addWidget(self.button)
-        layout_v.addWidget(self.button_close)
-
-        container = QWidget()
-        container.setLayout(layout_v)
+        self.setWindowTitle("CVD-Graphene")
 
         ##############################################################################
         ##############################################################################
@@ -248,6 +30,10 @@ class MainWindow(QMainWindow):
         self.system = CvdSystem()
         self.system.setup()
         self.system.threads_setup()
+
+        self._recipe_history = []
+        self._current_recipe_step = None
+        self._recipe_state = RECIPE_STATES.STOP
 
         self.main_window = QHBoxLayout()
         self.main_widget = QWidget()
@@ -283,6 +69,7 @@ class MainWindow(QMainWindow):
             parent=self,
             save_recipe_file=self.system.save_recipe_file,
             get_recipe_file_data=self.system.get_recipe_file_data,
+            start_recipe=self.start_recipe,
         )
 
         # LOG NOTIFICATION WIDGET ###################################
@@ -337,14 +124,51 @@ class MainWindow(QMainWindow):
     def show_time(self):
         print("TIME:", datetime.datetime.now())
 
+    def start_recipe(self):
+        try:
+            recipe = self.table_widget.get_values()
+            ready = self.system.run_recipe(recipe)
+            if not ready:
+                return
+            self._recipe_history = []
+            self.add_recipe_step("Инициализация рецепта")
+            self.table_widget.on_close()
+            self.main_interface_layout_widget.deactivate_interface()
+            self.right_buttons_layout_widget.activate_manage_recipe_buttons()
+        except Exception as e:
+            print("Start recipe UI error:", e)
+
+    def add_recipe_step(self, name="---", index=None):
+        index = index if index else len(self._recipe_history)
+        if self._current_recipe_step:
+            if self._current_recipe_step.get('index', -1) == index:
+                return
+        self._current_recipe_step = {"name": name, "index": index}
+        self._recipe_history.append(f"{datetime.datetime.utcnow().time()} [{index}] {name}")
+        try:
+            self.main_interface_layout_widget.set_current_step(self._recipe_history[-1])
+        except:
+            pass
+
     def get_values_and_log_state(self):
         try:
-            # sleep(5)
+
             self.system.get_values()
+            recipe_step = self.system.current_recipe_step
+            if recipe_step:
+                self.add_recipe_step(**recipe_step)
+            recipe_state = self.system.recipe_state
+            if recipe_state != self._recipe_state:
+                self._recipe_state = recipe_state
+                if recipe_state == RECIPE_STATES.STOP:
+                    self.main_interface_layout_widget.activate_interface()
+                    self.right_buttons_layout_widget.deactivate_manage_recipe_buttons()
+
 
             self.main_interface_layout_widget.pressure_control_block.show_pressure_block.set_value(
                 self.system.accurate_vakumetr_value
             )
+
             # print("VOLTAGE:", self.system.voltage_value)
             # VOLTAGE
             self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value(
@@ -366,14 +190,3 @@ class MainWindow(QMainWindow):
                     self.log_widget.set_log(self.log)
             except Exception as e:
                 print("Set log error:", e)
-
-
-# if __name__ == "__main__":
-#     import sys
-#
-#     app = QtWidgets.QApplication(sys.argv)
-#     MainWindow = QtWidgets.QMainWindow()
-#     ui = UiMainWindow()
-#     ui.setup_ui(MainWindow)
-#     MainWindow.show()
-#     sys.exit(app.exec_())

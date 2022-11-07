@@ -222,12 +222,18 @@ custom_font.setPointSize(18)
 
 class AppTableWidget(QWidget):
 
-    def __init__(self, parent=None, save_recipe_file=None, get_recipe_file_data=None):
+    def __init__(self,
+                 parent=None,
+                 save_recipe_file=None,
+                 get_recipe_file_data=None,
+                 start_recipe=None,
+                 ):
         # You must call the super class method
         super().__init__(parent)
 
         self.save_recipe_file = save_recipe_file
         self.get_recipe_file_data = get_recipe_file_data
+        self.start_recipe = start_recipe
 
         self.file = None
         self.path = None
@@ -289,7 +295,7 @@ class AppTableWidget(QWidget):
         add_row_button.setStyleSheet(styles.table_button)
 
         # get_values_button = QPushButton('print values')
-        # get_values_button.clicked.connect(self._get_values)
+        # get_values_button.clicked.connect(self.get_values)
         buttons_layout = QHBoxLayout()
 
         save_button = QPushButton("SAVE RECIPE")
@@ -302,6 +308,11 @@ class AppTableWidget(QWidget):
         close_button.setObjectName("table_button")
         close_button.setStyleSheet(styles.table_button)
 
+        start_button = QPushButton("RUN RECIPE")
+        start_button.clicked.connect(self.start_recipe)
+        start_button.setObjectName("table_button")
+        start_button.setStyleSheet(styles.table_button)
+
         name = QLineEdit()
         name.setPlaceholderText("Название файла...")
         name.setText(create_recipe_file_name())
@@ -311,6 +322,7 @@ class AppTableWidget(QWidget):
 
         buttons_layout.addWidget(self.file_name_widget)
         buttons_layout.addWidget(save_button)
+        buttons_layout.addWidget(start_button)
         # buttons_layout.addWidget(get_values_button)
         buttons_layout.addWidget(close_button)
 
@@ -395,7 +407,7 @@ class AppTableWidget(QWidget):
         self.rows.append(TableRow(table=self, row_id=self.row_count - 1))
         self._update_table()
 
-    def _get_values(self):
+    def get_values(self):
         try:
             arr = []
             for row in range(self.table.rowCount()):
@@ -452,7 +464,7 @@ class AppTableWidget(QWidget):
             else:
                 self.file = file_name + '.xlsx'
 
-            arr = self._get_values()
+            arr = self.get_values()
             self.save_recipe_file(
                 file=self.file,
                 path=self.path,

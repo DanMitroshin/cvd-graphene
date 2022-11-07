@@ -35,4 +35,18 @@ styles = StyleSheet({
         "font-size": "24px",
         "background-color": LIGHT_GREEN,
     },
+    "pause_recipe_button": {
+        "name": "QPushButton#pause_recipe_button",
+        "min-height": "100px",
+        "padding": "10px",
+        "font-size": "24px",
+        "background-color": 'rgb(255, 255, 0)',
+    },
+    "stop_recipe_button": {
+        "name": "QPushButton#stop_recipe_button",
+        "min-height": "100px",
+        "padding": "10px",
+        "font-size": "24px",
+        "background-color": 'rgb(255, 0, 0)',
+    },
 })
