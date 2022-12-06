@@ -1,4 +1,8 @@
-import wiringpi
+try:
+    import wiringpi
+except:
+    pass
+
 import serial
 from time import sleep
 
@@ -88,7 +92,7 @@ def test_3():
 if __name__ == "__main__":
     print("TEST 1 ===>")
     # try:
-    test_3()
+    # test_3()
     test_2()
     # test_1()
     print("TEST 1 ===> PASSED")
