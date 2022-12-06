@@ -29,5 +29,5 @@ PyQt6 realisation
 
 ### Notes
 
- - Install PyQt5 on mac with homebrew: `export PATH="/opt/homebrew/opt/qt5/bin:$PATH"`
+ - Install PyQt5 on mac with homebrew: `export PATH="/opt/homebrew/opt/qt5/bin:$PATH"` && `pip install pyqt5 --config-settings --confirm-license= --verbose`
  - 
