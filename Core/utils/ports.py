@@ -11,4 +11,5 @@ def get_serial_port():
         # print("# SERIAL PORT:", serial_port)
         return serial_port  # /dev/ttyUSB0
     except:
-        return ""
+        print("[ERR] SERIAL PORT ERROR! RETURN DEFAULT")
+        return "/dev/ttyUSB0"
