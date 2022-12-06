@@ -20,6 +20,7 @@ class AbstractController(object):
             self.device: AbstractDevice = self.device_class()
 
         self._active = True
+        self.loop_delay = 0.2
 
         # THREAD VARIABLES ############################
         self._runnable = False
@@ -92,7 +93,7 @@ class AbstractController(object):
     def _run(self):
         to_exit = False
         while True:
-            time.sleep(0.2)
+            time.sleep(self.loop_delay)
             try:
                 if self._is_thread_reading:
                     self._thread_read_command()

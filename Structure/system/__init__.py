@@ -187,8 +187,8 @@ class CvdSystem(object):
 
     def get_values(self):
         try:
-            pass
-            # self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
+            # pass
+            self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
             # self.current_value = self.current_source_controller.get_current_value()
             # self.voltage_value = self.current_source_controller.get_voltage_value()
             # print("VOLT VAL:", self.voltage_value)
