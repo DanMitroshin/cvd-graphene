@@ -25,3 +25,9 @@ PyQt6 realisation
 ↓ **Devices** - analog of real device to communicate with  
 ↓ **Controllers** - device controllers with realization of sequences of commands, algorithms, single commands and so on  
 ↓ **System** - main administrator for management all communicators with realization of logging, analysis exceptions, run tasks and so on  
+
+
+### Notes
+
+ - Install PyQt5 on mac with homebrew: `export PATH="/opt/homebrew/opt/qt5/bin:$PATH"`
+ - 

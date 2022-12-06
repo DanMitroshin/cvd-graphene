@@ -83,9 +83,12 @@ class MainWindow(QMainWindow):
         ############################################
         # CONNECT FUNCTIONS ########################
 
-        self.main_interface_layout_widget.pressure_block.o2.connect_valve_function(
-            self.system.change_valve_state
-        )
+        # self.main_interface_layout_widget.pressure_block.o2.connect_valve_function(
+        #     self.system.change_valve_state
+        # )
+        for gas in self.main_interface_layout_widget.pressure_block.gases:
+            gas.connect_valve_function(self.system.change_valve_state)
+
         self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_current
         # self.system.change_valve_state("")

@@ -47,3 +47,12 @@ class PressureBlock(QWidget):
 
         self.f2 = GasStateWidget(gas="F_2")
         self.layout.addWidget(self.f2,)
+
+        # need to connect functions in system
+        self.gases = [
+            self.o2,
+            self.n2,
+            self.ar,
+            self.c2,
+            self.f2,
+        ]
