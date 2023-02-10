@@ -7,12 +7,21 @@ import pandas as pd
 from time import sleep
 from threading import Thread
 
-from Core.components.controllers import AccurateVakumetrController, ValveController, CurrentSourceController
-from Core.components.controllers.base import AbstractController
-from Core.settings import VALVES_CONFIGURATION, TABLE_COLUMN_NAMES
+from coregraphene.components.controllers import (
+    AbstractController,
+    AccurateVakumetrController,
+    ValveController,
+    CurrentSourceController,
+)
+
+from coregraphene.conf import settings
+from coregraphene.constants import NOTIFICATIONS, RECIPE_STATES
+
 from Structure.system.exceptions.conditions import BadNumbersConditionException, BaseConditionException
-from Core.constants import NOTIFICATIONS, RECIPE_STATES
 from Structure.system.recipe_runner import RecipeRunner
+
+VALVES_CONFIGURATION = settings.VALVES_CONFIGURATION
+TABLE_COLUMN_NAMES = settings.TABLE_COLUMN_NAMES
 
 
 class EventLog:

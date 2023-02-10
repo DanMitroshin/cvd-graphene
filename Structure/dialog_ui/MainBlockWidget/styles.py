@@ -1,4 +1,4 @@
-from Core.ui import StyleSheet
+from coregraphene.ui import StyleSheet
 
 styles = StyleSheet({
     "container": {

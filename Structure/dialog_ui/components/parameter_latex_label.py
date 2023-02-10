@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, QGridLayout, QVBoxLayo
 
 from .latex_widget import LatexWidget
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
-from Core.ui import StyleSheet
+from coregraphene.ui import StyleSheet
 
 WIDTH = "300px"
 

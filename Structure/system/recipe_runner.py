@@ -1,6 +1,6 @@
 from time import sleep
-from Core.actions import ACTIONS
-from Core.constants import RECIPE_STATES
+from coregraphene.actions import ACTIONS
+from coregraphene.constants import RECIPE_STATES
 
 
 class RecipeRunner:

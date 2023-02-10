@@ -1,4 +1,4 @@
-from Core.ui import StyleSheet
+from coregraphene.ui import StyleSheet
 
 GAS_HEIGHT = "100px"
 

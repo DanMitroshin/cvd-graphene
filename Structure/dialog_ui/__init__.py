@@ -13,7 +13,7 @@ from Structure.dialog_ui.RightButtonsWidget import RightButtonsWidget
 from Structure.dialog_ui.TableWidget import AppTableWidget
 from Structure.dialog_ui.components import LogWidget
 from Structure.system import CvdSystem
-from Core.constants import RECIPE_STATES
+from coregraphene.constants import RECIPE_STATES
 
 
 class MainWindow(QMainWindow):

@@ -1,4 +1,8 @@
-import sys, os, datetime
+import sys
+import os
+import datetime
+os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'Core.settings')
+
 from PyQt5.QtWidgets import (
     QMainWindow, QApplication, QListWidget, QVBoxLayout,
     QLabel, QCheckBox, QComboBox, QLineEdit, QStyle,
@@ -7,9 +11,9 @@ from PyQt5.QtWidgets import (
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt, QMetaType, QRect
 
-from Core.exceptions.communicators import InactiveCommunicatorException
-from Core.ui import StyleSheet
-from Core.utils.algorithms import crc16
+# from Core.exceptions.communicators import InactiveCommunicatorException
+# from Core.ui import StyleSheet
+# from Core.utils.algorithms import crc16
 from Structure.dialog_ui import MainWindow
 # from Tests.devices.current_source_akip import test_akip_2, get_serial_port
 # from Tests.devices.trm200 import test_trm_2, test_4, test_1, check_port

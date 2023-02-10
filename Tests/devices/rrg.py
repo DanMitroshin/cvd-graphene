@@ -7,7 +7,7 @@ import serial
 from time import sleep
 import codecs
 
-from Core.utils.algorithms import crc16
+from coregraphene.utils.algorithms import crc16
 from .ports import get_serial_port
 print("SERIAL:", get_serial_port())
 

@@ -5,7 +5,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
-from Core.ui import StyleSheet
+from coregraphene.ui import StyleSheet
 
 WIDTH = "300px"
 

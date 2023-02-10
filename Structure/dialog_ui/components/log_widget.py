@@ -2,8 +2,8 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, QHBoxLayout, QVBoxLayout, QGraphicsDropShadowEffect
 
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS, LIGHT_GREEN
-from Core.constants import NOTIFICATIONS
-from Core.ui import StyleSheet
+from coregraphene.constants import NOTIFICATIONS
+from coregraphene.ui import StyleSheet
 
 WIDTH = "580px"
 LABEL_WIDTH = "500px"

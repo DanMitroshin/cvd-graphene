@@ -1,4 +1,4 @@
-from Core.ui import StyleSheet
+from coregraphene.ui import StyleSheet
 from Structure.dialog_ui.constants import LIGHT_GREEN
 
 BUTTON_HEIGHT = "48px"

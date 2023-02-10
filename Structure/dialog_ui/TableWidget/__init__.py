@@ -9,8 +9,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QFi
     QDoubleSpinBox, QSpinBox
 from PyQt5.QtCore import QSize, Qt, QTime
 
-from Core.actions import ACTIONS, get_action_by_name, AppAction
-from Core.settings import TABLE_COLUMN_NAMES
+from coregraphene.actions import ACTIONS, get_action_by_name, AppAction
+from coregraphene.conf import settings
 from .styles import styles
 
 
@@ -268,7 +268,7 @@ class AppTableWidget(QWidget):
         # table.setWordWrap(False)  # ABOUT WORD WRAP: https://stackoverflow.com/questions/53759776/pyqt-qtablewidget-wordwrap-lines
 
         # Set the table headers
-        table.setHorizontalHeaderLabels(TABLE_COLUMN_NAMES)
+        table.setHorizontalHeaderLabels(settings.TABLE_COLUMN_NAMES)
 
         # self.combo = QComboBox()
         # self.combo.te
