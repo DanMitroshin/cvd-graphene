@@ -1,7 +1,4 @@
-class BaseConditionException(Exception):
-    def __init__(self, description=None):
-        s = description if description is not None else "Condition is not valid"
-        super().__init__(s)
+from coregraphene.exceptions import BaseConditionException
 
 
 class BadNumbersConditionException(BaseConditionException):
