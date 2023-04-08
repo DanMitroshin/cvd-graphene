@@ -70,6 +70,7 @@ class AppSystem(BaseSystem):
     def _init_controllers(self):
         self.accurate_vakumetr_controller = AccurateVakumetrController(
             get_potential_port=self.get_potential_controller_port,
+            port_communicator=settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
             port=self.vakumetr_port,
             active=False,
         )
@@ -85,6 +86,8 @@ class AppSystem(BaseSystem):
             self._valves[i] = ValveController(port=valve_conf["PORT"])
 
         self.current_source_controller = CurrentSourceController(
+            port=settings.CURRENT_SOURCE_USB_PORT,
+            port_communicator=settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
             on_change_current=self.on_change_current,
             on_change_voltage=self.on_change_voltage,
             on_set_current=None,  # ДОБАВИТЬ РЕАЛЬНОЕ ВЛИЯНИЕ - ПРОСТОЕ ВЫСТАВЛЕНИЕ АКТУАЛЬНОГО ЗНАЧЕНИЯ В UI
