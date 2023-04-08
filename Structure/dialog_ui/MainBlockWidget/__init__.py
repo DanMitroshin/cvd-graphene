@@ -1,7 +1,9 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel
 
-from .PressureBlock import PressureBlock
+from coregraphene.conf import settings
+# from .PressureBlock import PressureBlock, ValvesControlBlock
+from .PressureBlock import ValvesControlBlock
 from .PressureControlBlock import PressureControlBlock
 from .TemperatureBlock import TemperatureBlock
 from .styles import styles
@@ -18,7 +20,11 @@ class MainBlockWidget(QWidget):
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
         # self.setStyleSheet("* {background-color: rgb(0, 0, 255);}")
 
-        self.pressure_block = PressureBlock()
+        # self.pressure_block = ValvesControlBlock()
+        self.pressure_block = ValvesControlBlock(
+            gases_configuration=settings.VALVES_CONFIGURATION,
+            default_sccm_value=settings.MAX_DEFAULT_SCCM_VALUE,
+        )
         self.layout.addWidget(self.pressure_block)
 
         self.pressure_control_block = PressureControlBlock()

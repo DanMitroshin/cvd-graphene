@@ -87,19 +87,28 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         ############################################
         # CONNECT FUNCTIONS ########################
 
-        # self.main_interface_layout_widget.pressure_block.o2.connect_valve_function(
-        #     self.system.change_valve_state
-        # )
-        for gas in self.main_interface_layout_widget.pressure_block.gases:
-            gas.connect_valve_function(self.system.change_valve_state)
-
-        self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
-            set_value_function = self.system.set_current
-        # self.system.change_valve_state("")
+        # for gas in self.main_interface_layout_widget.pressure_block.gases:
+        #     gas.connect_valve_function(self.system.change_valve_state)
+        #
+        # self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
+        #     set_value_function = self.system.set_current
 
     def connect_controllers_actions(self):
-        for gas in self.main_interface_layout_widget.pressure_block.gases:
+        # GASES #################
+        for gas in self.milw.pressure_block.gases:
+            num = gas.number
+
             gas.connect_valve_function(self.system.change_valve_state)
+            self.system.change_gas_valve_opened.connect(gas.draw_is_open, device_num=num)
+
+        # AIR #################
+        self.milw.pressure_block.air. \
+            connect_valve_function(self.system.change_air_valve_state)
+        self.system.change_air_valve_opened.connect(self.milw.pressure_block.air.draw_is_open)
+
+        # for gas in self.main_interface_layout_widget.pressure_block.gases:
+        #     gas.connect_valve_function(self.system.change_valve_state)
+        #######################
 
         self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_current
