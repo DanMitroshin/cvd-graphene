@@ -113,6 +113,12 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_current
 
+        # PYROMETER ############
+        self.system.get_current_temperature.connect(
+            self.milw.temperature_block.set_actual_temperature
+        )
+        ########################
+
     # def on_create_recipe(self):
     #     try:
     #         self.table_widget.on_create_recipe()

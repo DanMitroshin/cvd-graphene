@@ -52,3 +52,6 @@ class CurrentSettingsBlock(QWidget):
     def set_current_value(self, value):
         self.current_value = float(value if str(value) else 0.0)
         self.current_label.setText(f"I = {round(self.current_value, 3)}A")
+
+    def set_actual_temperature(self, value):
+        self.actual_temperature.set_actual_temperature(value)

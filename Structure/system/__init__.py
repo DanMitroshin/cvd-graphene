@@ -1,11 +1,12 @@
 import gc
 
+from coregraphene.system_actions import SingleAnswerSystemAction
 from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
     ValveController,
-    CurrentSourceController,
+    CurrentSourceController, PyrometerTemperatureController,
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
@@ -20,20 +21,29 @@ class AppSystem(BaseSystem):
     def _determine_attributes(self):
         used_ports = []
         self.vakumetr_port = None
+        self.current_source_port = settings.CURRENT_SOURCE_USB_PORT
+        self.pyrometer_temperature_port = settings.PYROMETER_TEMPERATURE_USB_PORT
         return
         # self.rrg_port = None
         # self.termodat_port = None
         self._ports_attr_names = {
             'vakumetr': 'vakumetr_port',
+            'current_source': 'current_source_port',
+            'pyrometer': 'pyrometer_temperature_port',
         }
         self._controllers_check_classes = {
             'vakumetr': AccurateVakumetrController,
+            'current_source': CurrentSourceController,
+            'pyrometer': 0,
         }
 
         self._default_controllers_kwargs = {
             'vakumetr': {
                 'port_communicator': settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
-            }
+            },
+            'current_source': {
+                'port_communicator': settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
+            },
         }
 
         usb_ports = get_available_usb_ports()
@@ -61,7 +71,7 @@ class AppSystem(BaseSystem):
         print(
             "|> FOUND PORTS:",
             "vakumetr:", self.vakumetr_port,
-            # "rrg:", self.rrg_port,
+            'current_source:', self.current_source_port,
             # "termodat:", self.termodat_port
         )
         assert self.vakumetr_port is not None
@@ -70,6 +80,8 @@ class AppSystem(BaseSystem):
 
         self.ports = {
             'vakumetr': self.vakumetr_port,
+            'current_source': self.current_source_port,
+            'pyrometer': self.pyrometer_temperature_port,
             # 'rrg': self.rrg_port,
             # 'termodat': self.termodat_port,
         }
@@ -83,6 +95,11 @@ class AppSystem(BaseSystem):
             port=self.vakumetr_port,
             active=False,
         )
+        self.pyrometer_temperature_controller = PyrometerTemperatureController(
+            get_potential_port=self.get_potential_controller_port,
+            baudrate=settings.PYROMETER_TEMPERATURE_BAUDRATE,
+            port=self.pyrometer_temperature_port,
+        )
 
         self.air_valve_controller = ValveController(
             port=settings.AIR_VALVE_CONFIGURATION['PORT'],
@@ -95,7 +112,7 @@ class AppSystem(BaseSystem):
             self._valves[i] = ValveController(port=valve_conf["PORT"])
 
         self.current_source_controller = CurrentSourceController(
-            port=settings.CURRENT_SOURCE_USB_PORT,
+            port=self.current_source_port,
             port_communicator=settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
             baudrate=settings.CURRENT_SOURCE_BAUDRATE,
             on_change_current=self.on_change_current,
@@ -105,6 +122,7 @@ class AppSystem(BaseSystem):
 
         self._controllers: list[AbstractController] = [
             self.accurate_vakumetr_controller,
+            self.pyrometer_temperature_controller,
             self.current_source_controller,
         ]
 
@@ -118,8 +136,18 @@ class AppSystem(BaseSystem):
         self.change_gas_valve_opened = ChangeGasValveStateAction(system=self)
         self.change_air_valve_opened = ChangeAirValveStateAction(system=self)
 
+        # ===== Pyrometer ===== #
+        self.get_current_temperature = SingleAnswerSystemAction(system=self)
+        self.pyrometer_temperature_controller.get_temperature_action\
+            .connect(self.get_current_temperature)
+
+        # ===== Pyrometer ===== #
+        # A lot of...
+        #########################
+
     def _init_values(self):
         self.accurate_vakumetr_value = 0.0
+        self.pyrometer_temperature_value = 0.0
         self.current_value = 0.0
         self.voltage_value = 0.0
 

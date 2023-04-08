@@ -32,3 +32,6 @@ class ActualTemperature(QWidget):
         self.label.setStyleSheet(styles.label)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.layout.addWidget(self.label, )
+
+    def set_actual_temperature(self, value):
+        self.temperature.setText(f"T = {value}°C")
