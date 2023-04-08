@@ -88,6 +88,7 @@ class AppSystem(BaseSystem):
         self.current_source_controller = CurrentSourceController(
             port=settings.CURRENT_SOURCE_USB_PORT,
             port_communicator=settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
+            baudrate=settings.CURRENT_SOURCE_BAUDRATE,
             on_change_current=self.on_change_current,
             on_change_voltage=self.on_change_voltage,
             on_set_current=None,  # ДОБАВИТЬ РЕАЛЬНОЕ ВЛИЯНИЕ - ПРОСТОЕ ВЫСТАВЛЕНИЕ АКТУАЛЬНОГО ЗНАЧЕНИЯ В UI
