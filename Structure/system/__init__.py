@@ -118,7 +118,7 @@ class AppSystem(BaseSystem):
             on_change_current=self.on_change_current,
             on_change_voltage=self.on_change_voltage,
             on_set_current=None,  # ДОБАВИТЬ РЕАЛЬНОЕ ВЛИЯНИЕ - ПРОСТОЕ ВЫСТАВЛЕНИЕ АКТУАЛЬНОГО ЗНАЧЕНИЯ В UI
-            active=False,
+            active=True,
         )
 
         self._controllers: list[AbstractController] = [
