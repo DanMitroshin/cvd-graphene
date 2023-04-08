@@ -20,6 +20,7 @@ class AppSystem(BaseSystem):
     def _determine_attributes(self):
         used_ports = []
         self.vakumetr_port = None
+        return
         # self.rrg_port = None
         # self.termodat_port = None
         self._ports_attr_names = {
@@ -70,6 +71,7 @@ class AppSystem(BaseSystem):
         self.accurate_vakumetr_controller = AccurateVakumetrController(
             get_potential_port=self.get_potential_controller_port,
             port=self.vakumetr_port,
+            active=False,
         )
 
         self.air_valve_controller = ValveController(
