@@ -20,7 +20,7 @@ class AppSystem(BaseSystem):
     def _determine_attributes(self):
         used_ports = []
         self.vakumetr_port = None
-        return
+        # return
         # self.rrg_port = None
         # self.termodat_port = None
         self._ports_attr_names = {
