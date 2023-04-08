@@ -30,6 +30,12 @@ class AppSystem(BaseSystem):
             'vakumetr': AccurateVakumetrController,
         }
 
+        self._default_controllers_kwargs = {
+            'vakumetr': {
+                'port_communicator': settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
+            }
+        }
+
         usb_ports = get_available_usb_ports()
         if LOCAL_MODE:
             usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']
@@ -38,7 +44,10 @@ class AppSystem(BaseSystem):
             for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
                 if port in used_ports:
                     continue
-                controller: AbstractController = controller_class(port=port)
+                controller: AbstractController = controller_class(
+                    port=port,
+                    **self._default_controllers_kwargs.get(controller_code, {})
+                )
                 controller.setup()
                 is_good = controller.check_command()
                 if is_good:
