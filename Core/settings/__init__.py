@@ -4,7 +4,7 @@ IMPORT HERE ALL NECESSARY SETTINGS FOR YOUR DEVICE AND CONNECTIONS
 
 """
 
-
+from .actions import *
 from .raspberry import *
 
 

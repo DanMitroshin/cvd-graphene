@@ -10,7 +10,7 @@ from coregraphene.conf import settings
 VALVES_CONFIGURATION = settings.VALVES_CONFIGURATION
 
 
-class CvdSystem(BaseSystem):
+class AppSystem(BaseSystem):
 
     def _init_controllers(self):
         self.accurate_vakumetr_controller = AccurateVakumetrController()

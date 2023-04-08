@@ -1,132 +1,19 @@
-import sys
 import os
-import datetime
 os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'Core.settings')
 
-from PyQt5.QtWidgets import (
-    QMainWindow, QApplication, QListWidget, QVBoxLayout,
-    QLabel, QCheckBox, QComboBox, QLineEdit, QStyle,
-    QLineEdit, QSpinBox, QDoubleSpinBox, QSlider, QWidget, QHBoxLayout, QFrame, QPushButton
-)
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import Qt, QMetaType, QRect
+import tracemalloc
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import Qt
+from Structure.dialog_ui import AppMainDialogWindow
 
-# from Core.exceptions.communicators import InactiveCommunicatorException
-# from Core.ui import StyleSheet
-# from Core.utils.algorithms import crc16
-from Structure.dialog_ui import MainWindow
+from Core.actions import ACTIONS
+from Structure.system import AppSystem
 # from Tests.devices.current_source_akip import test_akip_2, get_serial_port
 # from Tests.devices.trm200 import test_trm_2, test_4, test_1, check_port
 # from Tests.devices.rrg import test_rrg_3
 # from Tests.devices.vakumetr import test_1, test_2
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
-
-# s = StyleSheet({
-#     "close_button": {
-#         "height": "70px",
-#         "font-size": "20px",
-#         "background-color": "rgb(255, 150, 150)",
-#     }
-# })
-# print("SSSSSSSSS", s.close_button)
-# print("SSSSSSSSS 2", s.close_button1)
-# sys.exit()
-
-class MainWindow1(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        self.setWindowTitle("My App")
-
-        # line_style = QStyle()
-        # line_style.sty
-
-        line = QFrame()
-        # line.setObjectName(QMetaType.Type.QString)
-        line.setObjectName("ll")
-        line.setLineWidth(100)
-        line.setFixedHeight(100)
-        line.setStyleSheet("background-color: rgb(255, 0, 50);")
-        # line.setGeometry(QRect(0, 10, 100, 110))
-        # line.setStyle()
-        # line.setFrameShape(QFrame.Shape.HLine)
-        # line.setFrameShadow(QFrame.Shadow.Sunken)
-        self.line = line
-
-        self.line = QFrame()
-        self.line.setMinimumWidth(100)
-        self.line.setFixedHeight(20)
-        # self.line.setGeometry(QRect(60, 110, 751, 20))
-        self.line.setFrameShape(QFrame.Shape.HLine)
-        self.line.setFrameShadow(QFrame.Shadow.Sunken)
-        self.line.setSizePolicy(QtWidgets.QSizePolicy.Policy.Minimum,
-                                QtWidgets.QSizePolicy.Policy.Minimum)
-
-        self.label = QLabel()
-        # self.label.setStyleSheet('color:"red";font-size: 32;')
-        self.label.setStyleSheet("""
-        QWidget {
-            border: 2px solid black;
-            border-radius: 10px;
-            background-color: rgb(255, 255, 255);
-            font-size: 32px;
-            max-width: 300px;
-            }
-        """)
-
-        self.input = QLineEdit()
-        self.input.textChanged.connect(self.label.setText)
-
-        layout = QHBoxLayout()
-        layout_v = QVBoxLayout()
-        layout.addWidget(self.line)
-        layout.addWidget(self.input)
-        layout.addWidget(self.label)
-
-        self.button_close = QPushButton("нажать для закрытия программы")
-        self.button_close.clicked.connect(self.close)
-        self.button_close.setStyleSheet("""
-        QPushButton {
-            height: 200px;
-            font-size: 20px;
-        }
-        """)
-        layout_v.addLayout(layout)
-        self.button = QPushButton("Press Me!")
-        self.button.setStyleSheet("""
-                QPushButton {
-                    height: 100px;
-                    font-size: 16px;
-                }
-                """)
-        self.counter = 0
-        self.button.clicked.connect(self.click_press)
-
-        layout_v.addWidget(self.button)
-        layout_v.addWidget(self.button_close)
-
-        container = QWidget()
-        container.setLayout(layout_v)
-
-        # Устанавливаем центральный виджет Window.
-        self.setCentralWidget(container)
-
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.show_time)
-        self.timer.start(1000)
-
-    def click_press(self):
-        self.counter += 1
-        self.label.setText(f"PRESSED: {self.counter}")
-
-    def show_time(self):
-        print("TIME:", datetime.datetime.now())
-
-class AbstractAppUIWidget(QWidget):
-    pass
-
-
 
 ###################################################################
 
@@ -154,49 +41,48 @@ class Test:
         self.counter += 1
         print("CHECK COUNTER:", self.counter)
 
-
 # t = Test()
 # t.on_click()
 
-# def bar():
-#     raise InactiveCommunicatorException(communicator_id="ref_234")
+tracemalloc.start()
+
+
+def start():
+    # sys.exit(0)
+    app = QApplication([])
+    system = AppSystem(
+        actions_list=ACTIONS
+    )
+    system.setup()
+    system.threads_setup()
+
+    w = AppMainDialogWindow(system=system)
+    w.system_connect()
+
+    # w.show()
+    # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
+    # w.showFullScreen()
+    w.setWindowState(Qt.WindowFullScreen)
+    w.setVisible(True)
+    # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
+    # w.setWindowFlags(Qt.WindowType_Mask)
+    app.exec()
+
+# from Core.actions import ACTIONS
 #
-# bar()
-
-# app = QtWidgets.QApplication(sys.argv)
-# MainWindow = QtWidgets.QMainWindow()
-# ui = UiMainWindow()
-# ui.setup_ui(MainWindow)
-# MainWindow.showFullScreen()
-# sys.exit(app.exec_())
-
-# print((int(899.99) // 100))
-# sys.exit()
-
-
-# if __name__ == "__main__":
-#     print("TEST 1 ===>")
+# def start_system():
+#     system = CvdSystem(actions_list=ACTIONS)
+#     system.setup()
+#     system.threads_setup()
 #     try:
-#         # test_akip_1()
-#         # test_akip_2()
-#         # check_port()
-#         # get_serial_port()
-#         # test_rrg_3()
-#         print("TEST 1 ===> PASSED")
-#     except Exception as e:
-#         print("[ERROR]", e)
-#         print("TEST 1 ===> FAILED")
+#         while True:
+#             sleep(1)
+#     except BaseException:
+#         system.stop()
+#         system.destructor()
 
-# sys.exit(0)
-app = QApplication([])
-w = MainWindow()
-# w.show()
-# w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
-# w.showFullScreen()
-w.setWindowState(Qt.WindowFullScreen)
-w.setVisible(True)
-# w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
-# w.setWindowFlags(Qt.WindowType_Mask)
-app.exec()
+
+if __name__ == '__main__':
+    start()
 
 print("Exit")
