@@ -1,4 +1,7 @@
 import gc
+import random
+import time
+from threading import Thread, get_ident
 
 from coregraphene.system_actions import SingleAnswerSystemAction
 from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction
@@ -151,6 +154,22 @@ class AppSystem(BaseSystem):
         self.pyrometer_temperature_value = 0.0
         self.current_value = 0.0
         self.voltage_value = 0.0
+
+    def pause_test(self):
+        secs = random.random() * 20 + 5
+        time.sleep(secs)
+        print("I SLEEP", secs, "ident:", get_ident())
+
+    def test_ramp(self):
+        arr = []
+        for _ in range(20):
+            th = Thread(target=self.pause_test)
+            th.start()
+            # time.sleep(1)
+            arr.append(th)
+        for th in arr:
+            th.join()
+            print('TH NAME JOINED:', th.getName())
 
     def check_conditions(self):
         return True

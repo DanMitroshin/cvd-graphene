@@ -118,6 +118,7 @@ class AppMainDialogWindow(BaseMainDialogWindow):
             self.milw.temperature_block.set_actual_temperature
         )
         ########################
+        self.system.test_ramp()
 
     # def on_create_recipe(self):
     #     try:
