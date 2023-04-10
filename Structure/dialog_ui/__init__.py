@@ -111,14 +111,14 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         #######################
 
         self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
-            set_value_function = self.system.set_current
+            set_value_function = self.system.set_target_current
 
         # PYROMETER ############
-        self.system.get_current_temperature.connect(
+        self.system.set_current_temperature.connect(
             self.milw.temperature_block.set_actual_temperature
         )
         ########################
-        self.system.test_ramp()
+        # self.system.test_ramp()
 
     # def on_create_recipe(self):
     #     try:
@@ -190,7 +190,7 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value(
             self.system.voltage_value
         )
-        self.main_interface_layout_widget.temperature_block.current_settings.set_current_value(
+        self.main_interface_layout_widget.temperature_block.current_settings.set_target_current(
             self.system.current_value
         )
 
