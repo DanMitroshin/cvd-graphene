@@ -109,9 +109,17 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         # for gas in self.main_interface_layout_widget.pressure_block.gases:
         #     gas.connect_valve_function(self.system.change_valve_state)
         #######################
+        # CURRENT
 
         self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_target_current
+
+        self.system.get_current_action.connect(
+            self.main_interface_layout_widget.temperature_block.current_settings.set_current_value
+        )
+        self.system.get_voltage_action.connect(
+            self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value
+        )
 
         # PYROMETER ############
         self.system.set_current_temperature.connect(
@@ -190,9 +198,9 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value(
             self.system.voltage_value
         )
-        self.main_interface_layout_widget.temperature_block.current_settings.set_target_current(
-            self.system.current_value
-        )
+        # self.main_interface_layout_widget.temperature_block.current_settings.set_current_value(
+        #     self.system.current_value
+        # )
 
     # def get_values_and_log_state(self):
     #     try:

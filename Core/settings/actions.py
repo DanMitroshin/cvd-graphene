@@ -1,4 +1,5 @@
 class ACTIONS_NAMES:
+    RAMP = "RAMP"
     TURN_ON_PUMP = "TURN_ON_PUMP"
     OPEN_VALVE = "OPEN_VALVE"
     CLOSE_VALVE = "CLOSE_VALVE"
@@ -33,6 +34,7 @@ class ACTIONS_NAMES:
 
 
 class TABLE_ACTIONS_NAMES:
+    RAMP = "Ramp"
     TURN_ON_PUMP = "Включить насос"
 
     OPEN_VALVE = "Открыть клапан" + " [клапан]"
