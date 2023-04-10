@@ -3,8 +3,10 @@ import random
 import time
 from threading import Thread, get_ident
 
+from Core.actions import RampThreadAction
 from coregraphene.system_actions import SingleAnswerSystemAction
-from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction
+from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction, SetTargetCurrentAction, \
+    SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
@@ -20,6 +22,12 @@ LOCAL_MODE = settings.LOCAL_MODE
 
 
 class AppSystem(BaseSystem):
+    current_value = 0.0
+    voltage_value = 0.0
+    target_current_value = 0.0
+    target_current_ramp_value = 0.0
+    ramp_seconds = 0
+    ramp_active = False
 
     def _determine_attributes(self):
         used_ports = []
@@ -96,7 +104,7 @@ class AppSystem(BaseSystem):
             get_potential_port=self.get_potential_controller_port,
             port_communicator=settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
             port=self.vakumetr_port,
-            active=False,
+            # active=False,
         )
         self.pyrometer_temperature_controller = PyrometerTemperatureController(
             get_potential_port=self.get_potential_controller_port,
@@ -118,9 +126,6 @@ class AppSystem(BaseSystem):
             port=self.current_source_port,
             port_communicator=settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
             baudrate=settings.CURRENT_SOURCE_BAUDRATE,
-            on_change_current=self.on_change_current,
-            on_change_voltage=self.on_change_voltage,
-            on_set_current=None,  # ДОБАВИТЬ РЕАЛЬНОЕ ВЛИЯНИЕ - ПРОСТОЕ ВЫСТАВЛЕНИЕ АКТУАЛЬНОГО ЗНАЧЕНИЯ В UI
             active=True,
         )
 
@@ -136,24 +141,42 @@ class AppSystem(BaseSystem):
     def _init_actions(self):
         super()._init_actions()
 
-        # ===== Valves ===== #
+        # ===== Valves ======== #
         self.change_gas_valve_opened = ChangeGasValveStateAction(system=self)
         self.change_air_valve_opened = ChangeAirValveStateAction(system=self)
 
         # ===== Pyrometer ===== #
-        self.get_current_temperature = SingleAnswerSystemAction(system=self)
+        self.set_current_temperature = SingleAnswerSystemAction(system=self)
+        self.set_current_temperature.connect(self._on_get_current_temperature)
         self.pyrometer_temperature_controller.get_temperature_action\
-            .connect(self.get_current_temperature)
+            .connect(self.set_current_temperature)
 
         # ===== Pyrometer ===== #
         # A lot of...
+
+        # ===== Current AKIP == #
+        self.set_target_current_action = SetTargetCurrentAction(system=self)
+
+        self.get_current_action = SingleAnswerSystemAction(system=self)
+        self.get_current_action.connect(self._on_get_actual_current)
+        self.current_source_controller.get_current_action.connect(self.get_current_action)
+
+        self.get_voltage_action = SingleAnswerSystemAction(system=self)
+        self.get_voltage_action.connect(self._on_get_actual_voltage)
+        self.current_source_controller.get_voltage_action.connect(self.get_voltage_action)
+
+        self.set_ramp_seconds_action = SetRampSecondsAction(system=self)
+        self.set_target_current_ramp_action = SetTargetCurrentRampAction(system=self)
+
+        self.set_is_active_ramp_action = SetIsRampActiveAction(system=self)
+
         #########################
 
     def _init_values(self):
         self.accurate_vakumetr_value = 0.0
         self.pyrometer_temperature_value = 0.0
-        self.current_value = 0.0
-        self.voltage_value = 0.0
+        # self.current_value = 0.0
+        # self.voltage_value = 0.0
 
     def pause_test(self):
         secs = random.random() * 20 + 5
@@ -162,14 +185,37 @@ class AppSystem(BaseSystem):
 
     def test_ramp(self):
         arr = []
-        for _ in range(20):
+        for _ in range(30):
             th = Thread(target=self.pause_test)
             th.start()
+            # th.is_alive()
             # time.sleep(1)
             arr.append(th)
-        for th in arr:
-            th.join()
-            print('TH NAME JOINED:', th.getName())
+
+        while True:
+            for i, thread in enumerate(arr):
+                if not thread.is_alive():
+                    thread.join()
+                    print('TH NAME JOINED:', thread.getName())
+                    arr.pop(i)
+            time.sleep(1)
+
+    def on_ramp_press_start(self):
+        # self.ramp_active = True
+        # TODO: Надо сделать промежуточное значение на is_ramp,
+        # чтобы по нажатию когда рамп уже идет, было время на то чтоб закончить текущий и
+        # не дать запустить несколько раз
+        self.set_is_active_ramp_action(True)
+        thread_action = RampThreadAction(system=self)
+        thread_action.set_action_args(
+            self.target_current_ramp_value,
+            f"0:{self.ramp_seconds}"
+        )
+        thread_action.action.is_stop_state_function = self._ramp_is_stop_function
+        self._add_action_to_loop(thread_action=thread_action)
+
+    def _ramp_is_stop_function(self):
+        return not(self.is_working() and self.ramp_active)
 
     def check_conditions(self):
         return True
@@ -205,15 +251,30 @@ class AppSystem(BaseSystem):
     def change_air_valve_state(self):
         return self._change_valve_state(self.air_valve_controller, "AIR")
 
-    def on_change_current(self, value):
+    @BaseSystem.action
+    def set_target_current(self, value):
+        return self.current_source_controller.set_target_current(value)
+
+    def _on_get_current_temperature(self, value):
+        self.pyrometer_temperature_value = value
+
+    def _on_get_actual_current(self, value):
         self.current_value = value
 
-    def on_change_voltage(self, value):
+    def _on_get_actual_voltage(self, value):
         self.voltage_value = value
 
-    @BaseSystem.action
-    def set_current(self, value):
-        return self.current_source_controller.set_current_value(value)
+    def set_ramp_seconds(self, value):
+        self.ramp_seconds = int(value)
+        return self.ramp_seconds
+
+    def set_target_current_ramp_value(self, value):
+        self.target_current_ramp_value = float(value)
+        return self.target_current_ramp_value
+
+    def set_is_ramp_active(self, value):
+        self.ramp_active = bool(value)
+        return self.ramp_active
 
     def _get_values(self):
         # pass
