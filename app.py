@@ -14,6 +14,9 @@ from Structure.system import AppSystem
 # from Tests.devices.vakumetr import test_1, test_2
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+import faulthandler
+faulthandler.enable()
+PYTHONFAULTHANDLER = 1
 
 ###################################################################
 
