@@ -73,6 +73,7 @@ class RampAction(AppAction):
 
         target_current = float(target_current)
         self.system.set_target_current_ramp_action(target_current)  # Potential problem
+        time.sleep(0.05)
         self.system.set_is_active_ramp_action(True)
 
         pause = 1  # secs
