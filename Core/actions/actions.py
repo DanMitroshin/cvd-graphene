@@ -110,13 +110,13 @@ class RampAction(AppAction):
             current_value = self.system.current_value
             local_current_value = current_value
 
-            delta_time = time.time() - start_time
-            if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
-                raise NotAchievingRecipeStepGoal
+            # delta_time = time.time() - start_time
+            # if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
+            #     raise NotAchievingRecipeStepGoal
 
-        self.system.set_is_active_ramp_action(False)
-        print("Start sleep...")
-        time.sleep(3)
+        # self.system.set_is_active_ramp_action(False)
+        # print("Start sleep...")
+        # time.sleep(3)
         print("End sleep...")
 
         return 0
