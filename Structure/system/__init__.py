@@ -1,7 +1,7 @@
 import gc
 import random
 import time
-from threading import Thread, get_ident
+from threading import Thread, get_ident, Lock
 
 from Core.actions import RampThreadAction
 from Core.actions.actions import RampAction
@@ -31,6 +31,7 @@ class AppSystem(BaseSystem):
     ramp_seconds = 0
     ramp_active = False
     ramp_waiting = False
+    ramp_lock = Lock()
 
     def _determine_attributes(self):
         used_ports = []
@@ -209,26 +210,35 @@ class AppSystem(BaseSystem):
 
     def on_ramp_press_start(self, *args):
         try:
+            # self.ramp_lock.acquire()
             if self.ramp_waiting:
+                # self.ramp_lock.release()
                 return
             self.set_is_waiting_ramp_action(True)
             if self.ramp_active:
                 self.ramp_active = False
+                # self.ramp_lock.release()
                 return
 
-            # thread_action = BaseThreadAction(
-            #     system=self,
-            #     action=RampAction,
-            # )
-            self._ramp_background_action.set_action_args(
+            thread_action = BaseThreadAction(
+                system=self,
+                action=RampAction,
+            )
+            thread_action.set_action_args(
                 self.target_current_ramp_value,
                 f"0:{self.ramp_seconds}"
             )
-            self._ramp_background_action.activate()
-            # thread_action.action.is_stop_state_function = self._ramp_is_stop_function
-            # self._add_action_to_loop(thread_action=thread_action)
+            thread_action.action.is_stop_state_function = self._ramp_is_stop_function
+            self._add_action_to_loop(thread_action=thread_action)
+            # self._ramp_background_action.set_action_args(
+            #     self.target_current_ramp_value,
+            #     f"0:{self.ramp_seconds}"
+            # )
+            # self._ramp_background_action.activate()
         except Exception as e:
             print("ERR RAMP START:", e)
+        # finally:
+        #     self.ramp_lock.release()
 
     def _init_background_actions(self):
         self._ramp_background_action = BaseThreadAction(

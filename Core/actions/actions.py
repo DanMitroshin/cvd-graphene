@@ -71,6 +71,7 @@ class RampAction(AppAction):
     def action(self, target_current, time_limit):
         start_time = time.time()
 
+        # self.system.ramp_lock.acquire()
         target_current = float(target_current)
         self.system.set_target_current_ramp_action(target_current)  # Potential problem
         # time.sleep(0.05)
@@ -94,7 +95,9 @@ class RampAction(AppAction):
             delta_value = target_current - local_current_value
             return delta_value / left_time * pause + local_current_value
 
+        # self.system.ramp_lock.release()
         while True:
+            # self.system.ramp_lock.acquire()
             if self._is_stop_state():
                 break
 
@@ -116,6 +119,7 @@ class RampAction(AppAction):
             #     raise NotAchievingRecipeStepGoal
 
         self.system.set_is_active_ramp_action(False)
+        # self.system.ramp_lock.release()
         # print("Start sleep...")
         # time.sleep(3)
         print("START sleep...")
