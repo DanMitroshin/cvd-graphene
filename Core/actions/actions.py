@@ -71,21 +71,21 @@ class RampAction(AppAction):
     def action(self, target_current, time_limit):
         start_time = time.time()
 
-        # target_current = float(target_current)
-        # self.system.set_target_current_ramp_action(target_current)
-        # self.system.set_is_active_ramp_action(True)
-        #
-        # pause = 1  # secs
-        #
-        # seconds = get_total_seconds_from_time_arg(time_limit)
-        # if seconds <= pause:
-        #     seconds = pause
-        # end_time = start_time + seconds
-        # left_time = end_time - time.time()
-        #
-        # current_value = self.system.current_value
-        # local_current_value = current_value
-        # # delta_value = target_current - current_value
+        target_current = float(target_current)
+        self.system.set_target_current_ramp_action(target_current)
+        self.system.set_is_active_ramp_action(True)
+
+        pause = 1  # secs
+
+        seconds = get_total_seconds_from_time_arg(time_limit)
+        if seconds <= pause:
+            seconds = pause
+        end_time = start_time + seconds
+        left_time = end_time - time.time()
+
+        current_value = self.system.current_value
+        local_current_value = current_value
+        # delta_value = target_current - current_value
         #
         # def get_next_target():
         #     if left_time <= pause:
