@@ -295,7 +295,8 @@ class AppSystem(BaseSystem):
 
     def set_is_ramp_active(self, value):
         self.ramp_active = bool(value)
-        self.set_is_waiting_ramp_action(False)
+        self.ramp_waiting = False
+        # self.set_is_waiting_ramp_action(False)
         return self.ramp_active
 
     def set_is_ramp_waiting(self, value):
