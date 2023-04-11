@@ -21,7 +21,7 @@ PYTHONFAULTHANDLER = 1
 
 import resource, sys
 # resource.setrlimit(resource.RLIMIT_STACK, (2**29, -1))
-sys.setrecursionlimit(10**6)
+sys.setrecursionlimit(10**5)
 
 import threading
 threading.stack_size(2**26)

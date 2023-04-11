@@ -152,7 +152,7 @@ class AppSystem(BaseSystem):
         # ===== Pyrometer ===== #
         self.set_current_temperature = SingleAnswerSystemAction(system=self)
         self.set_current_temperature.connect(self._on_get_current_temperature)
-        self.pyrometer_temperature_controller.get_temperature_action\
+        self.pyrometer_temperature_controller.get_temperature_action \
             .connect(self.set_current_temperature)
 
         # ===== Pyrometer ===== #
@@ -216,21 +216,33 @@ class AppSystem(BaseSystem):
                 self.ramp_active = False
                 return
 
-            thread_action = BaseThreadAction(
-                system=self,
-                action=RampAction,
-            )
-            thread_action.set_action_args(
+            # thread_action = BaseThreadAction(
+            #     system=self,
+            #     action=RampAction,
+            # )
+            self._ramp_background_action.set_action_args(
                 self.target_current_ramp_value,
                 f"0:{self.ramp_seconds}"
             )
-            thread_action.action.is_stop_state_function = self._ramp_is_stop_function
-            self._add_action_to_loop(thread_action=thread_action)
+            self._ramp_background_action.activate()
+            # thread_action.action.is_stop_state_function = self._ramp_is_stop_function
+            # self._add_action_to_loop(thread_action=thread_action)
         except Exception as e:
             print("ERR RAMP START:", e)
 
+    def _init_background_actions(self):
+        self._ramp_background_action = BaseThreadAction(
+            system=self,
+            action=RampAction,
+        )
+        self._ramp_background_action.action.is_stop_state_function = self._ramp_is_stop_function
+
+        self._background_actions_array = [
+            self._ramp_background_action,
+        ]
+
     def _ramp_is_stop_function(self):
-        return not(self.is_working() and self.ramp_active)
+        return not (self.is_working() and self.ramp_active)
 
     def check_conditions(self):
         return True

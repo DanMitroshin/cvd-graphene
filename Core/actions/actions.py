@@ -120,8 +120,8 @@ class RampAction(AppAction):
         # time.sleep(3)
         print("START sleep...")
 
-        while self.system.is_working():
-            time.sleep(5)
+        # while self.system.is_working():
+        #     time.sleep(5)
 
 
 class SetTemperatureAction(AppAction):
