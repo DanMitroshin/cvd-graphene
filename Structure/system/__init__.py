@@ -106,6 +106,7 @@ class AppSystem(BaseSystem):
         self.accurate_vakumetr_controller = AccurateVakumetrController(
             get_potential_port=self.get_potential_controller_port,
             port_communicator=settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
+            baudrate=settings.ACCURATE_VAKUMETR_BAUDRATE,
             port=self.vakumetr_port,
             # active=False,
         )
