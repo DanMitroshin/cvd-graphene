@@ -29,3 +29,8 @@ class SetTargetCurrentRampAction(SystemAction):
 class SetIsRampActiveAction(SystemAction):
     def _call_function(self, value):
         return self._system.set_is_ramp_active(value)
+
+
+class SetIsRampWaitingAction(SystemAction):
+    def _call_function(self, value):
+        return self._system.set_is_ramp_waiting(value)

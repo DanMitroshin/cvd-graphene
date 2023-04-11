@@ -115,7 +115,8 @@ class SetCurrentBlock(QWidget):
     def set_value(self, value=None):
         # v = str(self.value)
         if value is None or type(value) not in [float, int]:
-            value = self.value
+            pass
+            # value = self.value
         else:
             self.value = round(value, 3)
         vi = int(self.value)

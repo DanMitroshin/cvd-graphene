@@ -4,9 +4,11 @@ import time
 from threading import Thread, get_ident
 
 from Core.actions import RampThreadAction
+from Core.actions.actions import RampAction
+from coregraphene.auto_actions import BaseThreadAction
 from coregraphene.system_actions import SingleAnswerSystemAction
 from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction, SetTargetCurrentAction, \
-    SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction
+    SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction, SetIsRampWaitingAction
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
@@ -28,10 +30,11 @@ class AppSystem(BaseSystem):
     target_current_ramp_value = 0.0
     ramp_seconds = 0
     ramp_active = False
+    ramp_waiting = False
 
     def _determine_attributes(self):
         used_ports = []
-        self.vakumetr_port = None
+        self.vakumetr_port = settings.ACCURATE_VAKUMETR_USB_PORT
         self.current_source_port = settings.CURRENT_SOURCE_USB_PORT
         self.pyrometer_temperature_port = settings.PYROMETER_TEMPERATURE_USB_PORT
         return
@@ -169,6 +172,7 @@ class AppSystem(BaseSystem):
         self.set_target_current_ramp_action = SetTargetCurrentRampAction(system=self)
 
         self.set_is_active_ramp_action = SetIsRampActiveAction(system=self)
+        self.set_is_waiting_ramp_action = SetIsRampWaitingAction(system=self)
 
         #########################
 
@@ -200,19 +204,27 @@ class AppSystem(BaseSystem):
                     arr.pop(i)
             time.sleep(1)
 
-    def on_ramp_press_start(self):
-        # self.ramp_active = True
-        # TODO: Надо сделать промежуточное значение на is_ramp,
-        # чтобы по нажатию когда рамп уже идет, было время на то чтоб закончить текущий и
-        # не дать запустить несколько раз
-        self.set_is_active_ramp_action(True)
-        thread_action = RampThreadAction(system=self)
-        thread_action.set_action_args(
-            self.target_current_ramp_value,
-            f"0:{self.ramp_seconds}"
-        )
-        thread_action.action.is_stop_state_function = self._ramp_is_stop_function
-        self._add_action_to_loop(thread_action=thread_action)
+    def on_ramp_press_start(self, *args):
+        try:
+            if self.ramp_waiting:
+                return
+            self.set_is_waiting_ramp_action(True)
+            if self.ramp_active:
+                self.ramp_active = False
+                return
+
+            thread_action = BaseThreadAction(
+                system=self,
+                action=RampAction,
+            )
+            thread_action.set_action_args(
+                self.target_current_ramp_value,
+                f"0:{self.ramp_seconds}"
+            )
+            thread_action.action.is_stop_state_function = self._ramp_is_stop_function
+            self._add_action_to_loop(thread_action=thread_action)
+        except Exception as e:
+            print("ERR RAMP START:", e)
 
     def _ramp_is_stop_function(self):
         return not(self.is_working() and self.ramp_active)
@@ -265,16 +277,27 @@ class AppSystem(BaseSystem):
         self.voltage_value = value
 
     def set_ramp_seconds(self, value):
-        self.ramp_seconds = int(value)
+        try:
+            self.ramp_seconds = int(value)
+        except:
+            self.ramp_seconds = 0
         return self.ramp_seconds
 
     def set_target_current_ramp_value(self, value):
-        self.target_current_ramp_value = float(value)
+        try:
+            self.target_current_ramp_value = float(value)
+        except:
+            self.target_current_ramp_value = 0.0
         return self.target_current_ramp_value
 
     def set_is_ramp_active(self, value):
         self.ramp_active = bool(value)
+        self.set_is_waiting_ramp_action(False)
         return self.ramp_active
+
+    def set_is_ramp_waiting(self, value):
+        self.ramp_waiting = bool(value)
+        return self.ramp_waiting
 
     def _get_values(self):
         # pass

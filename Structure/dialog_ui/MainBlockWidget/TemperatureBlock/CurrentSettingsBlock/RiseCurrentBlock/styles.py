@@ -37,4 +37,18 @@ styles = StyleSheet({
         "font-size": "32px",
         "background-color": LIGHT_GREEN,
     },
+    "button_waiting": {
+        "height": '100%',
+        "min-height": "100px",
+        "padding": "10px",
+        "font-size": "32px",
+        "background-color": 'rgb(253, 239, 43)',
+    },
+    "button_stop": {
+        "height": '100%',
+        "min-height": "100px",
+        "padding": "10px",
+        "font-size": "32px",
+        "background-color": 'rgb(253, 94, 45)',
+    },
 })

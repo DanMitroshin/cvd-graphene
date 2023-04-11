@@ -10,10 +10,12 @@ from Structure.dialog_ui.components import LogWidget
 from coregraphene.conf import settings
 from coregraphene.constants import RECIPE_STATES, RECIPE_STATES_TO_STR, NOTIFICATIONS
 from grapheneqtui.structures import BaseMainDialogWindow
+from ..system import AppSystem
 
 
 class AppMainDialogWindow(BaseMainDialogWindow):
     main_interface_widget_class = MainBlockWidget
+    system: AppSystem = None
 
     actions_list = ACTIONS
     recipe_states = RECIPE_STATES
@@ -111,14 +113,37 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         #######################
         # CURRENT
 
-        self.main_interface_layout_widget.temperature_block.current_settings.set_current_block.\
+        self.milw.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_target_current
+        self.system.set_target_current_action.connect(
+            self.milw.temperature_block.current_settings.set_current_block.set_value
+        )
 
         self.system.get_current_action.connect(
-            self.main_interface_layout_widget.temperature_block.current_settings.set_current_value
+            self.milw.temperature_block.current_settings.set_current_value
         )
         self.system.get_voltage_action.connect(
-            self.main_interface_layout_widget.temperature_block.current_settings.set_voltage_value
+            self.milw.temperature_block.current_settings.set_voltage_value
+        )
+        # RAMP
+        self.milw.temperature_block.current_settings.rise_current_block\
+            .ramp_button.clicked.connect(self.system.on_ramp_press_start)
+        self.milw.temperature_block.current_settings.rise_current_block\
+            .input_current.textEdited.connect(self.system.set_target_current_ramp_value)
+        self.milw.temperature_block.current_settings.rise_current_block\
+            .input_time.textEdited.connect(self.system.set_ramp_seconds)
+
+        self.system.set_ramp_seconds_action.connect(
+            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_time
+        )
+        self.system.set_target_current_ramp_action.connect(
+            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_target_current
+        )
+        self.system.set_is_active_ramp_action.connect(
+            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_button_is_active
+        )
+        self.system.set_is_waiting_ramp_action.connect(
+            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_button_is_waiting
         )
 
         # PYROMETER ############
