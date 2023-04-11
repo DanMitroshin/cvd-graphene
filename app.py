@@ -14,9 +14,17 @@ from Structure.system import AppSystem
 # from Tests.devices.vakumetr import test_1, test_2
 
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+
 import faulthandler
 faulthandler.enable()
 PYTHONFAULTHANDLER = 1
+
+import resource, sys
+# resource.setrlimit(resource.RLIMIT_STACK, (2**29, -1))
+sys.setrecursionlimit(10**6)
+
+import threading
+threading.stack_size(2**26)
 
 ###################################################################
 
