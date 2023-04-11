@@ -1,8 +1,9 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QHBoxLayout, QVBoxLayout, QGraphicsDropShadowEffect
 
-from Structure.dialog_ui.components import ParameterLatexLabel, ParameterLabel
+# from Structure.dialog_ui.components import ParameterLatexLabel, ParameterLabel
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
+from grapheneqtui.components import ParameterLabel
 from .ActualTemperature import ActualTemperature
 from .RiseCurrentBlock import RiseCurrentBlock
 from .SetCurrentBlock import SetCurrentBlock

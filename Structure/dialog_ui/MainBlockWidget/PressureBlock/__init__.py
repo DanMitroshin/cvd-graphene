@@ -6,7 +6,7 @@ from PyQt5.QtCore import QPointF
 from PyQt5.QtGui import QPainter, QPainterPath, QColor
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QLineEdit
 
-from .GasStateWidget import GasStateWidget, AirStateWidget
+# from .GasStateWidget import AirStateWidget
 from .ValveControlWidget import ValveControlWidget
 from .styles import styles
 from ...components.butterfly_button import ButterflyButton

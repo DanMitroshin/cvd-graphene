@@ -1,8 +1,9 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QLineEdit
 
+from grapheneqtui.components import ShowPressureBlock
 from .FlowControlWidget import FlowControlWidget
-from .ShowPressureBlock import ShowPressureBlock
+# from .ShowPressureBlock import ShowPressureBlock
 from .styles import styles
 
 

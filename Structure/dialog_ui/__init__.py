@@ -5,7 +5,7 @@ from Core.actions import ACTIONS
 from .MainBlockWidget import MainBlockWidget
 # from Structure.dialog_ui.RightButtonsWidget import RightButtonsWidget
 # from Structure.dialog_ui.TableWidget import AppTableWidget
-from Structure.dialog_ui.components import LogWidget
+# from Structure.dialog_ui.components import LogWidget
 
 from coregraphene.conf import settings
 from coregraphene.constants import RECIPE_STATES, RECIPE_STATES_TO_STR, NOTIFICATIONS
