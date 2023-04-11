@@ -115,6 +115,11 @@ class RampAction(AppAction):
                 raise NotAchievingRecipeStepGoal
 
         self.system.set_is_active_ramp_action(False)
+        print("Start sleep...")
+        time.sleep(3)
+        print("End sleep...")
+
+        return 0
 
 
 class SetTemperatureAction(AppAction):
