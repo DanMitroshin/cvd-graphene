@@ -196,14 +196,16 @@ class AppSystem(BaseSystem):
             # th.is_alive()
             # time.sleep(1)
             arr.append(th)
-
-        while True:
+        # pops = []
+        while arr:
             for i, thread in enumerate(arr):
                 if not thread.is_alive():
                     thread.join()
                     print('TH NAME JOINED:', thread.getName())
                     arr.pop(i)
-            time.sleep(1)
+                    break
+            time.sleep(0.2)
+        print("ENDING!")
 
     def on_ramp_press_start(self, *args):
         try:
