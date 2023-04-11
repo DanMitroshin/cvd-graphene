@@ -114,7 +114,7 @@ class RampAction(AppAction):
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
                 raise NotAchievingRecipeStepGoal
 
-        # self.system.set_is_active_ramp_action(False)
+        self.system.set_is_active_ramp_action(False)
 
 
 class SetTemperatureAction(AppAction):
