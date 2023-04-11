@@ -71,52 +71,52 @@ class RampAction(AppAction):
     def action(self, target_current, time_limit):
         start_time = time.time()
 
-        target_current = float(target_current)
-        self.system.set_target_current_ramp_action(target_current)
-        self.system.set_is_active_ramp_action(True)
-
-        pause = 1  # secs
-
-        seconds = get_total_seconds_from_time_arg(time_limit)
-        if seconds <= pause:
-            seconds = pause
-        end_time = start_time + seconds
-        left_time = end_time - time.time()
-
-        current_value = self.system.current_value
-        local_current_value = current_value
-        # delta_value = target_current - current_value
-
-        def get_next_target():
-            if left_time <= pause:
-                return target_current
-            delta_value = target_current - local_current_value
-            return delta_value / left_time * pause + local_current_value
-
-        while True:
-            if self._is_stop_state():
-                break
-
-            left_time = max(0, end_time - time.time())
-            next_target_current = get_next_target()
-            self.system.set_target_current_action(next_target_current)
-            self.system.set_ramp_seconds_action(left_time)
-
-            if left_time <= 0:
-                break
-
-            time.sleep(1)
-
-            current_value = self.system.current_value
-            local_current_value = current_value
-
-            # delta_time = time.time() - start_time
-            # if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
-            #     raise NotAchievingRecipeStepGoal
+        # target_current = float(target_current)
+        # self.system.set_target_current_ramp_action(target_current)
+        # self.system.set_is_active_ramp_action(True)
+        #
+        # pause = 1  # secs
+        #
+        # seconds = get_total_seconds_from_time_arg(time_limit)
+        # if seconds <= pause:
+        #     seconds = pause
+        # end_time = start_time + seconds
+        # left_time = end_time - time.time()
+        #
+        # current_value = self.system.current_value
+        # local_current_value = current_value
+        # # delta_value = target_current - current_value
+        #
+        # def get_next_target():
+        #     if left_time <= pause:
+        #         return target_current
+        #     delta_value = target_current - local_current_value
+        #     return delta_value / left_time * pause + local_current_value
+        #
+        # while True:
+        #     if self._is_stop_state():
+        #         break
+        #
+        #     left_time = max(0, end_time - time.time())
+        #     next_target_current = get_next_target()
+        #     self.system.set_target_current_action(next_target_current)
+        #     self.system.set_ramp_seconds_action(left_time)
+        #
+        #     if left_time <= 0:
+        #         break
+        #
+        #     time.sleep(1)
+        #
+        #     current_value = self.system.current_value
+        #     local_current_value = current_value
+        #
+        #     # delta_time = time.time() - start_time
+        #     # if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
+        #     #     raise NotAchievingRecipeStepGoal
 
         # self.system.set_is_active_ramp_action(False)
         # print("Start sleep...")
-        # time.sleep(3)
+        time.sleep(3)
         print("End sleep...")
 
         return 0
