@@ -215,7 +215,6 @@ class AppSystem(BaseSystem):
             self.set_is_waiting_ramp_action(True)
             if self.ramp_active:
                 self.ramp_active = False
-                # self.ramp_lock.release()
                 return
 
             thread_action = BaseThreadAction(
@@ -228,26 +227,9 @@ class AppSystem(BaseSystem):
             )
             thread_action.action.is_stop_state_function = self._ramp_is_stop_function
             self._add_action_to_loop(thread_action=thread_action)
-            # self._ramp_background_action.set_action_args(
-            #     self.target_current_ramp_value,
-            #     f"0:{self.ramp_seconds}"
-            # )
-            # self._ramp_background_action.activate()
+
         except Exception as e:
             print("ERR RAMP START:", e)
-        # finally:
-        #     self.ramp_lock.release()
-
-    def _init_background_actions(self):
-        self._ramp_background_action = BaseThreadAction(
-            system=self,
-            action=RampAction,
-        )
-        self._ramp_background_action.action.is_stop_state_function = self._ramp_is_stop_function
-
-        self._background_actions_array = [
-            self._ramp_background_action,
-        ]
 
     def _ramp_is_stop_function(self):
         return not (self.is_working() and self.ramp_active)
