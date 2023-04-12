@@ -72,7 +72,7 @@ class RampAction(AppAction):
         start_time = time.time()
 
         target_current = float(target_current)
-        self.system.set_target_current_ramp_action(target_current)  # Potential problem
+        self.system.set_target_current_ramp_action(target_current)
 
         self.system.set_is_active_ramp_action(True)
 
@@ -94,9 +94,7 @@ class RampAction(AppAction):
             delta_value = target_current - local_current_value
             return delta_value / left_time * pause + local_current_value
 
-        # self.system.ramp_lock.release()
         while True:
-            # self.system.ramp_lock.acquire()
             if self._is_stop_state():
                 break
 
@@ -113,19 +111,12 @@ class RampAction(AppAction):
             current_value = self.system.current_value
             local_current_value = current_value
 
-            # delta_time = time.time() - start_time
-            # if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
-            #     raise NotAchievingRecipeStepGoal
+            delta_time = time.time() - start_time
+            if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
+                raise NotAchievingRecipeStepGoal
 
         # time.sleep(4)
         self.system.set_is_active_ramp_action(False)
-        # self.system.ramp_lock.release()
-        # print("Start sleep...")
-        # time.sleep(3)
-        print("START sleep...")
-
-        # while self.system.is_working():
-        #     time.sleep(5)
 
 
 class SetTemperatureAction(AppAction):
