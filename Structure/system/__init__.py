@@ -229,7 +229,7 @@ class AppSystem(BaseSystem):
                 f"0:{self.ramp_seconds}"
             )
             thread_action.action.is_stop_state_function = self._ramp_is_stop_function
-            self._add_action_to_loop(thread_action=thread_action)
+            # self._add_action_to_loop(thread_action=thread_action)
             # self._ramp_background_action.set_action_args(
             #     self.target_current_ramp_value,
             #     f"0:{self.ramp_seconds}"
