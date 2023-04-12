@@ -86,30 +86,49 @@ def test_rough_vakumetr_2():
 # TEST ЦАП
 def test_rough_vakumetr_3():
     SPIchannel = 1
-    SPIspeed = 10000
+    SPIspeed = 20000
     spi = spidev.SpiDev()
     spi.open(SPIchannel, 0)  # 0 - выбор чипа
     spi.max_speed_hz = SPIspeed
     print("Connected!")
-    # spi.lsbfirst = False
-    # spi.cshigh = False
+    spi.lsbfirst = False
+    print("spi.lsbfirst = " + str(spi.lsbfirst))
+    spi.bits_per_word = 8
     # spi.mode = 0b01
-    # spi.bits_per_word = 8
+    print("spi.mode = " + str(spi.mode))
+    spi.cshigh = False
+    print("spi.cshigh = " + str(spi.cshigh))
+
+    txData = [0b11110000, 0b00000000]  # DAC data  and control reset
+    rxData = spi.xfer(txData)
+    sleep(0.5)
+    txData = [0b10100000, 0b00000000]  # LDAC LOW
+    rxData = spi.xfer(txData)
+    sleep(0.5)
+    txData = [0b10000000, 0b00001111]  # range 0 to Vref
+    rxData = spi.xfer(txData)
+    sleep(0.5)
 
     txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
     while True:
-        s = '0000010000000000'
-        # txData = [int(s, 2)]
-        txData = [0x01, 0x00]
-        txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
+        txData = [0b00010001, 0b11001001]  # send to chB
         rxData = spi.xfer(txData)
+
         print("Receive:", rxData)
-        print("Receive:", end=' ')
-        if len(rxData) >= 3:
-            s = ''.join(map(lambda x: int2base(x).zfill(8), rxData[:4]))
-            n = int(s[8:18], 2)
-            print(n) #, s, s[8:18])
-        sleep(0.01)
+
+        sleep(0.25)
+        # s = '0000010000000000'
+        # # txData = [int(s, 2)]
+        # txData = [0x01, 0x00]
+        # txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
+        # rxData = spi.xfer(txData)
+        # print("Receive:", rxData)
+        # print("Receive:", end=' ')
+        # if len(rxData) >= 3:
+        #     s = ''.join(map(lambda x: int2base(x).zfill(8), rxData[:4]))
+        #     n = int(s[8:18], 2)
+        #     print(n) #, s, s[8:18])
+        # sleep(0.01)
 
     spi.close()
 
@@ -118,7 +137,7 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     # test_rough_vakumetr_3()
     try:
-        test_rough_vakumetr_2()  # WORK VERSION
+        test_rough_vakumetr_3()  # WORK VERSION
         # test_rough_vakumetr_3()
         # s = '0000010000000000'
         # h = int2base(int(s, 2), base=16)
