@@ -214,7 +214,7 @@ class AppSystem(BaseSystem):
             if self.ramp_waiting:
                 # self.ramp_lock.release()
                 return
-            self.set_is_waiting_ramp_action(True, immediate_callback=True)
+            self.set_is_waiting_ramp_action(True, immediate_callback=False)
             if self.ramp_active:
                 self.ramp_active = False
                 # self.ramp_lock.release()

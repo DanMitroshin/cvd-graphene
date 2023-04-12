@@ -126,8 +126,10 @@ class AppMainDialogWindow(BaseMainDialogWindow):
             self.milw.temperature_block.current_settings.set_voltage_value
         )
         # RAMP
+        # self.milw.temperature_block.current_settings.rise_current_block\
+        #     .ramp_button.clicked.connect(self.system.on_ramp_press_start)
         self.milw.temperature_block.current_settings.rise_current_block\
-            .ramp_button.clicked.connect(self.system.on_ramp_press_start)
+            .on_ramp_press = self.system.on_ramp_press_start
         self.milw.temperature_block.current_settings.rise_current_block\
             .input_current.textEdited.connect(self.system.set_target_current_ramp_value)
         self.milw.temperature_block.current_settings.rise_current_block\

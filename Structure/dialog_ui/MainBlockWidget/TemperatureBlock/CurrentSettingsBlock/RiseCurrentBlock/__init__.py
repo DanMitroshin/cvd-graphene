@@ -8,6 +8,8 @@ RGB = [175, 175, 250]
 
 
 class RiseCurrentBlock(QWidget):
+    on_ramp_press = None
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -72,6 +74,14 @@ class RiseCurrentBlock(QWidget):
 
         self.layout.addLayout(self.input_layout, QtCore.Qt.AlignHCenter)
         self.layout.addWidget(self.ramp_button,)
+
+        self.ramp_button.clicked.connect(self._on_ramp_press)
+
+    def _on_ramp_press(self):
+        is_waiting = self.ramp_waiting
+        self.set_ramp_button_is_waiting(True)
+        if self.on_ramp_press and not is_waiting:
+            self.on_ramp_press()
 
     def set_ramp_button_is_waiting(self, is_waiting):
         self.ramp_waiting = is_waiting
