@@ -54,27 +54,30 @@ def int2base(x, base=2):
 # WORK VERSION
 def test_rough_vakumetr_2():
     SPIchannel = 0
-    SPIspeed = 10000
+    SPIspeed = 20000
     spi = spidev.SpiDev()
-    spi.open(SPIchannel, 0)  # 0 - выбор чипа
+    spi.open(SPIchannel, 0)  # 0,1 - выбор чипа (ррг и вакуметры)
     spi.max_speed_hz = SPIspeed
     print("Connected!")
-    # spi.lsbfirst = False
-    # spi.cshigh = False
-    # spi.mode = 0b01
-    # spi.bits_per_word = 8
-    send_data = b'000'
+    spi.lsbfirst = False
+    print("spi.lsbfirst = " + str(spi.lsbfirst))
+    spi.bits_per_word = 8
+    spi.mode = 0b01
+    print("spi.mode = " + str(spi.mode))
+    spi.cshigh = False
+    print("spi.cshigh = " + str(spi.cshigh))
 
     txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
     while True:
-        txData = [0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
+        # txData = [0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
+        txData = [0x80, 0xFF, 0x00, 0x00]
         rxData = spi.xfer(txData)
         print("Receive:", rxData)
         print("Receive:", end=' ')
         if len(rxData) >= 3:
             s = ''.join(map(lambda x: int2base(x).zfill(8), rxData[:4]))
             n = int(s[8:18], 2)
-            print(n) #, s, s[8:18])
+            print(n)  #, s, s[8:18])
         sleep(1)
 
     spi.close()
