@@ -33,6 +33,7 @@ styles = StyleSheet({
     "button": {
         "height": '100%',
         "min-height": "100px",
+        "min-width": "150px",
         "padding": "10px",
         "font-size": "32px",
         "background-color": LIGHT_GREEN,
@@ -40,6 +41,7 @@ styles = StyleSheet({
     "button_waiting": {
         "height": '100%',
         "min-height": "100px",
+        "min-width": "150px",
         "padding": "10px",
         "font-size": "32px",
         "background-color": 'rgb(253, 239, 43)',
@@ -47,6 +49,7 @@ styles = StyleSheet({
     "button_stop": {
         "height": '100%',
         "min-height": "100px",
+        "min-width": "150px",
         "padding": "10px",
         "font-size": "32px",
         "background-color": 'rgb(253, 94, 45)',
