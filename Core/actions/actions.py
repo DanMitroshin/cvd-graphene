@@ -73,8 +73,8 @@ class RampAction(AppAction):
 
         # self.system.ramp_lock.acquire()
         target_current = float(target_current)
-        # self.system.set_target_current_ramp_action(target_current)  # Potential problem
-        #
+        self.system.set_target_current_ramp_action(target_current)  # Potential problem
+
         # self.system.set_is_active_ramp_action(True)
         #
         # pause = 1  # secs
