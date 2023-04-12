@@ -77,7 +77,7 @@ class RiseCurrentBlock(QWidget):
         self.ramp_waiting = is_waiting
         if self.ramp_waiting:
             self.ramp_button.setText("WAIT")
-            # self.ramp_button.setStyleSheet(styles.button_waiting)
+            self.ramp_button.setStyleSheet(styles.button_waiting)
         else:
             self.set_ramp_button_is_active(self.ramp_active)
 
@@ -85,10 +85,10 @@ class RiseCurrentBlock(QWidget):
         self.ramp_active = is_active
         if self.ramp_active:
             self.ramp_button.setText("STOP")
-            # self.ramp_button.setStyleSheet(styles.button_stop)
+            self.ramp_button.setStyleSheet(styles.button_stop)
         else:
             self.ramp_button.setText("RAMP")
-            # self.ramp_button.setStyleSheet(styles.button)
+            self.ramp_button.setStyleSheet(styles.button)
 
     def set_ramp_time(self, secs):
         self.input_time.setText(str(secs))
