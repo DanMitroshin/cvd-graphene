@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QLabel, QHBoxLayout, QLineEdit
 
 from grapheneqtui.components import LatexWidget
@@ -7,8 +8,20 @@ from .styles import styles
 RGB = [175, 175, 250]
 
 
+# class RampManager(QObject):
+#     waiting_ramp_signal = pyqtSignal(bool)
+#     active_ramp_signal = pyqtSignal(bool)
+#     target_current_signal = pyqtSignal(float)
+#     left_time_signal = pyqtSignal(int)
+
+
 class RiseCurrentBlock(QWidget):
     on_ramp_press = None
+
+    waiting_ramp_signal = pyqtSignal(bool)
+    active_ramp_signal = pyqtSignal(bool)
+    target_current_signal = pyqtSignal(float)
+    left_time_signal = pyqtSignal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -77,21 +90,27 @@ class RiseCurrentBlock(QWidget):
 
         self.ramp_button.clicked.connect(self._on_ramp_press)
 
+        # self.ramp_manager = RampManager(parent=None)
+        self.waiting_ramp_signal.connect(self._set_ramp_is_waiting)
+        self.active_ramp_signal.connect(self._set_ramp_is_active)
+        self.target_current_signal.connect(self._set_ramp_target_current)
+        self.left_time_signal.connect(self._set_ramp_time)
+
     def _on_ramp_press(self):
         is_waiting = self.ramp_waiting
-        self.set_ramp_button_is_waiting(True)
+        self._set_ramp_is_waiting(True)
         if self.on_ramp_press and not is_waiting:
             self.on_ramp_press()
 
-    def set_ramp_button_is_waiting(self, is_waiting):
+    def _set_ramp_is_waiting(self, is_waiting):
         self.ramp_waiting = is_waiting
         if self.ramp_waiting:
             self.ramp_button.setText("WAIT")
             self.ramp_button.setStyleSheet(styles.button_waiting)
         else:
-            self.set_ramp_button_is_active(self.ramp_active)
+            self._set_ramp_is_active(self.ramp_active)
 
-    def set_ramp_button_is_active(self, is_active):
+    def _set_ramp_is_active(self, is_active):
         self.ramp_active = is_active
         if self.ramp_active:
             self.ramp_button.setText("STOP")
@@ -100,8 +119,8 @@ class RiseCurrentBlock(QWidget):
             self.ramp_button.setText("RAMP")
             self.ramp_button.setStyleSheet(styles.button)
 
-    def set_ramp_time(self, secs):
+    def _set_ramp_time(self, secs):
         self.input_time.setText(str(secs))
 
-    def set_ramp_target_current(self, value):
+    def _set_ramp_target_current(self, value):
         self.input_current.setText(str(value))

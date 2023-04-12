@@ -136,16 +136,18 @@ class AppMainDialogWindow(BaseMainDialogWindow):
             .input_time.textEdited.connect(self.system.set_ramp_seconds)
 
         self.system.set_ramp_seconds_action.connect(
-            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_time
+            self.milw.temperature_block.current_settings.rise_current_block.left_time_signal.emit
         )
         self.system.set_target_current_ramp_action.connect(
-            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_target_current
+            self.milw.temperature_block.current_settings.rise_current_block.target_current_signal.emit
         )
         self.system.set_is_active_ramp_action.connect(
-            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_button_is_active
+            self.milw.temperature_block.current_settings.rise_current_block\
+                .active_ramp_signal.emit
         )
         self.system.set_is_waiting_ramp_action.connect(
-            self.milw.temperature_block.current_settings.rise_current_block.set_ramp_button_is_waiting
+            self.milw.temperature_block.current_settings.rise_current_block\
+                .waiting_ramp_signal.emit
         )
 
         # PYROMETER ############
