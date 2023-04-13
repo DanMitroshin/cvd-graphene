@@ -13,7 +13,7 @@ from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
     ValveController,
-    CurrentSourceController, PyrometerTemperatureController, SeveralRrgAdcDacController,
+    CurrentSourceController, PyrometerTemperatureController, SeveralRrgAdcDacController, DigitalFuseController,
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
@@ -142,6 +142,10 @@ class AppSystem(BaseSystem):
             write_device=settings.RRG_SPI_WRITE_DEVICE,
         )
 
+        self._digital_fuses = {}
+        for i, port in enumerate(settings.DIGITAL_FUSE_PORTS):
+            self._digital_fuses[i] = DigitalFuseController(port=port)
+
         self.current_source_controller = CurrentSourceController(
             port=self.current_source_port,
             port_communicator=settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
@@ -158,6 +162,9 @@ class AppSystem(BaseSystem):
 
         for valve in self._valves.values():
             self._controllers.append(valve)
+
+        for fuse in self._digital_fuses.values():
+            self._controllers.append(fuse)
 
     def _init_actions(self):
         super()._init_actions()
