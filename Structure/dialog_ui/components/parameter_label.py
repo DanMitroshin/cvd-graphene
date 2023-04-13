@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect
 
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
-from coregraphene.ui import StyleSheet
+from grapheneqtui.utils import StyleSheet
 
 WIDTH = "300px"
 

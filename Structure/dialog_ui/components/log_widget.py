@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, QHBoxLayout, QVBoxLayo
 
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS, LIGHT_GREEN
 from coregraphene.constants import NOTIFICATIONS
-from coregraphene.ui import StyleSheet
+from grapheneqtui.utils import StyleSheet
 
 WIDTH = "580px"
 LABEL_WIDTH = "500px"
