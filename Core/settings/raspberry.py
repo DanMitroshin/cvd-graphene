@@ -18,7 +18,7 @@ PYROMETER_TEMPERATURE_USB_PORT = '/dev/ttyUSB2'
 PYROMETER_TEMPERATURE_BAUDRATE = 19200
 
 AIR_VALVE_CONFIGURATION = {
-    'PORT': 3, "NAME": "Air",
+    'PORT': 17, "NAME": "Air",
 }
 AIR_VALVE_NAME = AIR_VALVE_CONFIGURATION['NAME']
 
@@ -41,22 +41,18 @@ DIGITAL_FUSE_PORTS = [5, 22, 6, 27]
 VALVES_CONFIGURATION = [
     {
         "NAME": "O_2",
-        'PORT': 25,  # GPIO PORT FOR RELE
+        'PORT': 3,  # GPIO PORT FOR RELE
         "IS_GAS": True,
         "MAX_SCCM": 200.0,  # NOT NECESSARY, IF NOT PROVIDED, WILL BE USED `MAX_DEFAULT_SCCM_VALUE`
         'ADDRESS': 0,  # RRG ADDRESS FOR SPI (from 0 to 7: 000, 001, ..., 111)
      },
-    {'PORT': 17, "NAME": "N_2", "IS_GAS": True, 'ADDRESS': 1, },
-    {'PORT': 24, "NAME": "Ar", "IS_GAS": True, 'ADDRESS': 2, },
-    {'PORT': 4, "NAME": "C_2", "IS_GAS": True, 'ADDRESS': 3, },
-    {'PORT': 23, "NAME": "F_2", "IS_GAS": True, 'ADDRESS': 4, },
+    {'PORT': 25, "NAME": "C_2H_2", "IS_GAS": True, 'ADDRESS': 1, },
+    {'PORT': 24, "NAME": "CH_4", "IS_GAS": True, 'ADDRESS': 2, },
+    {'PORT': 4, "NAME": "N_2", "IS_GAS": True, 'ADDRESS': 3, },
+    {'PORT': 23, "NAME": "H_2", "IS_GAS": True, 'ADDRESS': 4, },
     # {'PORT': 7, "NAME": "O_2", "IS_GAS": True},
     # {'PORT': 8, "NAME": "N_2", "IS_GAS": True},
     # {'PORT': 9, "NAME": "Ar", "IS_GAS": True},
-    # {'PORT': 10, "NAME": "C_2", "IS_GAS": True},
-    # {'PORT': 11, "NAME": "F_2", "IS_GAS": True},
-    # {'PORT': 12, "NAME": "PUMP", "IS_GAS": False},
-    # {'PORT': 13, "NAME": "AIR", "IS_GAS": False},
 ]
 
 ALL_GPIO_VALVES_CONFIG = VALVES_CONFIGURATION + [AIR_VALVE_CONFIGURATION]
