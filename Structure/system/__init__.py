@@ -73,15 +73,18 @@ class AppSystem(BaseSystem):
                     port=port,
                     **self._default_controllers_kwargs.get(controller_code, {})
                 )
-                controller.setup()
-                is_good = controller.check_command()
-                if is_good:
-                    setattr(self, self._ports_attr_names[controller_code], port)
-                    used_ports.append(port)
-                    break
+                try:
+                    controller.setup()
+                    is_good = controller.check_command()
+                    if is_good:
+                        setattr(self, self._ports_attr_names[controller_code], port)
+                        used_ports.append(port)
+                        break
 
-                controller.destructor()
-                del controller
+                    controller.destructor()
+                    del controller
+                except:
+                    pass
 
         print(
             "|> FOUND PORTS:",
