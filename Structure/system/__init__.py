@@ -38,7 +38,7 @@ class AppSystem(BaseSystem):
         self.vakumetr_port = settings.ACCURATE_VAKUMETR_USB_PORT
         self.current_source_port = settings.CURRENT_SOURCE_USB_PORT
         self.pyrometer_temperature_port = settings.PYROMETER_TEMPERATURE_USB_PORT
-        return
+        # return
         # self.rrg_port = None
         # self.termodat_port = None
         self._ports_attr_names = {
@@ -49,7 +49,7 @@ class AppSystem(BaseSystem):
         self._controllers_check_classes = {
             'vakumetr': AccurateVakumetrController,
             'current_source': CurrentSourceController,
-            'pyrometer': 0,
+            'pyrometer': PyrometerTemperatureController,
         }
 
         self._default_controllers_kwargs = {
@@ -87,18 +87,16 @@ class AppSystem(BaseSystem):
             "|> FOUND PORTS:",
             "vakumetr:", self.vakumetr_port,
             'current_source:', self.current_source_port,
-            # "termodat:", self.termodat_port
+            "pyrometer", self.pyrometer_temperature_port,
         )
         assert self.vakumetr_port is not None
-        # assert self.rrg_port is not None
-        # assert self.termodat_port is not None
+        assert self.current_source_port is not None
+        assert self.pyrometer_temperature_port is not None
 
         self.ports = {
             'vakumetr': self.vakumetr_port,
             'current_source': self.current_source_port,
             'pyrometer': self.pyrometer_temperature_port,
-            # 'rrg': self.rrg_port,
-            # 'termodat': self.termodat_port,
         }
 
         gc.collect()
