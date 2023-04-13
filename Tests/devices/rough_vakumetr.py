@@ -32,7 +32,7 @@ def int2base(x, base=2):
     if x < 0:
         sign = -1
     elif x == 0:
-        return '0'  # digs[0]
+        return digs[0]
     else:
         sign = 1
 

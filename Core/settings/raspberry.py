@@ -18,18 +18,36 @@ PYROMETER_TEMPERATURE_USB_PORT = '/dev/ttyUSB2'
 PYROMETER_TEMPERATURE_BAUDRATE = 19200
 
 AIR_VALVE_CONFIGURATION = {
-    'PORT': 5, "NAME": "Air",
+    'PORT': 3, "NAME": "Air",
 }
 AIR_VALVE_NAME = AIR_VALVE_CONFIGURATION['NAME']
 
+PUMP_CONFIGURATION = {
+    'MANAGE_PORT': 1,  # порт управления (вкл/выкл)
+    'VALVE_PORT': 18,  # открыть/закрыть клапан перед насосом
+    "NAME": 'PUMP',
+}
+
 MAX_DEFAULT_SCCM_VALUE = 200
 
+RRG_SPI_READ_CHANNEL = 0
+RRG_SPI_WRITE_CHANNEL = 1
+RRG_SPI_SPEED = 20000
+RRG_SPI_READ_DEVICE = 0
+RRG_SPI_WRITE_DEVICE = 0
+
 VALVES_CONFIGURATION = [
-    {'PORT': 2, "NAME": "O_2", "IS_GAS": True, "MAX_SCCM": 200.0, },
-    {'PORT': 3, "NAME": "N_2", "IS_GAS": True, "MAX_SCCM": 200.0, },
-    {'PORT': 4, "NAME": "Ar", "IS_GAS": True, "MAX_SCCM": 200.0, },
-    {'PORT': 17, "NAME": "C_2", "IS_GAS": True, "MAX_SCCM": 200.0, },
-    {'PORT': 6, "NAME": "F_2", "IS_GAS": True, "MAX_SCCM": 200.0, },
+    {
+        "NAME": "O_2",
+        'PORT': 25,  # GPIO PORT FOR RELE
+        "IS_GAS": True,
+        "MAX_SCCM": 200.0,  # NOT NECESSARY, IF NOT PROVIDED, WILL BE USED `MAX_DEFAULT_SCCM_VALUE`
+        'ADDRESS': 0,  # RRG ADDRESS FOR SPI (from 0 to 7: 000, 001, ..., 111)
+     },
+    {'PORT': 17, "NAME": "N_2", "IS_GAS": True, 'ADDRESS': 1, },
+    {'PORT': 24, "NAME": "Ar", "IS_GAS": True, 'ADDRESS': 2, },
+    {'PORT': 4, "NAME": "C_2", "IS_GAS": True, 'ADDRESS': 3, },
+    {'PORT': 23, "NAME": "F_2", "IS_GAS": True, 'ADDRESS': 4, },
     # {'PORT': 7, "NAME": "O_2", "IS_GAS": True},
     # {'PORT': 8, "NAME": "N_2", "IS_GAS": True},
     # {'PORT': 9, "NAME": "Ar", "IS_GAS": True},

@@ -3,17 +3,17 @@ import random
 import time
 from threading import Thread, get_ident, Lock
 
-from Core.actions import RampThreadAction
 from Core.actions.actions import RampAction
 from coregraphene.auto_actions import BaseThreadAction
 from coregraphene.system_actions import SingleAnswerSystemAction
 from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction, SetTargetCurrentAction, \
-    SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction, SetIsRampWaitingAction
+    SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction, SetIsRampWaitingAction, \
+    SetTargetRrgSccmAction, FullCloseRrgAction, FullOpenRrgAction
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
     ValveController,
-    CurrentSourceController, PyrometerTemperatureController,
+    CurrentSourceController, PyrometerTemperatureController, SeveralRrgAdcDacController,
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
@@ -127,6 +127,21 @@ class AppSystem(BaseSystem):
         for i, valve_conf in enumerate(VALVES_CONFIGURATION):
             self._valves[i] = ValveController(port=valve_conf["PORT"])
 
+        # RRG_SPI_READ_CHANNEL = 0
+        # RRG_SPI_WRITE_CHANNEL = 1
+        # RRG_SPI_SPEED = 20000
+        # RRG_SPI_READ_DEVICE = 0
+        # RRG_SPI_WRITE_DEVICE = 0
+
+        self.rrgs_controller = SeveralRrgAdcDacController(
+            config=VALVES_CONFIGURATION,
+            read_channel=settings.RRG_SPI_READ_CHANNEL,
+            write_channel=settings.RRG_SPI_WRITE_CHANNEL,
+            speed=settings.RRG_SPI_SPEED,
+            read_device=settings.RRG_SPI_READ_DEVICE,
+            write_device=settings.RRG_SPI_WRITE_DEVICE,
+        )
+
         self.current_source_controller = CurrentSourceController(
             port=self.current_source_port,
             port_communicator=settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
@@ -137,6 +152,7 @@ class AppSystem(BaseSystem):
         self._controllers: list[AbstractController] = [
             self.accurate_vakumetr_controller,
             self.pyrometer_temperature_controller,
+            self.rrgs_controller,
             self.current_source_controller,
         ]
 
@@ -149,6 +165,14 @@ class AppSystem(BaseSystem):
         # ===== Valves ======== #
         self.change_gas_valve_opened = ChangeGasValveStateAction(system=self)
         self.change_air_valve_opened = ChangeAirValveStateAction(system=self)
+
+        # ===== RRG =========== #
+        self.set_target_rrg_sccm_action = SetTargetRrgSccmAction(system=self)
+        self.full_close_rrg_action = FullCloseRrgAction(system=self)
+        self.full_open_rrg_action = FullOpenRrgAction(system=self)
+
+        self.get_current_rrg_sccm = SingleAnswerSystemAction(system=self)
+        self.rrgs_controller.get_current_flow.connect(self.get_current_rrg_sccm)
 
         # ===== Pyrometer ===== #
         self.set_current_temperature = SingleAnswerSystemAction(system=self)

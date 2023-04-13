@@ -103,6 +103,13 @@ class AppMainDialogWindow(BaseMainDialogWindow):
             gas.connect_valve_function(self.system.change_valve_state)
             self.system.change_gas_valve_opened.connect(gas.draw_is_open, device_num=num)
 
+            gas.connect_change_sccm_function(self.system.set_target_rrg_sccm_action)
+            self.system.set_target_rrg_sccm_action.connect(gas.draw_set_target_sccm, device_num=gas.number)
+            self.system.full_open_rrg_action.connect(gas.draw_set_target_sccm, device_num=gas.number)
+            self.system.full_close_rrg_action.connect(gas.draw_set_target_sccm, device_num=gas.number)
+
+            self.system.get_current_rrg_sccm.connect(gas.update_current_sccm_label, device_num=gas.number)
+
         # AIR #################
         self.milw.pressure_block.air. \
             connect_valve_function(self.system.change_air_valve_state)

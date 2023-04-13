@@ -11,6 +11,22 @@ class ChangeGasValveStateAction(ManyDeviceSystemAction):
         return self._system._valves[device_num].set_is_open_state(is_open)
 
 
+# ======== RRG
+class SetTargetRrgSccmAction(ManyDeviceSystemAction):
+    def _call_function(self, sccm, device_num):
+        return self._system.rrgs_controller.set_target_sccm(sccm, device_num)
+
+
+class FullCloseRrgAction(ManyDeviceSystemAction):
+    def _call_function(self, device_num):
+        return self._system.rrgs_controller.full_close(device_num)
+
+
+class FullOpenRrgAction(ManyDeviceSystemAction):
+    def _call_function(self, device_num):
+        return self._system.rrgs_controller.full_open(device_num)
+
+
 class SetTargetCurrentAction(SystemAction):
     def _call_function(self, value):
         return self._system.set_target_current(value)
