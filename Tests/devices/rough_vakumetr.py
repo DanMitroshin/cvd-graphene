@@ -32,7 +32,7 @@ def int2base(x, base=2):
     if x < 0:
         sign = -1
     elif x == 0:
-        return digs[0]
+        return '0'  # digs[0]
     else:
         sign = 1
 
@@ -137,12 +137,14 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     # test_rough_vakumetr_3()
     try:
-        test_rough_vakumetr_2()  # WORK VERSION
+        # test_rough_vakumetr_2()  # WORK VERSION
         # test_rough_vakumetr_3()
-        # s = '0000010000000000'
+        s = '0000010000000000'
+        s = '1000100000000000'  # MAX VALUE
         # h = int2base(int(s, 2), base=16)
         # h = int(hex(int(s, 2)), 16)
-        # print(h, type(h), type(0x44))
+        h = int(s, 2)
+        print(h, type(h), type(0x44))
         print("TEST 1 ===> PASSED")
     except Exception as e:
         print("[ERROR]", e)
