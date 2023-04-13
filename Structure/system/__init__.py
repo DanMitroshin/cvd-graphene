@@ -155,6 +155,7 @@ class AppSystem(BaseSystem):
 
         self._controllers: list[AbstractController] = [
             self.accurate_vakumetr_controller,
+            self.air_valve_controller,
             self.pyrometer_temperature_controller,
             self.rrgs_controller,
             self.current_source_controller,
