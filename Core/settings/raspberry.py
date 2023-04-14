@@ -40,7 +40,7 @@ DIGITAL_FUSE_PORTS = [5, 22, 6, 27]
 
 VALVES_CONFIGURATION = [
     {
-        "NAME": "O_2",
+        "NAME": "Ar",
         'PORT': 3,  # GPIO PORT FOR RELE
         "IS_GAS": True,
         "MAX_SCCM": 200.0,  # NOT NECESSARY, IF NOT PROVIDED, WILL BE USED `MAX_DEFAULT_SCCM_VALUE`
