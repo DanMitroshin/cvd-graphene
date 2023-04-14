@@ -33,7 +33,7 @@ MAX_DEFAULT_SCCM_VALUE = 200
 RRG_SPI_READ_CHANNEL = 0
 RRG_SPI_WRITE_CHANNEL = 1
 RRG_SPI_SPEED = 20000
-RRG_SPI_READ_DEVICE = 0
+RRG_SPI_READ_DEVICE = 1
 RRG_SPI_WRITE_DEVICE = 0
 
 DIGITAL_FUSE_PORTS = [5, 22, 6, 27]
@@ -47,9 +47,9 @@ VALVES_CONFIGURATION = [
         'ADDRESS': 0,  # RRG ADDRESS FOR SPI (from 0 to 7: 000, 001, ..., 111)
      },
     {'PORT': 25, "NAME": "C_2H_2", "IS_GAS": True, 'ADDRESS': 1, },
-    {'PORT': 24, "NAME": "CH_4", "IS_GAS": True, 'ADDRESS': 2, },
-    {'PORT': 4, "NAME": "N_2", "IS_GAS": True, 'ADDRESS': 3, },
-    {'PORT': 23, "NAME": "H_2", "IS_GAS": True, 'ADDRESS': 4, },
+    {'PORT': 24, "NAME": "CH_4", "IS_GAS": True, 'ADDRESS': 4, },
+    {'PORT': 4, "NAME": "N_2", "IS_GAS": True, 'ADDRESS': 5, },
+    {'PORT': 23, "NAME": "H_2", "IS_GAS": True, 'ADDRESS': 6, },
     # {'PORT': 7, "NAME": "O_2", "IS_GAS": True},
     # {'PORT': 8, "NAME": "N_2", "IS_GAS": True},
     # {'PORT': 9, "NAME": "Ar", "IS_GAS": True},
