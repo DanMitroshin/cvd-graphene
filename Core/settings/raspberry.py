@@ -33,8 +33,8 @@ MAX_DEFAULT_SCCM_VALUE = 200
 RRG_SPI_READ_CHANNEL = 0
 RRG_SPI_WRITE_CHANNEL = 1
 RRG_SPI_SPEED = 20000
-RRG_SPI_READ_DEVICE = 1
-RRG_SPI_WRITE_DEVICE = 0
+RRG_SPI_READ_DEVICE = 1  # Potential vakumetr port
+RRG_SPI_WRITE_DEVICE = 0  # Only 0 because we have only one instrument for write using spi
 
 DIGITAL_FUSE_PORTS = [5, 22, 6, 27]
 
