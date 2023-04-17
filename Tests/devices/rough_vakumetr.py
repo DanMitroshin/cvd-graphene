@@ -111,7 +111,7 @@ def test_rough_vakumetr_3():
 
     txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
     while True:
-        txData = [0b00010001, 0b11101001]  # send to chB
+        txData = [0b00011001, 0b11101001]  # send to chB
         print("Send to spi:", txData)
         rxData = spi.xfer(txData)
 
