@@ -111,7 +111,8 @@ def test_rough_vakumetr_3():
 
     txData = [0x80, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF]
     while True:
-        txData = [0b00010001, 0b11001001]  # send to chB
+        txData = [0b00010001, 0b11101001]  # send to chB
+        print("Send to spi:", txData)
         rxData = spi.xfer(txData)
 
         print("Receive:", rxData)
@@ -137,7 +138,7 @@ if __name__ == "__main__":
     print("TEST 1 ===>")
     # test_rough_vakumetr_3()
     try:
-        test_rough_vakumetr_2()  # WORK VERSION
+        test_rough_vakumetr_3()  # WORK VERSION
         # test_rough_vakumetr_3()
         s = '0000010000000000'
         s = '1000100000000000'  # MAX VALUE
