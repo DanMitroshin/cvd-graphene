@@ -332,7 +332,8 @@ class AppSystem(BaseSystem):
 
     @BaseSystem.action
     def change_air_valve_state(self):
-        return self._change_valve_state(self.air_valve_controller, "AIR")
+        new_state = self._change_valve_state(self.air_valve_controller, "AIR")
+        self.change_air_valve_opened(new_state)
 
     @BaseSystem.action
     def set_target_current(self, value):

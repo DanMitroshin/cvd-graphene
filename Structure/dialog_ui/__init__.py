@@ -129,12 +129,12 @@ class AppMainDialogWindow(BaseMainDialogWindow):
                 gas.column_info.update_current_signal.emit, device_num=gas.number)
 
         # AIR #################
-        self.milw.pressure_block.air. \
-            connect_valve_function(self.system.change_air_valve_state)
-        self.system.change_air_valve_opened.connect(self.milw.pressure_block.air.draw_is_open)
-
-        # for gas in self.main_interface_layout_widget.pressure_block.gases:
-        #     gas.connect_valve_function(self.system.change_valve_state)
+        # self.milw.pressure_block.air. \
+        #     connect_valve_function(self.system.change_air_valve_state)
+        self.milw.pressure_block.air.update_is_valve_open_signal\
+            .connect(self.system.change_air_valve_state)
+        self.system.change_air_valve_opened.connect(
+            self.milw.pressure_block.air.on_update_is_valve_open_signal.emit)
         #######################
         # CURRENT
 
