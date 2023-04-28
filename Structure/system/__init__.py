@@ -13,7 +13,11 @@ from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
     ValveController,
-    CurrentSourceController, PyrometerTemperatureController, SeveralRrgAdcDacController, DigitalFuseController,
+    CurrentSourceController,
+    PyrometerTemperatureController,
+    SeveralRrgAdcDacController,
+    DigitalFuseController,
+    BackPressureValveController,
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
@@ -31,13 +35,30 @@ class AppSystem(BaseSystem):
     ramp_seconds = 0
     ramp_active = False
     ramp_waiting = False
-    ramp_lock = Lock()
+
+    _default_controllers_kwargs = {
+        'vakumetr': {
+            'port_communicator': settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
+            'baudrate': settings.ACCURATE_VAKUMETR_BAUDRATE,
+        },
+        'current_source': {
+            'port_communicator': settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
+            'baudrate': settings.CURRENT_SOURCE_BAUDRATE,
+        },
+        'pyrometer': {
+            'baudrate': settings.PYROMETER_TEMPERATURE_BAUDRATE,
+        },
+        'throttle': {
+            'baudrate': settings.BACK_PRESSURE_VALVE_BAUDRATE,
+        }
+    }
 
     def _determine_attributes(self):
         used_ports = []
         self.vakumetr_port = settings.ACCURATE_VAKUMETR_USB_PORT
         self.current_source_port = settings.CURRENT_SOURCE_USB_PORT
         self.pyrometer_temperature_port = settings.PYROMETER_TEMPERATURE_USB_PORT
+        self.back_pressure_valve_port = settings.BACK_PRESSURE_VALVE_USB_PORT
         # return
         # self.rrg_port = None
         # self.termodat_port = None
@@ -45,20 +66,13 @@ class AppSystem(BaseSystem):
             'vakumetr': 'vakumetr_port',
             'current_source': 'current_source_port',
             'pyrometer': 'pyrometer_temperature_port',
+            'throttle': 'back_pressure_valve_port',
         }
         self._controllers_check_classes = {
             'vakumetr': AccurateVakumetrController,
             'current_source': CurrentSourceController,
             'pyrometer': PyrometerTemperatureController,
-        }
-
-        self._default_controllers_kwargs = {
-            'vakumetr': {
-                'port_communicator': settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
-            },
-            'current_source': {
-                'port_communicator': settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
-            },
+            'throttle': BackPressureValveController,
         }
 
         usb_ports = get_available_usb_ports()
@@ -66,7 +80,7 @@ class AppSystem(BaseSystem):
             usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']
         print("PORTS USB:", usb_ports)
         for controller_code, controller_class in self._controllers_check_classes.items():
-            break
+            # break
             for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
                 if port in used_ports:
                     continue
@@ -92,15 +106,18 @@ class AppSystem(BaseSystem):
             "vakumetr:", self.vakumetr_port,
             'current_source:', self.current_source_port,
             "pyrometer", self.pyrometer_temperature_port,
+            'throttle', self.back_pressure_valve_port,
         )
         assert self.vakumetr_port is not None
         assert self.current_source_port is not None
         assert self.pyrometer_temperature_port is not None
+        assert self.back_pressure_valve_port is not None
 
         self.ports = {
             'vakumetr': self.vakumetr_port,
             'current_source': self.current_source_port,
             'pyrometer': self.pyrometer_temperature_port,
+            'throttle': self.back_pressure_valve_port,
         }
 
         gc.collect()
@@ -108,19 +125,22 @@ class AppSystem(BaseSystem):
     def _init_controllers(self):
         self.accurate_vakumetr_controller = AccurateVakumetrController(
             get_potential_port=self.get_potential_controller_port,
-            port_communicator=settings.ACCURATE_VAKUMETR_COMMUNICATOR_PORT,
-            baudrate=settings.ACCURATE_VAKUMETR_BAUDRATE,
             port=self.vakumetr_port,
-            # active=False,
+            **self._default_controllers_kwargs.get('vakumetr'),
         )
         self.pyrometer_temperature_controller = PyrometerTemperatureController(
             get_potential_port=self.get_potential_controller_port,
-            baudrate=settings.PYROMETER_TEMPERATURE_BAUDRATE,
             port=self.pyrometer_temperature_port,
+            **self._default_controllers_kwargs.get('pyrometer'),
         )
 
         self.air_valve_controller = ValveController(
             port=settings.AIR_VALVE_CONFIGURATION['PORT'],
+        )
+        self.back_pressure_valve_controller = BackPressureValveController(
+            get_potential_port=self.get_potential_controller_port,
+            port=self.back_pressure_valve_port,
+            **self._default_controllers_kwargs.get('throttle'),
         )
 
         self._valves = {}
@@ -150,9 +170,7 @@ class AppSystem(BaseSystem):
 
         self.current_source_controller = CurrentSourceController(
             port=self.current_source_port,
-            port_communicator=settings.CURRENT_SOURCE_COMMUNICATOR_PORT,
-            baudrate=settings.CURRENT_SOURCE_BAUDRATE,
-            active=True,
+            **self._default_controllers_kwargs.get('current_source'),
         )
 
         self._controllers: list[AbstractController] = [
@@ -161,6 +179,7 @@ class AppSystem(BaseSystem):
             self.pyrometer_temperature_controller,
             self.rrgs_controller,
             self.current_source_controller,
+            self.back_pressure_valve_controller,
         ]
 
         for valve in self._valves.values():
@@ -209,6 +228,18 @@ class AppSystem(BaseSystem):
 
         self.set_is_active_ramp_action = SetIsRampActiveAction(system=self)
         self.set_is_waiting_ramp_action = SetIsRampWaitingAction(system=self)
+
+        # ===== Throttle: back pressure valve == #
+        self.get_throttle_state_action = SingleAnswerSystemAction(system=self)
+        self.back_pressure_valve_controller.get_state_action.connect(self.get_throttle_state_action)
+
+        self.get_throttle_current_pressure_action = SingleAnswerSystemAction(system=self)
+        self.back_pressure_valve_controller.get_current_pressure_action.\
+            connect(self.get_throttle_current_pressure_action)
+
+        self.get_throttle_target_pressure_action = SingleAnswerSystemAction(system=self)
+        self.back_pressure_valve_controller.get_target_pressure_action.\
+            connect(self.get_throttle_target_pressure_action)
 
         #########################
 
@@ -296,7 +327,8 @@ class AppSystem(BaseSystem):
         valve = self._valves.get(gas_num, None)
         if valve is None:
             return False
-        return self._change_valve_state(valve, gas_num)
+        new_state = self._change_valve_state(valve, gas_num)
+        self.change_gas_valve_opened(new_state, device_num=gas_num)
 
     @BaseSystem.action
     def change_air_valve_state(self):
