@@ -8,7 +8,8 @@ from coregraphene.auto_actions import BaseThreadAction
 from coregraphene.system_actions import SingleAnswerSystemAction
 from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction, SetTargetCurrentAction, \
     SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction, SetIsRampWaitingAction, \
-    SetTargetRrgSccmAction, FullCloseRrgAction, FullOpenRrgAction
+    SetTargetRrgSccmAction, FullCloseRrgAction, FullOpenRrgAction, ChangePumpValveStateAction, \
+    ChangePumpManageStateAction
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
@@ -137,11 +138,20 @@ class AppSystem(BaseSystem):
         self.air_valve_controller = ValveController(
             port=settings.AIR_VALVE_CONFIGURATION['PORT'],
         )
+
+        # PUMP BLOCK
+        self.pump_valve_controller = ValveController(
+            port=settings.PUMP_CONFIGURATION['VALVE_PORT'],
+        )
+        self.pump_manage_controller = ValveController(
+            port=settings.PUMP_CONFIGURATION['MANAGE_PORT'],
+        )
         self.back_pressure_valve_controller = BackPressureValveController(
             get_potential_port=self.get_potential_controller_port,
             port=self.back_pressure_valve_port,
             **self._default_controllers_kwargs.get('throttle'),
         )
+        ##############
 
         self._valves = {}
         # for valve_conf in VALVES_CONFIGURATION:
@@ -179,6 +189,9 @@ class AppSystem(BaseSystem):
             self.pyrometer_temperature_controller,
             self.rrgs_controller,
             self.current_source_controller,
+
+            self.pump_valve_controller,
+            self.pump_manage_controller,
             self.back_pressure_valve_controller,
         ]
 
@@ -194,6 +207,10 @@ class AppSystem(BaseSystem):
         # ===== Valves ======== #
         self.change_gas_valve_opened = ChangeGasValveStateAction(system=self)
         self.change_air_valve_opened = ChangeAirValveStateAction(system=self)
+
+        # ===== PUMP ========== #
+        self.change_pump_valve_opened_action = ChangePumpValveStateAction(system=self)
+        self.change_pump_manage_active_action = ChangePumpManageStateAction(system=self)
 
         # ===== RRG =========== #
         self.set_target_rrg_sccm_action = SetTargetRrgSccmAction(system=self)
@@ -317,7 +334,7 @@ class AppSystem(BaseSystem):
     #         return False
     #     return valve.change_state()
 
-    def _change_valve_state(self, valve, name):
+    def _change_valve_state(self, valve, name="-"):
         new_state = valve.change_state()
         # print(f"Valve {name} new state: {new_state}")
         return new_state
@@ -334,6 +351,16 @@ class AppSystem(BaseSystem):
     def change_air_valve_state(self):
         new_state = self._change_valve_state(self.air_valve_controller, "AIR")
         self.change_air_valve_opened(new_state)
+
+    @BaseSystem.action
+    def change_pump_valve_state(self):
+        new_state = self._change_valve_state(self.pump_valve_controller, "PUMP V")
+        self.change_pump_valve_opened_action(new_state)
+
+    @BaseSystem.action
+    def change_pump_manage_state(self):
+        new_state = self._change_valve_state(self.pump_manage_controller, "PUMP M")
+        self.change_pump_manage_active_action(new_state)
 
     @BaseSystem.action
     def set_target_current(self, value):

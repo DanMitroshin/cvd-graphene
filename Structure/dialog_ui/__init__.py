@@ -136,6 +136,33 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         self.system.change_air_valve_opened.connect(
             self.milw.pressure_block.air.on_update_is_valve_open_signal.emit)
         #######################
+
+        # PUMP ################
+        self.milw.pressure_block.pump_block.update_pump_valve_state_signal\
+            .connect(self.system.change_pump_valve_state)
+        self.system.change_pump_valve_opened_action.connect(
+            self.milw.pressure_block.pump_block.on_update_pump_valve_is_open_signal.emit)
+
+        self.milw.pressure_block.pump_block.update_pump_state_signal\
+            .connect(self.system.change_pump_manage_state)
+        self.system.change_pump_manage_active_action.connect(
+            self.milw.pressure_block.pump_block.on_update_pump_is_open_signal.emit)
+
+        # << THROTTLE >> #
+        self.milw.pressure_block.pump_block.update_throttle_state_signal\
+            .connect(self.system.back_pressure_valve_controller.on_change_state)
+        self.system.get_throttle_state_action.connect(
+            self.milw.pressure_block.pump_block.on_update_throttle_state_signal.emit)
+
+        self.system.get_throttle_current_pressure_action.connect(
+            self.milw.pressure_block.pump_block.throttle_info.update_current_signal.emit)
+
+        self.milw.pressure_block.pump_block.throttle_info.on_update_target_signal \
+            .connect(self.system.back_pressure_valve_controller.turn_on_regulation)
+        self.system.get_throttle_target_pressure_action.connect(
+            self.milw.pressure_block.pump_block.throttle_info.update_target_signal.emit)
+        #######################
+
         # CURRENT
 
         self.milw.temperature_block.current_settings.set_current_block.\
