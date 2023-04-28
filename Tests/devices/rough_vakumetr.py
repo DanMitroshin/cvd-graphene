@@ -1,4 +1,5 @@
 # from Tests.devices.ports import get_serial_port
+import time
 
 try:
     import wiringpi
@@ -134,11 +135,29 @@ def test_rough_vakumetr_3():
     spi.close()
 
 
+def test_writing():
+    start = time.time()
+    filename = "test1.txt"
+    with open(filename, 'w') as file:
+        for i in range(1000000):
+            file.write(str(i)+'\n')
+    time2 = time.time()
+    print("Time:", time2 - start)
+    arr = []
+    with open(filename, 'r') as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                arr.append(int(line))
+    print("Time read:", time.time() - time2)
+
+
 if __name__ == "__main__":
     print("TEST 1 ===>")
     # test_rough_vakumetr_3()
     try:
-        test_rough_vakumetr_3()  # WORK VERSION
+        test_writing()
+        # test_rough_vakumetr_3()  # WORK VERSION
         # test_rough_vakumetr_3()
         s = '0000010000000000'
         s = '1000100000000000'  # MAX VALUE

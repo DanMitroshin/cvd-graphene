@@ -36,8 +36,12 @@ MAX_DEFAULT_SCCM_VALUE = 200
 RRG_SPI_READ_CHANNEL = 0
 RRG_SPI_WRITE_CHANNEL = 1
 RRG_SPI_SPEED = 20000
-RRG_SPI_READ_DEVICE = 0  # Potential vakumetr port
+RRG_SPI_READ_DEVICE = 1  # Potential vakumetr port
 RRG_SPI_WRITE_DEVICE = 0  # ONLY 0 because we have only one instrument for write using spi
+
+VAKUMETR_SPI_READ_CHANNEL = 0
+VAKUMETR_SPI_SPEED = 20000
+VAKUMETR_SPI_READ_DEVICE = 0
 
 DIGITAL_FUSE_PORTS = [5, 22, 6, 27]
 
@@ -48,11 +52,21 @@ VALVES_CONFIGURATION = [
         "IS_GAS": True,
         "MAX_SCCM": 200.0,  # NOT NECESSARY, IF NOT PROVIDED, WILL BE USED `MAX_DEFAULT_SCCM_VALUE`
         'ADDRESS': 0,  # RRG ADDRESS FOR SPI (from 0 to 7: 000, 001, ..., 111)
+        'DAC_ADDRESS': 0,  # RRG ADDRESS FOR SPI DAC [SET VALUE] (from 0 to 7: 000, 001, ..., 111)
+        'VAKUMETR_ADDRESS': 0,  # VAKUMETR ADDRESS FOR READING PRESSURE IN BALLOON
      },
-    {'PORT': 25, "NAME": "C_2H_2", "IS_GAS": True, 'ADDRESS': 2, },
-    {'PORT': 24, "NAME": "CH_4", "IS_GAS": True, 'ADDRESS': 3, },
-    {'PORT': 4, "NAME": "N_2", "IS_GAS": True, 'ADDRESS': 4, },
-    {'PORT': 23, "NAME": "H_2", "IS_GAS": True, 'ADDRESS': 5, },
+    {'PORT': 25, "NAME": "C_2H_2", "IS_GAS": True,
+     'ADDRESS': 2, 'DAC_ADDRESS': 2, 'VAKUMETR_ADDRESS': 2,
+     },
+    {'PORT': 24, "NAME": "CH_4", "IS_GAS": True,
+     'ADDRESS': 3, 'DAC_ADDRESS': 3, 'VAKUMETR_ADDRESS': 3,
+     },
+    {'PORT': 4, "NAME": "N_2", "IS_GAS": True,
+     'ADDRESS': 4, 'DAC_ADDRESS': 4, 'VAKUMETR_ADDRESS': 4,
+     },
+    {'PORT': 23, "NAME": "H_2", "IS_GAS": True,
+     'ADDRESS': 5, 'DAC_ADDRESS': 5, 'VAKUMETR_ADDRESS': 5,
+     },
     # {'PORT': 7, "NAME": "O_2", "IS_GAS": True},
     # {'PORT': 8, "NAME": "N_2", "IS_GAS": True},
     # {'PORT': 9, "NAME": "Ar", "IS_GAS": True},

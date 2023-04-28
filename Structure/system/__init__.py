@@ -18,7 +18,7 @@ from coregraphene.components.controllers import (
     PyrometerTemperatureController,
     SeveralRrgAdcDacController,
     DigitalFuseController,
-    BackPressureValveController,
+    BackPressureValveController, VakumetrAdcController,
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
@@ -174,6 +174,13 @@ class AppSystem(BaseSystem):
             write_device=settings.RRG_SPI_WRITE_DEVICE,
         )
 
+        self.gases_pressure_controller = VakumetrAdcController(
+            config=VALVES_CONFIGURATION,
+            read_channel=settings.VAKUMETR_SPI_READ_CHANNEL,
+            speed=settings.VAKUMETR_SPI_SPEED,
+            device=settings.VAKUMETR_SPI_READ_DEVICE,
+        )
+
         self._digital_fuses = {}
         for i, port in enumerate(settings.DIGITAL_FUSE_PORTS):
             self._digital_fuses[i] = DigitalFuseController(port=port)
@@ -188,6 +195,7 @@ class AppSystem(BaseSystem):
             self.air_valve_controller,
             self.pyrometer_temperature_controller,
             self.rrgs_controller,
+            self.gases_pressure_controller,
             self.current_source_controller,
 
             self.pump_valve_controller,
@@ -219,6 +227,11 @@ class AppSystem(BaseSystem):
 
         self.get_current_rrg_sccm = SingleAnswerSystemAction(system=self)
         self.rrgs_controller.get_current_flow.connect(self.get_current_rrg_sccm)
+
+        # ===== Vakumetr gases ==== #
+        self.get_current_gas_balloon_pressure = SingleAnswerSystemAction(system=self)
+        self.gases_pressure_controller.get_current_pressure_action.connect(
+            self.get_current_gas_balloon_pressure)
 
         # ===== Pyrometer ===== #
         self.set_current_temperature = SingleAnswerSystemAction(system=self)

@@ -128,6 +128,10 @@ class AppMainDialogWindow(BaseMainDialogWindow):
             self.system.get_current_rrg_sccm.connect(
                 gas.column_info.update_current_signal.emit, device_num=gas.number)
 
+            # Balloon gas pressure
+            self.system.get_current_gas_balloon_pressure.connect(
+                gas.on_update_gas_name_color_by_pressure_signal.emit, device_num=gas.number)
+
         # AIR #################
         # self.milw.pressure_block.air. \
         #     connect_valve_function(self.system.change_air_valve_state)
