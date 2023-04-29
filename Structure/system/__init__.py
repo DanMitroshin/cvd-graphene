@@ -81,7 +81,7 @@ class AppSystem(BaseSystem):
             usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']
         print("PORTS USB:", usb_ports)
         for controller_code, controller_class in self._controllers_check_classes.items():
-            break
+            # break
             for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
                 if port in used_ports:
                     continue
