@@ -20,7 +20,7 @@ class CurrentSettingsBlock(QWidget):
         self.setStyleSheet(styles.container)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
 
-        shadow = QGraphicsDropShadowEffect()
+        shadow = QGraphicsDropShadowEffect(parent=None)
         shadow.setBlurRadius(SHADOW_BLUR_RADIUS)
         self.setGraphicsEffect(shadow)
 
@@ -44,7 +44,7 @@ class CurrentSettingsBlock(QWidget):
 
         self.layout.addLayout(self.labels, )
         self.rise_current_block = RiseCurrentBlock()
-        self.layout.addWidget(self.rise_current_block, QtCore.Qt.AlignCenter)
+        self.layout.addWidget(self.rise_current_block, alignment=QtCore.Qt.AlignCenter)
 
     def set_voltage_value(self, value):
         self.voltage_value = float(value if str(value) else 0.0)

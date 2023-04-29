@@ -6,7 +6,7 @@ styles = StyleSheet({
         "name": "QWidget#actual_temperature_widget",
         # "min-width": "300px",
         # "height": "100%",
-        # "max-height": "200px",
+        "max-height": "200px",
         "border-style": "solid",
         # "border-radius": "8px",
         "border-width": "2px",

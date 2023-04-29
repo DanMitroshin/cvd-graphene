@@ -207,9 +207,18 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         )
 
         # PYROMETER ############
+        # self.system.set_current_temperature.connect(
+        #     self.milw.temperature_block.set_actual_temperature
+        # )
         self.system.set_current_temperature.connect(
-            self.milw.temperature_block.set_actual_temperature
+            self.milw.pressure_control_block.show_temperature.update_temperature_signal.emit
         )
+        ########################
+
+        # VAKUMETR #############
+        # self.milw.pressure_control_block.show_pressure_block.set_value(
+        #     self.system.accurate_vakumetr_value
+        # )
         ########################
         # self.system.test_ramp()
 
@@ -274,9 +283,9 @@ class AppMainDialogWindow(BaseMainDialogWindow):
     #         pass
 
     def _update_ui_values(self):
-        self.main_interface_layout_widget.pressure_control_block.show_pressure_block.set_value(
-            self.system.accurate_vakumetr_value
-        )
+        # self.milw.pressure_control_block.show_pressure_block.set_value(
+        #     self.system.accurate_vakumetr_value
+        # )
 
         # print("VOLTAGE:", self.system.voltage_value)
         # VOLTAGE

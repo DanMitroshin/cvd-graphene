@@ -10,6 +10,7 @@ styles = StyleSheet({
     "container": {
         "name": "QLabel#digit_current_label",
         "height": side,
+        "max-height": side,
         "width": side,
         "background-color": "rgb(255, 255, 255)",
         # "border-style": "solid",
@@ -39,14 +40,14 @@ QPushButton#button_plus_minus:pressed {
 
 class DigitLabel(QLabel):
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
+        super().__init__()
 
         self.value = 1
         self.setText(str(self.value))
         self.setObjectName("digit_current_label")
         self.setStyleSheet(styles.container)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
-        self.setAlignment(QtCore.Qt.AlignCenter)
+        # self.setAlignment(QtCore.Qt.AlignCenter)
 
         # shadow = QGraphicsDropShadowEffect()
         # shadow.setBlurRadius(2)

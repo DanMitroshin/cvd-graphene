@@ -1,9 +1,10 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QLineEdit
 
-from grapheneqtui.components import ShowPressureBlock
+from grapheneqtui.components import ShowPressureBlock, ShowTemperatureBlock
 from .FlowControlWidget import FlowControlWidget
 # from .ShowPressureBlock import ShowPressureBlock
+from .SetTemperatureBlock import SetTemperatureBlock
 from .styles import styles
 
 
@@ -21,6 +22,11 @@ class PressureControlBlock(QWidget):
                               alignment=QtCore.Qt.AlignTop
                               )
 
+        self.show_temperature = ShowTemperatureBlock()
+        self.layout.addWidget(self.show_temperature,
+                              alignment=QtCore.Qt.AlignTop
+                              )
+
         # self.input = QLineEdit()
         # self.input.setStyleSheet("""
         # background-color: rgb(255, 255, 255);
@@ -30,7 +36,10 @@ class PressureControlBlock(QWidget):
         # # self.input.clearFocus()
         # self.layout.addWidget(self.input)
 
-        self.pump_widget = FlowControlWidget(title="Pump")
-        self.vent_widget = FlowControlWidget(title="Vent")
-        self.layout.addWidget(self.pump_widget)
-        self.layout.addWidget(self.vent_widget)
+        self.set_temperature = SetTemperatureBlock()
+        self.layout.addWidget(self.set_temperature, alignment=QtCore.Qt.AlignTop)
+
+        self.pump = FlowControlWidget(title="Pump")
+        self.vent = FlowControlWidget(title="Vent")
+        self.layout.addWidget(self.pump)
+        self.layout.addWidget(self.vent)
