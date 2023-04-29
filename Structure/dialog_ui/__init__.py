@@ -283,9 +283,9 @@ class AppMainDialogWindow(BaseMainDialogWindow):
     #         pass
 
     def _update_ui_values(self):
-        # self.milw.pressure_control_block.show_pressure_block.set_value(
-        #     self.system.accurate_vakumetr_value
-        # )
+        self.milw.pressure_control_block.show_pressure_block.set_value(
+            self.system.accurate_vakumetr_value
+        )
 
         # print("VOLTAGE:", self.system.voltage_value)
         # VOLTAGE
