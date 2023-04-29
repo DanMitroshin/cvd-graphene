@@ -176,7 +176,7 @@ class AppSystem(BaseSystem):
 
         self.gases_pressure_controller = VakumetrAdcController(
             config=VALVES_CONFIGURATION,
-            read_channel=settings.VAKUMETR_SPI_READ_CHANNEL,
+            channel=settings.VAKUMETR_SPI_READ_CHANNEL,
             speed=settings.VAKUMETR_SPI_SPEED,
             device=settings.VAKUMETR_SPI_READ_DEVICE,
         )
