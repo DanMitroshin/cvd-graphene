@@ -32,6 +32,15 @@ class ACTIONS_NAMES:
     FULL_CLOSE_PUMP = "FULL_CLOSE_PUMP"
     STABILIZE_PRESSURE = "STABILIZE_PRESSURE"
 
+    SET_TARGET_TEMPERATURE = "SET_TARGET_TEMPERATURE"
+    SET_THROTTLE_PERCENT = "SET_THROTTLE_PERCENT"
+    FULL_OPEN_THROTTLE = "FULL_OPEN_THROTTLE"
+    FULL_CLOSE_THROTTLE = "FULL_CLOSE_THROTTLE"
+    SET_THROTTLE_PRESSURE = "SET_THROTTLE_PRESSURE"
+    
+    START_TEMPERATURE_REGULATION = "START_TEMPERATURE_REGULATION"
+    STOP_TEMPERATURE_REGULATION = "STOP_TEMPERATURE_REGULATION"
+
 
 class TABLE_ACTIONS_NAMES:
     RAMP = "Ramp"
@@ -41,8 +50,6 @@ class TABLE_ACTIONS_NAMES:
     CLOSE_VALVE = "Закрыть клапан" + " [клапан]"
     CLOSE_ALL_VALVES = "Закрыть все клапаны"
 
-    FULL_OPEN_RRG = "Полностью открыть РРГ" + " [газ]"
-    FULL_CLOSE_RRG = "Полностью закрыть РРГ" + " [газ]"
     SET_RRG_VALUE = "Значение на РРГ" + " [газ, sccm]"
     SET_RRG_VALUE_WITH_PAUSE = "Значение на РРГ с паузой" + " [газ, sccm, мммм:сс]"
     SET_RRG_AND_KEEP_TO_PRESSURE = "Повысить давление газа на определённую величину [газ, sccm, давление]"
@@ -56,14 +63,18 @@ class TABLE_ACTIONS_NAMES:
     SET_T_V_ALL_TERMODATS = "Установить T и V на печки" + " [температура, скорость]"
     WAIT_TARGET_TEMPERATURE = "Ждать установления температуры [температура, мммм:сс]"
 
-    SET_TEMPERATURE = "Установить температуру"
-    SET_TEMPERATURE_IN_TIME = "Установить температуру за время"
-    SET_TEMPERATURE_FOR_TERMODAT_DEVICE = "Установить температуру (термодат)"
-    SET_SPEED_FOR_TERMODAT_DEVICE = "Установить скорость (термодат)"
-
     PAUSE = "Пауза" + " [время мммм:сс]"
     QUICK_SHUTDOWN_DEVICE = "Полное выключение установки"
 
     FULL_OPEN_PUMP = "Открыть клапан насоса"
     FULL_CLOSE_PUMP = "Закрыть клапан насоса"
     STABILIZE_PRESSURE = "Стабилизировать давление"
+
+    SET_TARGET_TEMPERATURE = "Установить температуру"
+    SET_THROTTLE_PERCENT = "Открыть дроссель на X%"
+    FULL_OPEN_THROTTLE = "Полностью открыть дроссель"
+    FULL_CLOSE_THROTTLE = "Полностью закрыть дроссель"
+    SET_THROTTLE_PRESSURE = "Установить давление"
+
+    START_TEMPERATURE_REGULATION = "Включить регуляцию температуры"
+    STOP_TEMPERATURE_REGULATION = "Выключить регуляцию температуры"

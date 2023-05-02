@@ -18,7 +18,7 @@ class ChangePumpValveStateAction(SystemAction):
 
 
 class ChangePumpManageStateAction(SystemAction):
-    def _call_function(self, is_open, device_num=None):
+    def _call_function(self, is_open):
         return self._system.pump_manage_controller.set_is_open_state(is_open)
 
 
@@ -61,3 +61,20 @@ class SetIsRampActiveAction(SystemAction):
 class SetIsRampWaitingAction(SystemAction):
     def _call_function(self, value):
         return self._system.set_is_ramp_waiting(value)
+
+
+# TEMPERATURE
+
+
+class SetTargetTemperatureSystemAction(SystemAction):
+    def _call_function(self, value):
+        return self._system.set_target_temperature_value(value)
+
+
+class SetIsTemperatureRegulationActiveAction(SystemAction):
+    def _call_function(self, value):
+        return value
+        # return self._system.set_is_ramp_active(value)
+
+    def _on_get_value(self, value):
+        self._system.temperature_regulation = bool(value)

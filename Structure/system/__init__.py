@@ -9,7 +9,7 @@ from coregraphene.system_actions import SingleAnswerSystemAction
 from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction, SetTargetCurrentAction, \
     SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction, SetIsRampWaitingAction, \
     SetTargetRrgSccmAction, FullCloseRrgAction, FullOpenRrgAction, ChangePumpValveStateAction, \
-    ChangePumpManageStateAction
+    ChangePumpManageStateAction, SetTargetTemperatureSystemAction, SetIsTemperatureRegulationActiveAction
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
@@ -36,6 +36,9 @@ class AppSystem(BaseSystem):
     ramp_seconds = 0
     ramp_active = False
     ramp_waiting = False
+
+    target_temperature = 0.0
+    temperature_regulation = False
 
     _default_controllers_kwargs = {
         'vakumetr': {
@@ -239,8 +242,9 @@ class AppSystem(BaseSystem):
         self.pyrometer_temperature_controller.get_temperature_action \
             .connect(self.set_current_temperature)
 
-        # ===== Pyrometer ===== #
-        # A lot of...
+        # ===== Temperature regulation ===== #
+        self.set_target_temperature_action = SetTargetTemperatureSystemAction(system=self)
+        self.set_is_temperature_regulation_active_action = SetIsTemperatureRegulationActiveAction(system=self)
 
         # ===== Current AKIP == #
         self.set_target_current_action = SetTargetCurrentAction(system=self)
@@ -271,11 +275,22 @@ class AppSystem(BaseSystem):
         self.back_pressure_valve_controller.get_target_pressure_action.\
             connect(self.get_throttle_target_pressure_action)
 
+        self.get_throttle_target_open_percent_action = SingleAnswerSystemAction(system=self)
+        self.back_pressure_valve_controller.get_target_open_percent_action.\
+            connect(self.get_throttle_target_open_percent_action)
+
+        # ===== Accurate vakumetr ===== #
+        self.get_accurate_vakumetr_action = SingleAnswerSystemAction(system=self)
+        self.accurate_vakumetr_controller.get_pressure_action.\
+            connect(self.get_accurate_vakumetr_action)
+        self.get_accurate_vakumetr_action.connect(self._on_get_accurate_vakumetr_value)
+
         #########################
 
     def _init_values(self):
         self.accurate_vakumetr_value = 0.0
         self.pyrometer_temperature_value = 0.0
+        self.target_temperature = 0.0
         # self.current_value = 0.0
         # self.voltage_value = 0.0
 
@@ -311,6 +326,30 @@ class AppSystem(BaseSystem):
             if self.ramp_active:
                 self.ramp_active = False
                 return
+
+            thread_action = BaseThreadAction(
+                system=self,
+                action=RampAction,
+            )
+            thread_action.set_action_args(
+                self.target_current_ramp_value,
+                f"0:{self.ramp_seconds}"
+            )
+            thread_action.action.is_stop_state_function = self._ramp_is_stop_function
+            self._add_action_to_loop(thread_action=thread_action)
+
+        except Exception as e:
+            print("ERR RAMP START:", e)
+
+    def _ramp_is_stop_function(self):
+        return not (self.is_working() and self.ramp_active)
+
+    def on_temperature_regulation_press(self):
+        try:
+            if self.temperature_regulation:
+                self.set_is_temperature_regulation_active_action(False)
+                return
+            self.set_is_temperature_regulation_active_action(True)
 
             thread_action = BaseThreadAction(
                 system=self,
@@ -388,6 +427,12 @@ class AppSystem(BaseSystem):
     def _on_get_actual_voltage(self, value):
         self.voltage_value = value
 
+    def _on_get_accurate_vakumetr_value(self, value):
+        self.accurate_vakumetr_value = value
+
+    def get_accurate_vakumetr_value(self):
+        return self.accurate_vakumetr_value
+
     def set_ramp_seconds(self, value):
         try:
             self.ramp_seconds = int(value)
@@ -412,10 +457,20 @@ class AppSystem(BaseSystem):
         self.ramp_waiting = bool(value)
         return self.ramp_waiting
 
+    def set_target_temperature_value(self, value):
+        try:
+            self.target_temperature = float(value)
+        except:
+            self.target_temperature = 0.0
+        return self.target_temperature
+
+    # def set_is_temperature_regulation_active(self, value):
+    #     self.temperature_regulation = bool(value)
+    #     return self.temperature_regulation
+
     def _get_values(self):
-        # pass
-        # self.accurate_vakumetr_value = self.accurate_vakumetr_controller.get_value()
-        self.accurate_vakumetr_value = self.accurate_vakumetr_controller.vakumetr_value
+        pass
+        # self.accurate_vakumetr_value = self.accurate_vakumetr_controller.vakumetr_value
         # self.current_value = self.current_source_controller.get_current_value()
         # self.voltage_value = self.current_source_controller.get_voltage_value()
         # print("VOLT VAL:", self.voltage_value)
