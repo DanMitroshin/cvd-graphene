@@ -28,7 +28,7 @@ AIR_VALVE_NAME = AIR_VALVE_CONFIGURATION['NAME']
 PUMP_CONFIGURATION = {
     'MANAGE_PORT': 1,  # порт управления (вкл/выкл)
     'VALVE_PORT': 18,  # открыть/закрыть клапан перед насосом
-    "NAME": 'PUMP',
+    "NAME": 'Pump',
 }
 
 MAX_DEFAULT_SCCM_VALUE = 200
@@ -72,7 +72,9 @@ VALVES_CONFIGURATION = [
     # {'PORT': 9, "NAME": "Ar", "IS_GAS": True},
 ]
 
-ALL_GPIO_VALVES_CONFIG = VALVES_CONFIGURATION + [AIR_VALVE_CONFIGURATION]
+ALL_GPIO_VALVES_CONFIG = VALVES_CONFIGURATION + \
+                         [AIR_VALVE_CONFIGURATION] + \
+                         [PUMP_CONFIGURATION]
 
 # VALVE_LIST = list(map(lambda x: x.get('NAME'), VALVES_CONFIGURATION))
 VALVE_LIST = list(map(lambda x: x.get('NAME'), ALL_GPIO_VALVES_CONFIG))
