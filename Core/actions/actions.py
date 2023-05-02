@@ -68,17 +68,15 @@ class RampAction(AppAction):
     key = ACTIONS_NAMES.RAMP
     args_info = [FloatKeyArgument, TimeEditArgument]
 
-    def action(self, target_current, time_limit):
+    def _action(self, target_current: float, seconds: int):
         start_time = time.time()
 
-        target_current = float(target_current)
         self.system.set_target_current_ramp_action(target_current)
 
         self.system.set_is_active_ramp_action(True)
 
         pause = 1  # secs
 
-        seconds = get_total_seconds_from_time_arg(time_limit)
         if seconds <= pause:
             seconds = pause
         end_time = start_time + seconds
@@ -163,4 +161,5 @@ ACTIONS = [
     # FullOpenPumpAction(),
     # FullClosePumpAction(),
     # StabilizePressureAction(),
+    RampAction(),
 ]
