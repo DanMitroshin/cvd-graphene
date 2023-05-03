@@ -1,4 +1,4 @@
-from coregraphene.auto_actions import BaseThreadAction
+from coregraphene.actions import BaseThreadAction
 from .actions import RampAction
 
 

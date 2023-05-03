@@ -4,12 +4,12 @@ import time
 from threading import Thread, get_ident, Lock
 
 from Core.actions.actions import RampAction
-from coregraphene.auto_actions import BaseThreadAction
-from coregraphene.system_actions import SingleAnswerSystemAction
-from .system_actions import ChangeGasValveStateAction, ChangeAirValveStateAction, SetTargetCurrentAction, \
-    SetRampSecondsAction, SetTargetCurrentRampAction, SetIsRampActiveAction, SetIsRampWaitingAction, \
-    SetTargetRrgSccmAction, FullCloseRrgAction, FullOpenRrgAction, ChangePumpValveStateAction, \
-    ChangePumpManageStateAction, SetTargetTemperatureSystemAction, SetIsTemperatureRegulationActiveAction
+from coregraphene.actions import BaseThreadAction
+from coregraphene.system_effects import SingleAnswerSystemEffect
+from .system_actions import ChangeGasValveStateEffect, ChangeAirValveStateEffect, SetTargetCurrentEffect, \
+    SetRampSecondsEffect, SetTargetCurrentRampEffect, SetIsRampActiveEffect, SetIsRampWaitingEffect, \
+    SetTargetRrgSccmEffect, FullCloseRrgEffect, FullOpenRrgEffect, ChangePumpValveStateEffect, \
+    ChangePumpManageStateEffect, SetTargetTemperatureSystemEffect, SetIsTemperatureRegulationActiveEffect
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
@@ -18,7 +18,8 @@ from coregraphene.components.controllers import (
     PyrometerTemperatureController,
     SeveralRrgAdcDacController,
     DigitalFuseController,
-    BackPressureValveController, VakumetrAdcController,
+    BackPressureValveController,
+    VakumetrAdcController,
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
@@ -162,12 +163,6 @@ class AppSystem(BaseSystem):
         for i, valve_conf in enumerate(VALVES_CONFIGURATION):
             self._valves[i] = ValveController(port=valve_conf["PORT"])
 
-        # RRG_SPI_READ_CHANNEL = 0
-        # RRG_SPI_WRITE_CHANNEL = 1
-        # RRG_SPI_SPEED = 20000
-        # RRG_SPI_READ_DEVICE = 0
-        # RRG_SPI_WRITE_DEVICE = 0
-
         self.rrgs_controller = SeveralRrgAdcDacController(
             config=VALVES_CONFIGURATION,
             read_channel=settings.RRG_SPI_READ_CHANNEL,
@@ -216,74 +211,74 @@ class AppSystem(BaseSystem):
         super()._init_actions()
 
         # ===== Valves ======== #
-        self.change_gas_valve_opened = ChangeGasValveStateAction(system=self)
-        self.change_air_valve_opened = ChangeAirValveStateAction(system=self)
+        self.change_gas_valve_opened = ChangeGasValveStateEffect(system=self)
+        self.change_air_valve_opened = ChangeAirValveStateEffect(system=self)
 
         # ===== PUMP ========== #
-        self.change_pump_valve_opened_action = ChangePumpValveStateAction(system=self)
-        self.change_pump_manage_active_action = ChangePumpManageStateAction(system=self)
+        self.change_pump_valve_opened_effect = ChangePumpValveStateEffect(system=self)
+        self.change_pump_manage_active_effect = ChangePumpManageStateEffect(system=self)
 
         # ===== RRG =========== #
-        self.set_target_rrg_sccm_action = SetTargetRrgSccmAction(system=self)
-        self.full_close_rrg_action = FullCloseRrgAction(system=self)
-        self.full_open_rrg_action = FullOpenRrgAction(system=self)
+        self.set_target_rrg_sccm_effect = SetTargetRrgSccmEffect(system=self)
+        self.full_close_rrg_effect = FullCloseRrgEffect(system=self)
+        self.full_open_rrg_effect = FullOpenRrgEffect(system=self)
 
-        self.get_current_rrg_sccm = SingleAnswerSystemAction(system=self)
-        self.rrgs_controller.get_current_flow.connect(self.get_current_rrg_sccm)
+        self.current_rrg_sccm_effect = SingleAnswerSystemEffect(system=self)
+        self.rrgs_controller.get_current_flow.connect(self.current_rrg_sccm_effect)
 
         # ===== Vakumetr gases ==== #
-        self.get_current_gas_balloon_pressure = SingleAnswerSystemAction(system=self)
+        self.current_gas_balloon_pressure_effect = SingleAnswerSystemEffect(system=self)
         self.gases_pressure_controller.get_current_pressure_action.connect(
-            self.get_current_gas_balloon_pressure)
+            self.current_gas_balloon_pressure_effect)
 
         # ===== Pyrometer ===== #
-        self.set_current_temperature = SingleAnswerSystemAction(system=self)
-        self.set_current_temperature.connect(self._on_get_current_temperature)
+        self.current_temperature_effect = SingleAnswerSystemEffect(system=self)
+        self.current_temperature_effect.connect(self._on_get_current_temperature)
         self.pyrometer_temperature_controller.get_temperature_action \
-            .connect(self.set_current_temperature)
+            .connect(self.current_temperature_effect)
 
         # ===== Temperature regulation ===== #
-        self.set_target_temperature_action = SetTargetTemperatureSystemAction(system=self)
-        self.set_is_temperature_regulation_active_action = SetIsTemperatureRegulationActiveAction(system=self)
+        self.target_temperature_effect = SetTargetTemperatureSystemEffect(system=self)
+        self.is_temperature_regulation_active_effect = SetIsTemperatureRegulationActiveEffect(system=self)
 
         # ===== Current AKIP == #
-        self.set_target_current_action = SetTargetCurrentAction(system=self)
+        self.target_current_effect = SetTargetCurrentEffect(system=self)
 
-        self.get_current_action = SingleAnswerSystemAction(system=self)
-        self.get_current_action.connect(self._on_get_actual_current)
-        self.current_source_controller.get_current_action.connect(self.get_current_action)
+        self.actual_current_effect = SingleAnswerSystemEffect(system=self)
+        self.actual_current_effect.connect(self._on_get_actual_current)
+        self.current_source_controller.actual_current_effect.connect(self.actual_current_effect)
 
-        self.get_voltage_action = SingleAnswerSystemAction(system=self)
-        self.get_voltage_action.connect(self._on_get_actual_voltage)
-        self.current_source_controller.get_voltage_action.connect(self.get_voltage_action)
+        self.actual_voltage_effect = SingleAnswerSystemEffect(system=self)
+        self.actual_voltage_effect.connect(self._on_get_actual_voltage)
+        self.current_source_controller.actual_voltage_effect.connect(self.actual_voltage_effect)
 
-        self.set_ramp_seconds_action = SetRampSecondsAction(system=self)
-        self.set_target_current_ramp_action = SetTargetCurrentRampAction(system=self)
+        self.ramp_seconds_effect = SetRampSecondsEffect(system=self)
+        self.target_current_ramp_effect = SetTargetCurrentRampEffect(system=self)
 
-        self.set_is_active_ramp_action = SetIsRampActiveAction(system=self)
-        self.set_is_waiting_ramp_action = SetIsRampWaitingAction(system=self)
+        self.is_active_ramp_effect = SetIsRampActiveEffect(system=self)
+        self.is_waiting_ramp_effect = SetIsRampWaitingEffect(system=self)
 
         # ===== Throttle: back pressure valve == #
-        self.get_throttle_state_action = SingleAnswerSystemAction(system=self)
-        self.back_pressure_valve_controller.get_state_action.connect(self.get_throttle_state_action)
+        self.throttle_state_effect = SingleAnswerSystemEffect(system=self)
+        self.back_pressure_valve_controller.get_state_action.connect(self.throttle_state_effect)
 
-        self.get_throttle_current_pressure_action = SingleAnswerSystemAction(system=self)
+        self.throttle_current_pressure_effect = SingleAnswerSystemEffect(system=self)
         self.back_pressure_valve_controller.get_current_pressure_action.\
-            connect(self.get_throttle_current_pressure_action)
+            connect(self.throttle_current_pressure_effect)
 
-        self.get_throttle_target_pressure_action = SingleAnswerSystemAction(system=self)
+        self.throttle_target_pressure_effect = SingleAnswerSystemEffect(system=self)
         self.back_pressure_valve_controller.get_target_pressure_action.\
-            connect(self.get_throttle_target_pressure_action)
+            connect(self.throttle_target_pressure_effect)
 
-        self.get_throttle_target_open_percent_action = SingleAnswerSystemAction(system=self)
+        self.throttle_target_open_percent_effect = SingleAnswerSystemEffect(system=self)
         self.back_pressure_valve_controller.get_target_open_percent_action.\
-            connect(self.get_throttle_target_open_percent_action)
+            connect(self.throttle_target_open_percent_effect)
 
         # ===== Accurate vakumetr ===== #
-        self.get_accurate_vakumetr_action = SingleAnswerSystemAction(system=self)
+        self.accurate_vakumetr_effect = SingleAnswerSystemEffect(system=self)
         self.accurate_vakumetr_controller.get_pressure_action.\
-            connect(self.get_accurate_vakumetr_action)
-        self.get_accurate_vakumetr_action.connect(self._on_get_accurate_vakumetr_value)
+            connect(self.accurate_vakumetr_effect)
+        self.accurate_vakumetr_effect.connect(self._on_get_accurate_vakumetr_value)
 
         #########################
 
@@ -322,7 +317,7 @@ class AppSystem(BaseSystem):
         try:
             if self.ramp_waiting:
                 return
-            self.set_is_waiting_ramp_action(True)
+            self.is_waiting_ramp_effect(True)
             if self.ramp_active:
                 self.ramp_active = False
                 return
@@ -347,9 +342,9 @@ class AppSystem(BaseSystem):
     def on_temperature_regulation_press(self):
         try:
             if self.temperature_regulation:
-                self.set_is_temperature_regulation_active_action(False)
+                self.is_temperature_regulation_active_effect(False)
                 return
-            self.set_is_temperature_regulation_active_action(True)
+            self.is_temperature_regulation_active_effect(True)
 
             thread_action = BaseThreadAction(
                 system=self,
@@ -407,12 +402,12 @@ class AppSystem(BaseSystem):
     @BaseSystem.action
     def change_pump_valve_state(self):
         new_state = self._change_valve_state(self.pump_valve_controller, "PUMP V")
-        self.change_pump_valve_opened_action(new_state)
+        self.change_pump_valve_opened_effect(new_state)
 
     @BaseSystem.action
     def change_pump_manage_state(self):
         new_state = self._change_valve_state(self.pump_manage_controller, "PUMP M")
-        self.change_pump_manage_active_action(new_state)
+        self.change_pump_manage_active_effect(new_state)
 
     @BaseSystem.action
     def set_target_current(self, value):
@@ -450,7 +445,7 @@ class AppSystem(BaseSystem):
     def set_is_ramp_active(self, value):
         self.ramp_active = bool(value)
         # self.ramp_waiting = False
-        self.set_is_waiting_ramp_action(False)
+        self.is_waiting_ramp_effect(False)
         return self.ramp_active
 
     def set_is_ramp_waiting(self, value):

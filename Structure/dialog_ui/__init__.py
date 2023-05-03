@@ -108,28 +108,28 @@ class AppMainDialogWindow(BaseMainDialogWindow):
             self.system.change_gas_valve_opened.connect(
                 gas.on_update_is_valve_open_signal.emit, device_num=num)
 
-            # gas.connect_change_sccm_function(self.system.set_target_rrg_sccm_action)
-            gas.update_target_sccm_signal.connect(self.system.set_target_rrg_sccm_action)
-            # self.system.set_target_rrg_sccm_action.connect(
+            # gas.connect_change_sccm_function(self.system.set_target_rrg_sccm_effect)
+            gas.update_target_sccm_signal.connect(self.system.set_target_rrg_sccm_effect)
+            # self.system.set_target_rrg_sccm_effect.connect(
             #     gas.draw_set_target_sccm, device_num=gas.number)
-            self.system.set_target_rrg_sccm_action.connect(
+            self.system.set_target_rrg_sccm_effect.connect(
                 gas.column_info.update_target_signal.emit, device_num=gas.number)
-            # self.system.full_open_rrg_action.connect(
+            # self.system.full_open_rrg_effect.connect(
             #     gas.draw_set_target_sccm, device_num=gas.number)
-            self.system.full_open_rrg_action.connect(
+            self.system.full_open_rrg_effect.connect(
                 gas.column_info.update_target_signal.emit, device_num=gas.number)
-            # self.system.full_close_rrg_action.connect(
+            # self.system.full_close_rrg_effect.connect(
             #     gas.draw_set_target_sccm, device_num=gas.number)
-            self.system.full_close_rrg_action.connect(
+            self.system.full_close_rrg_effect.connect(
                 gas.column_info.update_target_signal.emit, device_num=gas.number)
 
-            # self.system.get_current_rrg_sccm.connect(
+            # self.system.current_rrg_sccm_effect.connect(
             #     gas.update_current_sccm_label, device_num=gas.number)
-            self.system.get_current_rrg_sccm.connect(
+            self.system.current_rrg_sccm_effect.connect(
                 gas.column_info.update_current_signal.emit, device_num=gas.number)
 
             # Balloon gas pressure
-            self.system.get_current_gas_balloon_pressure.connect(
+            self.system.current_gas_balloon_pressure_effect.connect(
                 gas.on_update_gas_name_color_by_pressure_signal.emit, device_num=gas.number)
 
         # AIR #################
@@ -144,26 +144,26 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         # PUMP ################
         self.milw.pressure_block.pump_block.update_pump_valve_state_signal\
             .connect(self.system.change_pump_valve_state)
-        self.system.change_pump_valve_opened_action.connect(
+        self.system.change_pump_valve_opened_effect.connect(
             self.milw.pressure_block.pump_block.on_update_pump_valve_is_open_signal.emit)
 
         self.milw.pressure_block.pump_block.update_pump_state_signal\
             .connect(self.system.change_pump_manage_state)
-        self.system.change_pump_manage_active_action.connect(
+        self.system.change_pump_manage_active_effect.connect(
             self.milw.pressure_block.pump_block.on_update_pump_is_open_signal.emit)
 
         # << THROTTLE >> #
         self.milw.pressure_block.pump_block.update_throttle_state_signal\
             .connect(self.system.back_pressure_valve_controller.on_change_state)
-        self.system.get_throttle_state_action.connect(
+        self.system.throttle_state_effect.connect(
             self.milw.pressure_block.pump_block.on_update_throttle_state_signal.emit)
 
-        self.system.get_throttle_current_pressure_action.connect(
+        self.system.throttle_current_pressure_effect.connect(
             self.milw.pressure_block.pump_block.throttle_info.update_current_signal.emit)
 
         self.milw.pressure_block.pump_block.throttle_info.on_update_target_signal \
             .connect(self.system.back_pressure_valve_controller.turn_on_regulation)
-        self.system.get_throttle_target_pressure_action.connect(
+        self.system.throttle_target_pressure_effect.connect(
             self.milw.pressure_block.pump_block.throttle_info.update_target_signal.emit)
         #######################
 
@@ -171,14 +171,14 @@ class AppMainDialogWindow(BaseMainDialogWindow):
 
         self.milw.temperature_block.current_settings.set_current_block.\
             set_value_function = self.system.set_target_current
-        self.system.set_target_current_action.connect(
+        self.system.target_current_effect.connect(
             self.milw.temperature_block.current_settings.set_current_block.set_value
         )
 
-        self.system.get_current_action.connect(
+        self.system.actual_current_effect.connect(
             self.milw.temperature_block.current_settings.set_current_value
         )
-        self.system.get_voltage_action.connect(
+        self.system.actual_voltage_effect.connect(
             self.milw.temperature_block.current_settings.set_voltage_value
         )
         # RAMP
@@ -191,26 +191,26 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         self.milw.temperature_block.current_settings.rise_current_block\
             .input_time.textEdited.connect(self.system.set_ramp_seconds)
 
-        self.system.set_ramp_seconds_action.connect(
+        self.system.ramp_seconds_effect.connect(
             self.milw.temperature_block.current_settings.rise_current_block.left_time_signal.emit
         )
-        self.system.set_target_current_ramp_action.connect(
+        self.system.target_current_ramp_effect.connect(
             self.milw.temperature_block.current_settings.rise_current_block.target_current_signal.emit
         )
-        self.system.set_is_active_ramp_action.connect(
+        self.system.is_active_ramp_effect.connect(
             self.milw.temperature_block.current_settings.rise_current_block\
                 .active_ramp_signal.emit
         )
-        self.system.set_is_waiting_ramp_action.connect(
+        self.system.is_waiting_ramp_effect.connect(
             self.milw.temperature_block.current_settings.rise_current_block\
                 .waiting_ramp_signal.emit
         )
 
         # PYROMETER ############
-        # self.system.set_current_temperature.connect(
+        # self.system.current_temperature_effect.connect(
         #     self.milw.temperature_block.set_actual_temperature
         # )
-        self.system.set_current_temperature.connect(
+        self.system.current_temperature_effect.connect(
             self.milw.pressure_control_block.show_temperature.update_temperature_signal.emit
         )
         ########################

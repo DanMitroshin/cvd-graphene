@@ -1,6 +1,6 @@
 import time
 
-from coregraphene.auto_actions import AppAction, ValveListArgument, GasListArgument, SccmArgument, TimeEditArgument, \
+from coregraphene.actions import AppAction, ValveListArgument, GasListArgument, SccmArgument, TimeEditArgument, \
     FloatArgument, IntKeyArgument, FloatKeyArgument, get_total_seconds_from_time_arg
 from coregraphene.conf import settings
 from coregraphene.recipe.exceptions import NotAchievingRecipeStepGoal
@@ -36,7 +36,7 @@ class TurnOnPumpAction(AppAction):
     key = ACTIONS_NAMES.TURN_ON_PUMP
 
     def do_action(self):
-        self.system.change_pump_manage_active_action(True)
+        self.system.change_pump_manage_active_effect(True)
 
 
 class OpenValveAction(AppAction):
@@ -53,7 +53,7 @@ class OpenValveAction(AppAction):
             index = get_gas_index_by_name(valve_name)
             self.system.change_gas_valve_opened(True, device_num=index)
         else:
-            self.system.change_pump_valve_opened_action(True)
+            self.system.change_pump_valve_opened_effect(True)
 
 
 class CloseValveAction(AppAction):
@@ -70,7 +70,7 @@ class CloseValveAction(AppAction):
             index = get_gas_index_by_name(valve_name)
             self.system.change_gas_valve_opened(False, device_num=index)
         else:
-            self.system.change_pump_valve_opened_action(False)
+            self.system.change_pump_valve_opened_effect(False)
 
 
 class CloseAllValvesAction(AppAction):
@@ -83,7 +83,7 @@ class CloseAllValvesAction(AppAction):
         for i, _ in enumerate(settings.VALVES_CONFIGURATION):
             self.system.change_gas_valve_opened(False, device_num=i)
 
-        self.system.change_pump_valve_opened_action(False)
+        self.system.change_pump_valve_opened_effect(False)
 
 
 class SetThrottlePercentAction(AppAction):
@@ -132,7 +132,7 @@ class SetRrgSccmValueAction(AppAction):
 
     def do_action(self, valve_name: str, sccm: float):
         index = get_gas_index_by_name(valve_name)
-        self.system.set_target_rrg_sccm_action(sccm, device_num=index)
+        self.system.set_target_rrg_sccm_effect(sccm, device_num=index)
 
 
 class SetRrgSccmValueWithPauseAction(AppAction):
@@ -235,9 +235,9 @@ class RampAction(AppAction):
     def do_action(self, target_current: float, seconds: int):
         start_time = time.time()
 
-        self.system.set_target_current_ramp_action(target_current)
+        self.system.target_current_ramp_effect(target_current)
 
-        self.system.set_is_active_ramp_action(True)
+        self.system.is_active_ramp_effect(True)
 
         pause = 1  # secs
 
@@ -262,8 +262,8 @@ class RampAction(AppAction):
 
             left_time = max(0.0, end_time - time.time())
             next_target_current = get_next_target()
-            self.system.set_target_current_action(next_target_current)
-            self.system.set_ramp_seconds_action(left_time)
+            self.system.target_current_effect(next_target_current)
+            self.system.ramp_seconds_effect(left_time)
 
             if left_time <= 0:
                 break
@@ -278,7 +278,7 @@ class RampAction(AppAction):
                 raise NotAchievingRecipeStepGoal
 
         # time.sleep(4)
-        self.system.set_is_active_ramp_action(False)
+        self.system.is_active_ramp_effect(False)
 
 
 class SetTargetTemperatureAction(AppAction):
@@ -287,91 +287,57 @@ class SetTargetTemperatureAction(AppAction):
     args_info = [IntKeyArgument]
 
     def do_action(self, target_temperature: int):
-        self.system.set_target_temperature_action(target_temperature)
+        self.system.target_temperature_effect(target_temperature)
 
 
-class StartTemperatureRegulationAction(AppAction):
+class TemperatureRegulationAction(AppAction):
     name = TABLE_ACTIONS_NAMES.START_TEMPERATURE_REGULATION
     key = ACTIONS_NAMES.START_TEMPERATURE_REGULATION
     args_info = []
 
-    def do_action(self, target_temperature: int):
-        start_time = time.time()
-        target_temperature = self.system.target_temperature
+    last_error = 0.0
+    integral = 0.0
 
-        # PID constants
-        Kp = 0.5
-        Ki = 0.1
-        Kd = 0.2
+    def do_action(self):
+        # start_time = time.time()
 
-        # Initial values
-        error = 0
-        integral = 0
-        derivative = 0
-        output = 0
-        prev_error = 0
-        current = 0
+        # Define PID constants
+        Kp = 0.1
+        Ki = 0.01
+        Kd = 0.001
 
-        # Desired setpoint temperature and heating rate
-        setpoint = 50
-        heating_rate = 5
+        pause = 0.3
 
-        # Maximum and minimum output values
-        max_output = 100
-        min_output = 0
+        # Define initial values
+        self.last_error = 0.0
+        self.integral = 0.0
 
-        # Maximum and minimum current values
-        max_current = 10
-        min_current = 0
+        # Define function to calculate PID output
+        def calculate_pid_output():
+            target_temperature = self.system.target_temperature
+            current_temperature = self.system.pyrometer_temperature_value
 
-        # Main loop
+            error = target_temperature - current_temperature
+            self.integral += error
+            derivative = error - self.last_error
+            self.last_error = error
+            output = Kp * error + Ki * self.integral + Kd * derivative
+            # print("output: ", output)
+
+            return output
+
         while True:
             if self._is_stop_state():
-                return
+                break
 
-            delta_time = time.time() - start_time
-            if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
-                self.system.add_error_log(f"Регуляция температуры не завершилась до достижения максимального времени")
-                raise NotAchievingRecipeStepGoal
-            # Read temperature sensor
-            current_temp = read_temperature_sensor()
-
-            # Calculate error
-            error = setpoint - current_temp
-
-            # Calculate integral term
-            integral += error
-
-            # Calculate derivative term
-            derivative = error - prev_error
-
-            # Calculate output value
-            output = Kp * error + Ki * integral + Kd * derivative
-
-            # Limit output value
-            if output > max_output:
-                output = max_output
-            elif output < min_output:
-                output = min_output
-
-            # Calculate desired current
-            desired_current = output + heating_rate * error
-
-            # Limit desired current
-            if desired_current > max_current:
-                desired_current = max_current
-            elif desired_current < min_current:
-                desired_current = min_current
+            # Calculate PID output
+            new_current = calculate_pid_output()
+            self.system.set_target_current(new_current)
 
             # Set current through current source
-            set_current(desired_current)
+            # print("Current: ", set_current(pid_output), " A", "actual temp: ", current_temperature, " C")
 
-            # Store previous error and current
-            prev_error = error
-            current = desired_current
-
-            # Wait for some time before polling again
-            time.sleep(0.1)
+            time.sleep(pause)
 
 
 class StabilizePressureAction(AppAction):
