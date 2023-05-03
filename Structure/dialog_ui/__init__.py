@@ -110,21 +110,13 @@ class AppMainDialogWindow(BaseMainDialogWindow):
 
             # gas.connect_change_sccm_function(self.system.set_target_rrg_sccm_effect)
             gas.update_target_sccm_signal.connect(self.system.set_target_rrg_sccm_effect)
-            # self.system.set_target_rrg_sccm_effect.connect(
-            #     gas.draw_set_target_sccm, device_num=gas.number)
             self.system.set_target_rrg_sccm_effect.connect(
                 gas.column_info.update_target_signal.emit, device_num=gas.number)
-            # self.system.full_open_rrg_effect.connect(
-            #     gas.draw_set_target_sccm, device_num=gas.number)
             self.system.full_open_rrg_effect.connect(
                 gas.column_info.update_target_signal.emit, device_num=gas.number)
-            # self.system.full_close_rrg_effect.connect(
-            #     gas.draw_set_target_sccm, device_num=gas.number)
             self.system.full_close_rrg_effect.connect(
                 gas.column_info.update_target_signal.emit, device_num=gas.number)
 
-            # self.system.current_rrg_sccm_effect.connect(
-            #     gas.update_current_sccm_label, device_num=gas.number)
             self.system.current_rrg_sccm_effect.connect(
                 gas.column_info.update_current_signal.emit, device_num=gas.number)
 
@@ -133,8 +125,6 @@ class AppMainDialogWindow(BaseMainDialogWindow):
                 gas.on_update_gas_name_color_by_pressure_signal.emit, device_num=gas.number)
 
         # AIR #################
-        # self.milw.pressure_block.air. \
-        #     connect_valve_function(self.system.change_air_valve_state)
         self.milw.pressure_block.air.update_is_valve_open_signal\
             .connect(self.system.change_air_valve_state)
         self.system.change_air_valve_opened.connect(
@@ -215,10 +205,38 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         )
         ########################
 
+        # TEMPERATURE REGULATION ############
+        self.system.target_temperature_effect.connect(
+            self.milw.pressure_control_block.set_temperature.target_temperature_signal.emit
+        )
+        self.milw.pressure_control_block.set_temperature.input.textEdited.connect(
+            self.system.target_temperature_effect
+        )
+        self.system.is_temperature_regulation_active_effect.connect(
+            self.milw.pressure_control_block.set_temperature.active_regulation_signal.emit
+        )
+        self.milw.pressure_control_block.set_temperature.on_regulation_press_signal.connect(
+            self.system.on_temperature_regulation_press
+        )
+        #####################################
+
         # VAKUMETR #############
-        # self.milw.pressure_control_block.show_pressure_block.set_value(
-        #     self.system.accurate_vakumetr_value
+        self.system.accurate_vakumetr_effect.connect(
+            self.milw.pressure_control_block.show_pressure_block.update_pressure_signal.emit
+        )
+        ########################
+        # PUMP BUTTON #############
+        self.milw.pressure_control_block.pump.on_button_press_signal.connect(
+            self.system.on_pump_press
+        )
+        # self.system.pump.connect(
+        #     self.milw.pressure_control_block.show_pressure_block.update_pressure_signal.emit
         # )
+        ########################
+        # VENT BUTTON #############
+        self.milw.pressure_control_block.vent.on_button_press_signal.connect(
+            self.system.on_vent_press
+        )
         ########################
         # self.system.test_ramp()
 
@@ -283,9 +301,9 @@ class AppMainDialogWindow(BaseMainDialogWindow):
     #         pass
 
     def _update_ui_values(self):
-        self.milw.pressure_control_block.show_pressure_block.set_value(
-            self.system.accurate_vakumetr_value
-        )
+        # self.milw.pressure_control_block.show_pressure_block.set_value(
+        #     self.system.accurate_vakumetr_value
+        # )
 
         # print("VOLTAGE:", self.system.voltage_value)
         # VOLTAGE

@@ -69,6 +69,21 @@ QPushButton#button_on_flow:pressed {
 }
 """
 
+button_wait_style = """
+QPushButton#button_on_flow {
+    height: 70px;
+    width: 70px;
+    border-radius: 35px;
+    background-color: rgb(255, 255, 0);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0,0,100,255);
+}
+QPushButton#button_on_flow:pressed {
+    background-color: rgb(0, 155, 0);
+}
+"""
+
 button_off_style = """
 QPushButton {
     height: 70px;

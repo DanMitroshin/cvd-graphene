@@ -10,7 +10,7 @@ styles = StyleSheet({
         # "max-width": "390px",
         "background-color": "rgb(255, 255, 255)",
         # "border-radius": "14px",
-        "max-height": "150px",
+        "max-height": "250px",
     },
     "title": {
         "font-size": "32px",
@@ -26,10 +26,26 @@ styles = StyleSheet({
     },
     "input": {
         # "border-radius": "0px",
-        "font-size": "28px",
+        "font-size": "36px",
         # "background-color": "rgb(210, 210, 210)",
         "background-color": LIGHT_GREEN,
         "width": "100%",
         # "max-width": "100px",
-    }
+    },
+    "button": {
+        "height": '100px',
+        "min-height": "100px",
+        "min-width": "150px",
+        "padding": "10px",
+        "font-size": "32px",
+        "background-color": LIGHT_GREEN,
+    },
+    "button_stop": {
+        "height": '100px',
+        "min-height": "100px",
+        "min-width": "150px",
+        "padding": "10px",
+        "font-size": "32px",
+        "background-color": 'rgb(253, 94, 45)',
+    },
 })

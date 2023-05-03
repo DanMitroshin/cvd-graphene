@@ -1,15 +1,22 @@
 from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QDoubleValidator
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsDropShadowEffect, \
-    QLineEdit, QLabel, QHBoxLayout, QBoxLayout, QSizePolicy
+    QLineEdit, QLabel, QHBoxLayout, QBoxLayout, QSizePolicy, QPushButton
 
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
 from .styles import styles
 
 
 class SetTemperatureBlock(QWidget):
+    target_temperature_signal = pyqtSignal(int)
+    active_regulation_signal = pyqtSignal(bool)
+    on_regulation_press_signal = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+
+        self.regulation_active = False
 
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -62,7 +69,32 @@ class SetTemperatureBlock(QWidget):
         # self.bottom_layout.setStretch(1, 1)
         self.bottom_layout.addWidget(self.label_2, 1)
 
+        ####################
+        self.button = QPushButton()
+        self.button.setText("START")
+        self.button.setStyleSheet(styles.button)
+        self.button.clicked.connect(self._on_button_press)
+
         # self.bottom_layout.setAlignment(QtCore.Qt.AlignLeft)
 
         self.layout.addWidget(self.title, QtCore.Qt.AlignHCenter)
         self.layout.addLayout(self.bottom_layout, QtCore.Qt.AlignLeft)
+        self.layout.addWidget(self.button, alignment=QtCore.Qt.AlignHCenter)
+
+        self.active_regulation_signal.connect(self._set_regulation_is_active)
+        self.target_temperature_signal.connect(self._set_target_temperature)
+
+    def _on_button_press(self):
+        self.on_regulation_press_signal.emit()
+
+    def _set_regulation_is_active(self, is_active):
+        self.regulation_active = is_active
+        if self.regulation_active:
+            self.button.setText("STOP")
+            self.button.setStyleSheet(styles.button_stop)
+        else:
+            self.button.setText("START")
+            self.button.setStyleSheet(styles.button)
+
+    def _set_target_temperature(self, value):
+        self.input.setText(str(value))
