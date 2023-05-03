@@ -168,7 +168,6 @@ class PumpOutCameraAction(AppAction):
     args_info = []
 
     def do_action(self):
-        start_time = time.time()
 
         # 1 - закрываются все клапаны
         close_valves = CloseAllValvesAction()
@@ -190,7 +189,7 @@ class PumpOutCameraAction(AppAction):
             if self._is_stop_state():
                 return
 
-            delta_time = time.time() - start_time
+            delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Откачка не завершилась до достижения максимального времени")
                 raise NotAchievingRecipeStepGoal
@@ -210,7 +209,7 @@ class PumpOutCameraAction(AppAction):
             if self._is_stop_state():
                 return
 
-            delta_time = time.time() - start_time
+            delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Откачка не завершилась до достижения максимального времени")
                 raise NotAchievingRecipeStepGoal
@@ -222,9 +221,77 @@ class PumpOutCameraAction(AppAction):
 
 
 class VentilateCameraAction(AppAction):
+    """
+    1) Ток через фольгу постепенно уменьшается до 0
+    2) на все ррг команда на ноль
+    3) закрываются все клапаны
+    4) на клапан обратного давления команда полностью закрыть
+    5) ожидаем 30 секунд пока всё точно остынет
+    6) включается ррг аргона
+    7) открываем клапан аргона
+    8) ожидаем пока давление не станет 950 мбар
+    9) ожидаем 30 сек
+    10) на ррг аргона команда на ноль
+    11) закрываем клапан аргона
+    """
     name = TABLE_ACTIONS_NAMES.VENTILATE_CAMERA
     key = ACTIONS_NAMES.VENTILATE_CAMERA
-    args_info = [IntKeyArgument, IntKeyArgument]
+    # args_info = [IntKeyArgument, IntKeyArgument]
+
+    def do_action(self):
+        # 1) Ток через фольгу постепенно уменьшается до 0
+        ramp = RampAction()
+        ramp.system = self.system
+        ramp.action(0.0, 30)
+
+        # 2) на все ррг команда на ноль
+        rrg_close = SetRrgSccmValueAction()
+        rrg_close.system = self.system
+        for gas in settings.VALVES_CONFIGURATION:
+            rrg_close.action(gas["NAME"], 0.0)
+
+        # 3) закрываются все клапаны
+        close_valves = CloseAllValvesAction()
+        close_valves.system = self.system
+        close_valves.action()
+
+        # 4) на клапан обратного давления команда полностью закрыть
+        close_throttle = FullCloseThrottleAction()
+        close_throttle.system = self.system
+        close_throttle.action()
+
+        # 5) ожидаем 30 секунд пока всё точно остынет
+        pause = PauseAction()
+        pause.system = self.system
+        pause.action(30)
+
+        # 6) включается ррг аргона
+        ar_name = "Ar"
+        ar_sccm = 200.0  # list(filter(lambda x: x["NAME"] == ar_name, settings.VALVES_CONFIGURATION))[0]['']
+        ar_rrg = SetRrgSccmValueAction()
+        ar_rrg.system = self.system
+        ar_rrg.action(ar_name, ar_sccm)
+
+        # 7) открываем клапан аргона
+        valve_open = OpenValveAction()
+        valve_open.system = self.system
+        valve_open.action(ar_name)
+
+        # 8) ожидаем пока давление не станет 950 мбар
+        stabilize_pressure = StabilizePressureAction()
+        stabilize_pressure.system = self.system
+        stabilize_pressure.action(950.0, 1.0, 1)
+
+        # 9) ожидаем 30 сек
+        pause.action(30)
+
+        # 10) на ррг аргона команда на ноль
+        ar_rrg.action(ar_name, ar_sccm)
+
+        # 11) закрываем клапан аргона
+        valve_close = CloseValveAction()
+        valve_close.system = self.system
+        valve_close.action(ar_name)
 
 
 class RampAction(AppAction):
@@ -291,8 +358,11 @@ class SetTargetTemperatureAction(AppAction):
 
 
 class TemperatureRegulationAction(AppAction):
-    name = TABLE_ACTIONS_NAMES.START_TEMPERATURE_REGULATION
-    key = ACTIONS_NAMES.START_TEMPERATURE_REGULATION
+    """
+    Not for table recipe using: use with background action wrapper
+    """
+    name = TABLE_ACTIONS_NAMES.TEMPERATURE_REGULATION
+    key = ACTIONS_NAMES.TEMPERATURE_REGULATION
     args_info = []
 
     last_error = 0.0
@@ -322,7 +392,7 @@ class TemperatureRegulationAction(AppAction):
             derivative = error - self.last_error
             self.last_error = error
             output = Kp * error + Ki * self.integral + Kd * derivative
-            # print("output: ", output)
+            print("PID current output: ", output)
 
             return output
 
@@ -332,7 +402,7 @@ class TemperatureRegulationAction(AppAction):
 
             # Calculate PID output
             new_current = calculate_pid_output()
-            self.system.set_target_current(new_current)
+            self.system.target_current_effect(new_current)
 
             # Set current through current source
             # print("Current: ", set_current(pid_output), " A", "actual temp: ", current_temperature, " C")
@@ -340,10 +410,144 @@ class TemperatureRegulationAction(AppAction):
             time.sleep(pause)
 
 
+class StartTemperatureRegulationAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.START_TEMPERATURE_REGULATION
+    key = ACTIONS_NAMES.START_TEMPERATURE_REGULATION
+
+    def do_action(self):
+        self.system.is_temperature_regulation_active_effect(True)
+
+
+class StopTemperatureRegulationAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.STOP_TEMPERATURE_REGULATION
+    key = ACTIONS_NAMES.STOP_TEMPERATURE_REGULATION
+
+    def do_action(self):
+        self.system.is_temperature_regulation_active_effect(False)
+
+
 class StabilizePressureAction(AppAction):
     name = TABLE_ACTIONS_NAMES.STABILIZE_PRESSURE
     key = ACTIONS_NAMES.STABILIZE_PRESSURE
-    args_info = [FloatArgument, TimeEditArgument]
+    args_info = [FloatArgument, FloatKeyArgument, TimeEditArgument]
+
+    def do_action(self, target_pressure: float, error_rate: float, stabilize_seconds: int):
+        start_time = time.time()
+
+        error_rate = max(0.0, min(100.0, error_rate)) / 100.0
+        borders = [
+            target_pressure * (1.0 - error_rate),
+            target_pressure * (1.0 + error_rate),
+        ]
+
+        while True:
+            if self._is_stop_state():
+                break
+
+            time.sleep(0.5)
+            current_pressure = self.system.accurate_vakumetr_value
+
+            if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
+                raise NotAchievingRecipeStepGoal
+
+            start_stabilization_time = time.time()
+            success = False
+            while borders[0] <= current_pressure <= borders[1]:
+                current_pressure = self.system.accurate_vakumetr_value
+                if time.time() - start_stabilization_time >= stabilize_seconds:
+                    success = True
+                    break
+
+                if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                    self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
+                    raise NotAchievingRecipeStepGoal
+
+            if success:
+                break
+
+
+class WaitRaisePressureAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.RAISE_PRESSURE
+    key = ACTIONS_NAMES.RAISE_PRESSURE
+    args_info = [FloatArgument, FloatKeyArgument, TimeEditArgument]
+
+    def do_action(self, target_pressure_raise: float, error_rate: float, stabilize_seconds: int):
+        start_time = time.time()
+        target_pressure = self.system.accurate_vakumetr_value + target_pressure_raise
+
+        error_rate = max(0.0, min(100.0, error_rate)) / 100.0
+        borders = [
+            target_pressure * (1.0 - error_rate),
+            target_pressure * (1.0 + error_rate),
+        ]
+
+        while True:
+            if self._is_stop_state():
+                break
+
+            time.sleep(0.5)
+            current_pressure = self.system.accurate_vakumetr_value
+
+            if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
+                raise NotAchievingRecipeStepGoal
+
+            start_stabilization_time = time.time()
+            success = False
+            while borders[0] <= current_pressure <= borders[1]:
+                current_pressure = self.system.accurate_vakumetr_value
+                if time.time() - start_stabilization_time >= stabilize_seconds:
+                    success = True
+                    break
+
+                if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                    self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
+                    raise NotAchievingRecipeStepGoal
+
+            if success:
+                break
+
+
+class StabilizeTemperatureAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.STABILIZE_TEMPERATURE
+    key = ACTIONS_NAMES.STABILIZE_TEMPERATURE
+    args_info = [IntKeyArgument, FloatKeyArgument, TimeEditArgument]
+
+    def do_action(self, target_temperature: float, error_rate: float, stabilize_seconds: int):
+        start_time = time.time()
+
+        error_rate = max(0.0, min(100.0, error_rate)) / 100.0
+        borders = [
+            target_temperature * (1.0 - error_rate),
+            target_temperature * (1.0 + error_rate),
+        ]
+
+        while True:
+            if self._is_stop_state():
+                break
+
+            time.sleep(0.5)
+            current_temperature = self.system.pyrometer_temperature_value
+
+            if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
+                raise NotAchievingRecipeStepGoal
+
+            start_stabilization_time = time.time()
+            success = False
+            while borders[0] <= current_temperature <= borders[1]:
+                current_temperature = self.system.pyrometer_temperature_value
+                if time.time() - start_stabilization_time >= stabilize_seconds:
+                    success = True
+                    break
+
+                if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                    self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
+                    raise NotAchievingRecipeStepGoal
+
+            if success:
+                break
 
 
 ACTIONS = [
@@ -354,6 +558,7 @@ ACTIONS = [
     SetRrgSccmValueAction(),
     SetRrgSccmValueWithPauseAction(),
     PumpOutCameraAction(),
+    VentilateCameraAction(),
 
     SetThrottlePressureAction(),
     FullOpenThrottleAction(),
@@ -361,9 +566,15 @@ ACTIONS = [
     SetThrottlePercentAction(),
 
     SetTargetTemperatureAction(),
+    StartTemperatureRegulationAction(),
+    StopTemperatureRegulationAction(),
+
     PauseAction(),
     # FullOpenPumpAction(),
     # FullClosePumpAction(),
-    # StabilizePressureAction(),
+    StabilizePressureAction(),
+    StabilizeTemperatureAction(),
+    WaitRaisePressureAction(),
+
     RampAction(),
 ]
