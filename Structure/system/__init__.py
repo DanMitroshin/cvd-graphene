@@ -3,13 +3,26 @@ import random
 import time
 from threading import Thread, get_ident, Lock
 
-from Core.actions.actions import RampAction
+from Core.actions import PidTemperatureBackgroundAction
+from Core.actions.actions import RampAction, PumpOutCameraAction, VentilateCameraAction
 from coregraphene.actions import BaseThreadAction
 from coregraphene.system_effects import SingleAnswerSystemEffect
-from .system_actions import ChangeGasValveStateEffect, ChangeAirValveStateEffect, SetTargetCurrentEffect, \
-    SetRampSecondsEffect, SetTargetCurrentRampEffect, SetIsRampActiveEffect, SetIsRampWaitingEffect, \
-    SetTargetRrgSccmEffect, FullCloseRrgEffect, FullOpenRrgEffect, ChangePumpValveStateEffect, \
-    ChangePumpManageStateEffect, SetTargetTemperatureSystemEffect, SetIsTemperatureRegulationActiveEffect
+from .effects import (
+    ChangeGasValveStateEffect,
+    ChangeAirValveStateEffect,
+    SetTargetCurrentEffect,
+    SetRampSecondsEffect,
+    SetTargetCurrentRampEffect,
+    SetIsRampActiveEffect,
+    SetIsRampWaitingEffect,
+    SetTargetRrgSccmEffect,
+    FullCloseRrgEffect,
+    FullOpenRrgEffect,
+    ChangePumpValveStateEffect,
+    ChangePumpManageStateEffect,
+    SetTargetTemperatureSystemEffect,
+    SetIsTemperatureRegulationActiveEffect,
+)
 from coregraphene.components.controllers import (
     AbstractController,
     AccurateVakumetrController,
@@ -38,7 +51,7 @@ class AppSystem(BaseSystem):
     ramp_active = False
     ramp_waiting = False
 
-    target_temperature = 0.0
+    target_temperature = 0
     temperature_regulation = False
 
     _default_controllers_kwargs = {
@@ -241,7 +254,7 @@ class AppSystem(BaseSystem):
         self.target_temperature_effect = SetTargetTemperatureSystemEffect(system=self)
         self.is_temperature_regulation_active_effect = SetIsTemperatureRegulationActiveEffect(system=self)
 
-        # ===== Current AKIP == #
+        # ===== Current AKIP ========= #
         self.target_current_effect = SetTargetCurrentEffect(system=self)
 
         self.actual_current_effect = SingleAnswerSystemEffect(system=self)
@@ -263,20 +276,20 @@ class AppSystem(BaseSystem):
         self.back_pressure_valve_controller.get_state_action.connect(self.throttle_state_effect)
 
         self.throttle_current_pressure_effect = SingleAnswerSystemEffect(system=self)
-        self.back_pressure_valve_controller.get_current_pressure_action.\
+        self.back_pressure_valve_controller.get_current_pressure_action. \
             connect(self.throttle_current_pressure_effect)
 
         self.throttle_target_pressure_effect = SingleAnswerSystemEffect(system=self)
-        self.back_pressure_valve_controller.get_target_pressure_action.\
+        self.back_pressure_valve_controller.get_target_pressure_action. \
             connect(self.throttle_target_pressure_effect)
 
         self.throttle_target_open_percent_effect = SingleAnswerSystemEffect(system=self)
-        self.back_pressure_valve_controller.get_target_open_percent_action.\
+        self.back_pressure_valve_controller.get_target_open_percent_action. \
             connect(self.throttle_target_open_percent_effect)
 
         # ===== Accurate vakumetr ===== #
         self.accurate_vakumetr_effect = SingleAnswerSystemEffect(system=self)
-        self.accurate_vakumetr_controller.get_pressure_action.\
+        self.accurate_vakumetr_controller.actual_pressure_effect. \
             connect(self.accurate_vakumetr_effect)
         self.accurate_vakumetr_effect.connect(self._on_get_accurate_vakumetr_value)
 
@@ -288,6 +301,18 @@ class AppSystem(BaseSystem):
         self.target_temperature = 0.0
         # self.current_value = 0.0
         # self.voltage_value = 0.0
+
+    def create_background_actions_array(self):
+        pid_temperature_background_action = PidTemperatureBackgroundAction(system=self)
+        pid_temperature_background_action.is_stop_state_function = \
+            self._pid_temperature_is_stop_function
+
+        return [
+            pid_temperature_background_action,
+        ]
+
+    def _pid_temperature_is_stop_function(self):
+        return not (self.is_working() and self.temperature_regulation)
 
     def pause_test(self):
         secs = random.random() * 20 + 5
@@ -328,7 +353,7 @@ class AppSystem(BaseSystem):
             )
             thread_action.set_action_args(
                 self.target_current_ramp_value,
-                f"0:{self.ramp_seconds}"
+                self.ramp_seconds,
             )
             thread_action.action.is_stop_state_function = self._ramp_is_stop_function
             self._add_action_to_loop(thread_action=thread_action)
@@ -341,27 +366,33 @@ class AppSystem(BaseSystem):
 
     def on_temperature_regulation_press(self):
         try:
-            if self.temperature_regulation:
-                self.is_temperature_regulation_active_effect(False)
-                return
-            self.is_temperature_regulation_active_effect(True)
-
-            thread_action = BaseThreadAction(
-                system=self,
-                action=RampAction,
-            )
-            thread_action.set_action_args(
-                self.target_current_ramp_value,
-                f"0:{self.ramp_seconds}"
-            )
-            thread_action.action.is_stop_state_function = self._ramp_is_stop_function
-            self._add_action_to_loop(thread_action=thread_action)
-
+            self.is_temperature_regulation_active_effect(not self.temperature_regulation)
         except Exception as e:
-            print("ERR RAMP START:", e)
+            print("ERR PID START:", e)
 
-    def _ramp_is_stop_function(self):
-        return not (self.is_working() and self.ramp_active)
+    def on_pump_press(self):
+        try:
+            recipe = [[PumpOutCameraAction.name]]
+            self.set_recipe(recipe)
+            ready = self.check_recipe_is_correct()
+            if not ready:
+                return
+            self.run_recipe()
+        except Exception as e:
+            self.add_error("Start recipe PUMP:" + str(e))
+            print("Start recipe UI PUMP error:", e)
+
+    def on_vent_press(self):
+        try:
+            recipe = [[VentilateCameraAction.name]]
+            self.set_recipe(recipe)
+            ready = self.check_recipe_is_correct()
+            if not ready:
+                return
+            self.run_recipe()
+        except Exception as e:
+            self.add_error("Start recipe VENT:" + str(e))
+            print("Start recipe UI VENT error:", e)
 
     def check_conditions(self):
         return True
@@ -453,10 +484,11 @@ class AppSystem(BaseSystem):
         return self.ramp_waiting
 
     def set_target_temperature_value(self, value):
+        # print("SET TARGET [set_target_temperature_value]:", value)
         try:
-            self.target_temperature = float(value)
+            self.target_temperature = int(value)
         except:
-            self.target_temperature = 0.0
+            self.target_temperature = 0
         return self.target_temperature
 
     # def set_is_temperature_regulation_active(self, value):
