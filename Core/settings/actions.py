@@ -31,13 +31,16 @@ class ACTIONS_NAMES:
     FULL_OPEN_PUMP = "FULL_OPEN_PUMP"
     FULL_CLOSE_PUMP = "FULL_CLOSE_PUMP"
     STABILIZE_PRESSURE = "STABILIZE_PRESSURE"
+    STABILIZE_TEMPERATURE = "STABILIZE_TEMPERATURE"
+    RAISE_PRESSURE = "RAISE_PRESSURE"
 
     SET_TARGET_TEMPERATURE = "SET_TARGET_TEMPERATURE"
     SET_THROTTLE_PERCENT = "SET_THROTTLE_PERCENT"
     FULL_OPEN_THROTTLE = "FULL_OPEN_THROTTLE"
     FULL_CLOSE_THROTTLE = "FULL_CLOSE_THROTTLE"
     SET_THROTTLE_PRESSURE = "SET_THROTTLE_PRESSURE"
-    
+
+    TEMPERATURE_REGULATION = "TEMPERATURE_REGULATION"
     START_TEMPERATURE_REGULATION = "START_TEMPERATURE_REGULATION"
     STOP_TEMPERATURE_REGULATION = "STOP_TEMPERATURE_REGULATION"
 
@@ -54,8 +57,8 @@ class TABLE_ACTIONS_NAMES:
     SET_RRG_VALUE_WITH_PAUSE = "Значение на РРГ с паузой" + " [газ, sccm, мммм:сс]"
     SET_RRG_AND_KEEP_TO_PRESSURE = "Повысить давление газа на определённую величину [газ, sccm, давление]"
 
-    PUMP_OUT_CAMERA = "Откачать камеру" + " [давление, лимит времени]"
-    VENTILATE_CAMERA = "Провентилировать камеру" + " [x, y, температура]"
+    PUMP_OUT_CAMERA = "Откачать камеру"
+    VENTILATE_CAMERA = "Провентилировать камеру"
     SMALL_PUMP_OUT_CAMERA = "Откачать камеру игольчатым вентилем" + " [давление, лимит времени]"
 
     TURN_ON_ALL_TERMODATS = "Включить все печки"
@@ -69,6 +72,8 @@ class TABLE_ACTIONS_NAMES:
     FULL_OPEN_PUMP = "Открыть клапан насоса"
     FULL_CLOSE_PUMP = "Закрыть клапан насоса"
     STABILIZE_PRESSURE = "Стабилизировать давление"
+    STABILIZE_TEMPERATURE = "Стабилизировать температуру"
+    RAISE_PRESSURE = "Ожидание повышения давления"
 
     SET_TARGET_TEMPERATURE = "Установить температуру"
     SET_THROTTLE_PERCENT = "Открыть дроссель на X%"
@@ -76,5 +81,6 @@ class TABLE_ACTIONS_NAMES:
     FULL_CLOSE_THROTTLE = "Полностью закрыть дроссель"
     SET_THROTTLE_PRESSURE = "Установить давление"
 
+    TEMPERATURE_REGULATION = "Регуляция температуры (НЕ ДЛЯ ТАБЛИЦЫ)"
     START_TEMPERATURE_REGULATION = "Включить регуляцию температуры"
     STOP_TEMPERATURE_REGULATION = "Выключить регуляцию температуры"
