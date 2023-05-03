@@ -286,7 +286,7 @@ class VentilateCameraAction(AppAction):
         pause.action(30)
 
         # 10) на ррг аргона команда на ноль
-        ar_rrg.action(ar_name, ar_sccm)
+        ar_rrg.action(ar_name, 0.0)
 
         # 11) закрываем клапан аргона
         valve_close = CloseValveAction()
