@@ -2,8 +2,9 @@ import time
 
 from coregraphene.actions import AppAction, ValveListArgument, GasListArgument, SccmArgument, TimeEditArgument, \
     FloatArgument, IntKeyArgument, FloatKeyArgument, get_total_seconds_from_time_arg
+from coregraphene.actions.exceptions import NotAchievingActionGoal
 from coregraphene.conf import settings
-from coregraphene.recipe.exceptions import NotAchievingRecipeStepGoal
+# from coregraphene.recipe.exceptions import NotAchievingActionGoal
 
 
 ACTIONS_NAMES = settings.ACTIONS_NAMES
@@ -27,8 +28,7 @@ class PauseAction(AppAction):
         start = time.time()
         while time.time() - start < seconds:
             time.sleep(1)
-            if self._is_stop_state():
-                break
+            self.interrupt_if_stop_state()
 
 
 class TurnOnPumpAction(AppAction):
@@ -186,13 +186,12 @@ class PumpOutCameraAction(AppAction):
 
         # 4 - ожидаем наступления давления 10 мбар
         while self.system.get_accurate_vakumetr_value() >= 10.0:
-            if self._is_stop_state():
-                return
+            self.interrupt_if_stop_state()
 
             delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Откачка не завершилась до достижения максимального времени")
-                raise NotAchievingRecipeStepGoal
+                raise NotAchievingActionGoal
 
         # 5 - открывает большой клапан на насос
         open_pump = OpenValveAction()
@@ -206,13 +205,14 @@ class PumpOutCameraAction(AppAction):
 
         # 7 - ожидаем наступления давления 10^-3 мбар
         while self.system.get_accurate_vakumetr_value() >= 0.001:
-            if self._is_stop_state():
-                return
+            self.interrupt_if_stop_state()
+            # if self._is_stop_state():
+            #     return
 
             delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Откачка не завершилась до достижения максимального времени")
-                raise NotAchievingRecipeStepGoal
+                raise NotAchievingActionGoal
 
         # 8 - закрываются все клапаны
         close_valves = CloseAllValvesAction()
@@ -342,7 +342,7 @@ class RampAction(AppAction):
 
             delta_time = time.time() - start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
-                raise NotAchievingRecipeStepGoal
+                raise NotAchievingActionGoal
 
         # time.sleep(4)
         self.system.is_active_ramp_effect(False)
@@ -397,8 +397,7 @@ class TemperatureRegulationAction(AppAction):
             return output
 
         while True:
-            if self._is_stop_state():
-                break
+            self.interrupt_if_stop_state()
 
             # Calculate PID output
             new_current = calculate_pid_output()
@@ -441,15 +440,14 @@ class StabilizePressureAction(AppAction):
         ]
 
         while True:
-            if self._is_stop_state():
-                break
+            self.interrupt_if_stop_state()
 
             time.sleep(0.5)
             current_pressure = self.system.accurate_vakumetr_value
 
             if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
-                raise NotAchievingRecipeStepGoal
+                raise NotAchievingActionGoal
 
             start_stabilization_time = time.time()
             success = False
@@ -461,7 +459,7 @@ class StabilizePressureAction(AppAction):
 
                 if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
                     self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
-                    raise NotAchievingRecipeStepGoal
+                    raise NotAchievingActionGoal
 
             if success:
                 break
@@ -483,15 +481,14 @@ class WaitRaisePressureAction(AppAction):
         ]
 
         while True:
-            if self._is_stop_state():
-                break
+            self.interrupt_if_stop_state()
 
             time.sleep(0.5)
             current_pressure = self.system.accurate_vakumetr_value
 
             if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
-                raise NotAchievingRecipeStepGoal
+                raise NotAchievingActionGoal
 
             start_stabilization_time = time.time()
             success = False
@@ -503,7 +500,7 @@ class WaitRaisePressureAction(AppAction):
 
                 if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
                     self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
-                    raise NotAchievingRecipeStepGoal
+                    raise NotAchievingActionGoal
 
             if success:
                 break
@@ -524,15 +521,14 @@ class StabilizeTemperatureAction(AppAction):
         ]
 
         while True:
-            if self._is_stop_state():
-                break
+            self.interrupt_if_stop_state()
 
             time.sleep(0.5)
             current_temperature = self.system.pyrometer_temperature_value
 
             if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
-                raise NotAchievingRecipeStepGoal
+                raise NotAchievingActionGoal
 
             start_stabilization_time = time.time()
             success = False
@@ -544,7 +540,7 @@ class StabilizeTemperatureAction(AppAction):
 
                 if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
                     self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
-                    raise NotAchievingRecipeStepGoal
+                    raise NotAchievingActionGoal
 
             if success:
                 break
