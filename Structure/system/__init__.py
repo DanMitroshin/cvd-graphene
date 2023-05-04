@@ -92,9 +92,9 @@ class AppSystem(BaseSystem):
         }
         self._controllers_check_classes = {
             'vakumetr': AccurateVakumetrController,
-            'current_source': CurrentSourceController,
             'pyrometer': PyrometerTemperatureController,
             'throttle': BackPressureValveController,
+            'current_source': CurrentSourceController,
         }
 
         usb_ports = get_available_usb_ports()
