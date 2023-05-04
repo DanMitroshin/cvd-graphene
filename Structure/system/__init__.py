@@ -101,27 +101,33 @@ class AppSystem(BaseSystem):
         if LOCAL_MODE:
             usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']
         print("PORTS USB:", usb_ports)
+        ATTEMPTS = 3
         for controller_code, controller_class in self._controllers_check_classes.items():
             # break
-            for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
-                if port in used_ports:
-                    continue
-                controller: AbstractController = controller_class(
-                    port=port,
-                    **self._default_controllers_kwargs.get(controller_code, {})
-                )
-                try:
-                    controller.setup()
-                    is_good = controller.check_command()
-                    if is_good:
-                        setattr(self, self._ports_attr_names[controller_code], port)
-                        used_ports.append(port)
-                        break
+            for _ in range(ATTEMPTS):
+                found_port = False
+                for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
+                    if port in used_ports:
+                        continue
+                    controller: AbstractController = controller_class(
+                        port=port,
+                        **self._default_controllers_kwargs.get(controller_code, {})
+                    )
+                    try:
+                        controller.setup()
+                        is_good = controller.check_command()
+                        if is_good:
+                            setattr(self, self._ports_attr_names[controller_code], port)
+                            used_ports.append(port)
+                            found_port = True
+                            break
 
-                    controller.destructor()
-                    del controller
-                except:
-                    pass
+                        controller.destructor()
+                        del controller
+                    except:
+                        pass
+                if found_port:
+                    break
 
         print(
             "|> FOUND PORTS:",
