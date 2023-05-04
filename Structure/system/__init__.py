@@ -91,9 +91,9 @@ class AppSystem(BaseSystem):
             'throttle': 'back_pressure_valve_port',
         }
         self._controllers_check_classes = {
+            'throttle': BackPressureValveController,
             'vakumetr': AccurateVakumetrController,
             'pyrometer': PyrometerTemperatureController,
-            'throttle': BackPressureValveController,
             'current_source': CurrentSourceController,
         }
 
