@@ -142,12 +142,10 @@ class SetRrgSccmValueWithPauseAction(AppAction):
 
     def do_action(self, valve_name: str, sccm: float, seconds: int):
 
-        action_rrg = SetRrgSccmValueAction()
-        action_rrg.system = self.system
+        action_rrg = self.sub_action(SetRrgSccmValueAction)
         action_rrg.action(valve_name, sccm)
 
-        action_pause = PauseAction()
-        action_pause.system = self.system
+        action_pause = self.sub_action(PauseAction)
         action_pause.action(seconds)
 
 
@@ -170,18 +168,15 @@ class PumpOutCameraAction(AppAction):
     def do_action(self):
 
         # 1 - закрываются все клапаны
-        close_valves = CloseAllValvesAction()
-        close_valves.system = self.system
+        close_valves = self.sub_action(CloseAllValvesAction)
         close_valves.action()
 
         # 2 - отправляется команда на клапан обратного давления открыться на 7%
-        throttle_percent = SetThrottlePercentAction()
-        throttle_percent.system = self.system
+        throttle_percent = self.sub_action(SetThrottlePercentAction)
         throttle_percent.action(7.0)
 
         # 3 - включается насос
-        turn_on_pump = TurnOnPumpAction()
-        turn_on_pump.system = self.system
+        turn_on_pump = self.sub_action(TurnOnPumpAction)
         turn_on_pump.action()
 
         # 4 - ожидаем наступления давления 10 мбар
@@ -194,13 +189,11 @@ class PumpOutCameraAction(AppAction):
                 raise NotAchievingActionGoal
 
         # 5 - открывает большой клапан на насос
-        open_pump = OpenValveAction()
-        open_pump.system = self.system
+        open_pump = self.sub_action(OpenValveAction)
         open_pump.action("Pump")
 
         # 6 - отправляет на клапан обратного давления команду полностью закрыться
-        close_throttle = FullCloseThrottleAction()
-        close_throttle.system = self.system
+        close_throttle = self.sub_action(FullCloseThrottleAction)
         close_throttle.action()
 
         # 7 - ожидаем наступления давления 10^-3 мбар
@@ -215,8 +208,7 @@ class PumpOutCameraAction(AppAction):
                 raise NotAchievingActionGoal
 
         # 8 - закрываются все клапаны
-        close_valves = CloseAllValvesAction()
-        close_valves.system = self.system
+        close_valves = self.sub_action(CloseAllValvesAction)
         close_valves.action()
 
 
@@ -240,46 +232,39 @@ class VentilateCameraAction(AppAction):
 
     def do_action(self):
         # 1) Ток через фольгу постепенно уменьшается до 0
-        ramp = RampAction()
-        ramp.system = self.system
+        ramp = self.sub_action(RampAction)
         ramp.action(0.0, 30)
 
         # 2) на все ррг команда на ноль
-        rrg_close = SetRrgSccmValueAction()
-        rrg_close.system = self.system
+        rrg_close = self.sub_action(SetRrgSccmValueAction)
         for gas in settings.VALVES_CONFIGURATION:
             rrg_close.action(gas["NAME"], 0.0)
 
         # 3) закрываются все клапаны
-        close_valves = CloseAllValvesAction()
-        close_valves.system = self.system
+        close_valves = self.sub_action(CloseAllValvesAction)
         close_valves.action()
 
         # 4) на клапан обратного давления команда полностью закрыть
-        close_throttle = FullCloseThrottleAction()
-        close_throttle.system = self.system
+        close_throttle = self.sub_action(FullCloseThrottleAction)
         close_throttle.action()
 
         # 5) ожидаем 30 секунд пока всё точно остынет
-        pause = PauseAction()
-        pause.system = self.system
+        pause = self.sub_action(PauseAction)
         pause.action(30)
 
         # 6) включается ррг аргона
         ar_name = "Ar"
         ar_sccm = 200.0  # list(filter(lambda x: x["NAME"] == ar_name, settings.VALVES_CONFIGURATION))[0]['']
-        ar_rrg = SetRrgSccmValueAction()
-        ar_rrg.system = self.system
+
+        ar_rrg = self.sub_action(SetRrgSccmValueAction)
         ar_rrg.action(ar_name, ar_sccm)
 
         # 7) открываем клапан аргона
-        valve_open = OpenValveAction()
-        valve_open.system = self.system
+        valve_open = self.sub_action(OpenValveAction)
         valve_open.action(ar_name)
 
         # 8) ожидаем пока давление не станет 950 мбар
-        stabilize_pressure = StabilizePressureAction()
-        stabilize_pressure.system = self.system
+        stabilize_pressure = self.sub_action(StabilizePressureAction)
         stabilize_pressure.action(950.0, 1.0, 1)
 
         # 9) ожидаем 30 сек
@@ -289,8 +274,7 @@ class VentilateCameraAction(AppAction):
         ar_rrg.action(ar_name, 0.0)
 
         # 11) закрываем клапан аргона
-        valve_close = CloseValveAction()
-        valve_close.system = self.system
+        valve_close = self.sub_action(CloseValveAction)
         valve_close.action(ar_name)
 
 
@@ -566,8 +550,6 @@ ACTIONS = [
     StopTemperatureRegulationAction(),
 
     PauseAction(),
-    # FullOpenPumpAction(),
-    # FullClosePumpAction(),
     StabilizePressureAction(),
     StabilizeTemperatureAction(),
     WaitRaisePressureAction(),
