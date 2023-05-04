@@ -124,8 +124,8 @@ class AppSystem(BaseSystem):
 
                         controller.destructor()
                         del controller
-                    except:
-                        pass
+                    except Exception as e:
+                        print("Finding port error:", e)
                 if found_port:
                     break
 
