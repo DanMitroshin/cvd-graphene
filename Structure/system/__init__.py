@@ -73,13 +73,17 @@ class AppSystem(BaseSystem):
 
     def _determine_attributes(self):
         used_ports = []
-        self.vakumetr_port = settings.ACCURATE_VAKUMETR_USB_PORT
-        self.current_source_port = settings.CURRENT_SOURCE_USB_PORT
-        self.pyrometer_temperature_port = settings.PYROMETER_TEMPERATURE_USB_PORT
-        self.back_pressure_valve_port = settings.BACK_PRESSURE_VALVE_USB_PORT
+        self.vakumetr_port = None
+        self.current_source_port = None
+        self.pyrometer_temperature_port = None
+        self.back_pressure_valve_port = None
+
+        # self.vakumetr_port = settings.ACCURATE_VAKUMETR_USB_PORT
+        # self.current_source_port = settings.CURRENT_SOURCE_USB_PORT
+        # self.pyrometer_temperature_port = settings.PYROMETER_TEMPERATURE_USB_PORT
+        # self.back_pressure_valve_port = settings.BACK_PRESSURE_VALVE_USB_PORT
+
         # return
-        # self.rrg_port = None
-        # self.termodat_port = None
         self._ports_attr_names = {
             'vakumetr': 'vakumetr_port',
             'current_source': 'current_source_port',
@@ -98,7 +102,7 @@ class AppSystem(BaseSystem):
             usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']
         print("PORTS USB:", usb_ports)
         for controller_code, controller_class in self._controllers_check_classes.items():
-            break
+            # break
             for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
                 if port in used_ports:
                     continue
