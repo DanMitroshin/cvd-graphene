@@ -238,6 +238,12 @@ class AppMainDialogWindow(BaseMainDialogWindow):
             self.system.on_vent_press
         )
         ########################
+
+        # PLOT ####################
+        self.milw.temperature_block.current_settings.plot_block.set_settings(
+            self.system.logger.get_array_log,
+            self.system.log_parameters,
+        )
         # self.system.test_ramp()
 
     # def on_create_recipe(self):

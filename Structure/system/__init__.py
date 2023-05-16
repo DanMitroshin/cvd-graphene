@@ -99,7 +99,7 @@ class AppSystem(BaseSystem):
 
         usb_ports = get_available_usb_ports()
         if LOCAL_MODE:
-            usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']
+            usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2', '/dev/ttyUSB3']
         print("PORTS USB:", usb_ports)
         ATTEMPTS = 3
         for controller_code, controller_class in self._controllers_check_classes.items():

@@ -1,16 +1,25 @@
 from PyQt5 import QtCore
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QPushButton, QWidget, QHBoxLayout, QVBoxLayout, QGraphicsDropShadowEffect
+
+from pyqtgraph import PlotWidget
+from PyQt5 import QtCore
+import numpy as np
+import pyqtgraph as pq
 
 # from Structure.dialog_ui.components import ParameterLatexLabel, ParameterLabel
 from Structure.dialog_ui.constants import SHADOW_BLUR_RADIUS
 from grapheneqtui.components import ParameterLabel
 from .ActualTemperature import ActualTemperature
+from .PlotBlock import PlotBlock
 from .RiseCurrentBlock import RiseCurrentBlock
 from .SetCurrentBlock import SetCurrentBlock
 from .styles import styles
 
 
 class CurrentSettingsBlock(QWidget):
+    get_plot_array_function = None
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -23,6 +32,10 @@ class CurrentSettingsBlock(QWidget):
         shadow = QGraphicsDropShadowEffect(parent=None)
         shadow.setBlurRadius(SHADOW_BLUR_RADIUS)
         self.setGraphicsEffect(shadow)
+
+        self.plot_block = PlotBlock()
+
+        self.layout.addWidget(self.plot_block, alignment=QtCore.Qt.AlignTop)
 
         self.actual_temperature = ActualTemperature()
         self.layout.addWidget(self.actual_temperature, QtCore.Qt.AlignTop)
