@@ -9,6 +9,10 @@ import pyqtgraph as pq
 
 
 class PlotBlock(QWidget):
+    """
+    Plot block with choosing axes
+    Example: https://www.programmersought.com/article/76756767412/
+    """
     get_plot_array_function = None
     x_name = None
     y_name = None
