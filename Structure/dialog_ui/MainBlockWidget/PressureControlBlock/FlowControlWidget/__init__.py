@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QTimer
 from PyQt5.QtWidgets import QPushButton, QWidget, QLabel, \
     QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect, QHBoxLayout
 
@@ -10,12 +10,15 @@ from .styles import styles, button_on_style, button_off_style, button_wait_style
 class FlowControlWidget(QWidget):
     active_update_signal = pyqtSignal(bool)
     on_button_press_signal = pyqtSignal()
+    confirmation_press_time_ms = 5000
 
     def __init__(self, title="Title"):
         super().__init__()
 
         self.button_ready = True
         self.button_wait = False
+
+        self.timer = QTimer(parent=None)
 
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -54,6 +57,10 @@ class FlowControlWidget(QWidget):
             self.button_wait = False
         else:
             self.button_wait = True
+            self.timer.singleShot(
+                self.confirmation_press_time_ms,
+                self._clear_button_waiting
+            )
         # else:
         #     self.button_ready = False
         self._update_button_ui()
@@ -69,5 +76,9 @@ class FlowControlWidget(QWidget):
 
     def _set_button_is_active(self, is_active):
         self.button_on = is_active
+        self.button_wait = False
+        self._update_button_ui()
+
+    def _clear_button_waiting(self):
         self.button_wait = False
         self._update_button_ui()
