@@ -4,6 +4,7 @@ from coregraphene.actions import AppAction, ValveListArgument, GasListArgument, 
     FloatArgument, IntKeyArgument, FloatKeyArgument, get_total_seconds_from_time_arg
 from coregraphene.actions.exceptions import NotAchievingActionGoal
 from coregraphene.conf import settings
+
 # from coregraphene.recipe.exceptions import NotAchievingActionGoal
 
 
@@ -141,7 +142,6 @@ class SetRrgSccmValueWithPauseAction(AppAction):
     args_info = [GasListArgument, SccmArgument, TimeEditArgument]
 
     def do_action(self, valve_name: str, sccm: float, seconds: int):
-
         action_rrg = self.sub_action(SetRrgSccmValueAction)
         action_rrg.action(valve_name, sccm)
 
@@ -152,7 +152,7 @@ class SetRrgSccmValueWithPauseAction(AppAction):
 class PumpOutCameraAction(AppAction):
     """
     1) закрываются все клапаны
-    2) отправляется команда на клапан обратного давления открыться на 7%
+    2) отправляется команда на клапан обратного давления открыться на 13%
     3) включается насос
     4) ожидаем наступления давления 10мбар
     5) открывает большой клапан на насос
@@ -171,9 +171,9 @@ class PumpOutCameraAction(AppAction):
         close_valves = self.sub_action(CloseAllValvesAction)
         close_valves.action()
 
-        # 2 - отправляется команда на клапан обратного давления открыться на 7%
+        # 2 - отправляется команда на клапан обратного давления открыться на 13%
         throttle_percent = self.sub_action(SetThrottlePercentAction)
-        throttle_percent.action(7.0)
+        throttle_percent.action(13.0)
 
         # 3 - включается насос
         turn_on_pump = self.sub_action(TurnOnPumpAction)
@@ -228,6 +228,7 @@ class VentilateCameraAction(AppAction):
     """
     name = TABLE_ACTIONS_NAMES.VENTILATE_CAMERA
     key = ACTIONS_NAMES.VENTILATE_CAMERA
+
     # args_info = [IntKeyArgument, IntKeyArgument]
 
     def do_action(self):
@@ -284,7 +285,6 @@ class RampAction(AppAction):
     args_info = [FloatKeyArgument, TimeEditArgument]
 
     def do_action(self, target_current: float, seconds: int):
-        start_time = time.time()
 
         self.system.target_current_ramp_effect(target_current)
 
@@ -294,11 +294,12 @@ class RampAction(AppAction):
 
         if seconds <= pause:
             seconds = pause
-        end_time = start_time + seconds
+        end_time = self.start_time + seconds
         left_time = end_time - time.time()
 
         current_value = self.system.current_value
         local_current_value = current_value
+
         # # delta_value = target_current - current_value
 
         def get_next_target():
@@ -324,7 +325,7 @@ class RampAction(AppAction):
             current_value = self.system.current_value
             local_current_value = current_value
 
-            delta_time = time.time() - start_time
+            delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
                 raise NotAchievingActionGoal
 
@@ -353,32 +354,40 @@ class TemperatureRegulationAction(AppAction):
     integral = 0.0
 
     def do_action(self):
-        # start_time = time.time()
+        target_temperature = self.system.target_temperature
 
         # Define PID constants
-        Kp = 0.1
-        Ki = 0.01
-        Kd = 0.001
+        Kp = 0.01
+        Ki = 0.001
+        Kd = 0.0
 
         pause = 0.3
 
         # Define initial values
         self.last_error = 0.0
         self.integral = 0.0
+        self.prev_temperature = 0.0
+
+        self.start_current = self.system.current_value
+        print("start pid current:", self.start_current)
 
         # Define function to calculate PID output
         def calculate_pid_output():
-            target_temperature = self.system.target_temperature
             current_temperature = self.system.pyrometer_temperature_value
 
             error = target_temperature - current_temperature
             self.integral += error
             derivative = error - self.last_error
             self.last_error = error
-            output = Kp * error + Ki * self.integral + Kd * derivative
-            print("PID current output: ", output)
 
-            return output
+            output = Kp * error + Ki * self.integral + Kd * derivative
+
+            # print("PID additional current: ", output)
+            # print("PID set current: ", self.start_current + output)
+
+            self.prev_temperature = current_temperature
+
+            return self.start_current + output
 
         while True:
             self.interrupt_if_stop_state()
@@ -415,7 +424,6 @@ class StabilizePressureAction(AppAction):
     args_info = [FloatArgument, FloatKeyArgument, TimeEditArgument]
 
     def do_action(self, target_pressure: float, error_rate: float, stabilize_seconds: int):
-        start_time = time.time()
 
         error_rate = max(0.0, min(100.0, error_rate)) / 100.0
         borders = [
@@ -429,7 +437,7 @@ class StabilizePressureAction(AppAction):
             time.sleep(0.5)
             current_pressure = self.system.accurate_vakumetr_value
 
-            if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+            if MAX_RECIPE_STEP_SECONDS and (time.time() - self.start_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
                 raise NotAchievingActionGoal
 
@@ -441,7 +449,7 @@ class StabilizePressureAction(AppAction):
                     success = True
                     break
 
-                if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                if MAX_RECIPE_STEP_SECONDS and (time.time() - self.start_time >= MAX_RECIPE_STEP_SECONDS):
                     self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
                     raise NotAchievingActionGoal
 
@@ -455,7 +463,6 @@ class WaitRaisePressureAction(AppAction):
     args_info = [FloatArgument, FloatKeyArgument, TimeEditArgument]
 
     def do_action(self, target_pressure_raise: float, error_rate: float, stabilize_seconds: int):
-        start_time = time.time()
         target_pressure = self.system.accurate_vakumetr_value + target_pressure_raise
 
         error_rate = max(0.0, min(100.0, error_rate)) / 100.0
@@ -470,7 +477,7 @@ class WaitRaisePressureAction(AppAction):
             time.sleep(0.5)
             current_pressure = self.system.accurate_vakumetr_value
 
-            if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+            if MAX_RECIPE_STEP_SECONDS and (time.time() - self.start_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
                 raise NotAchievingActionGoal
 
@@ -482,7 +489,7 @@ class WaitRaisePressureAction(AppAction):
                     success = True
                     break
 
-                if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                if MAX_RECIPE_STEP_SECONDS and (time.time() - self.start_time >= MAX_RECIPE_STEP_SECONDS):
                     self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
                     raise NotAchievingActionGoal
 
@@ -496,7 +503,6 @@ class StabilizeTemperatureAction(AppAction):
     args_info = [IntKeyArgument, FloatKeyArgument, TimeEditArgument]
 
     def do_action(self, target_temperature: float, error_rate: float, stabilize_seconds: int):
-        start_time = time.time()
 
         error_rate = max(0.0, min(100.0, error_rate)) / 100.0
         borders = [
@@ -510,7 +516,7 @@ class StabilizeTemperatureAction(AppAction):
             time.sleep(0.5)
             current_temperature = self.system.pyrometer_temperature_value
 
-            if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+            if MAX_RECIPE_STEP_SECONDS and (time.time() - self.start_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
                 raise NotAchievingActionGoal
 
@@ -522,7 +528,7 @@ class StabilizeTemperatureAction(AppAction):
                     success = True
                     break
 
-                if MAX_RECIPE_STEP_SECONDS and (time.time() - start_time >= MAX_RECIPE_STEP_SECONDS):
+                if MAX_RECIPE_STEP_SECONDS and (time.time() - self.start_time >= MAX_RECIPE_STEP_SECONDS):
                     self.system.add_error_log(f"Стабилизация давления не завершилась до достижения максимального времени")
                     raise NotAchievingActionGoal
 
