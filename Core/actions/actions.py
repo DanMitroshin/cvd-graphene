@@ -40,6 +40,14 @@ class TurnOnPumpAction(AppAction):
         self.system.change_pump_manage_active_effect(True)
 
 
+class TurnOffPumpAction(AppAction):
+    name = TABLE_ACTIONS_NAMES.TURN_OFF_PUMP
+    key = ACTIONS_NAMES.TURN_OFF_PUMP
+
+    def do_action(self):
+        self.system.change_pump_manage_active_effect(False)
+
+
 class OpenValveAction(AppAction):
     name = TABLE_ACTIONS_NAMES.OPEN_VALVE
     key = ACTIONS_NAMES.OPEN_VALVE
@@ -538,6 +546,7 @@ class StabilizeTemperatureAction(AppAction):
 
 ACTIONS = [
     TurnOnPumpAction(),
+    TurnOffPumpAction(),
     OpenValveAction(),
     CloseValveAction(),
     CloseAllValvesAction(),
