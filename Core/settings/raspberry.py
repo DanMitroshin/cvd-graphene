@@ -54,19 +54,23 @@ VALVES_CONFIGURATION = [
         'ADDRESS': 0,  # RRG ADDRESS FOR SPI (from 0 to 7: 000, 001, ..., 111)
         'DAC_ADDRESS': 0,  # RRG ADDRESS FOR SPI DAC [SET VALUE] (from 0 to 7: 000, 001, ..., 111)
         'VAKUMETR_ADDRESS': 0,  # VAKUMETR ADDRESS FOR READING PRESSURE IN BALLOON
-     },
-    {'PORT': 25, "NAME": "C_2H_2", "IS_GAS": True,
-     'ADDRESS': 2, 'DAC_ADDRESS': 2, 'VAKUMETR_ADDRESS': 2,
-     },
-    {'PORT': 24, "NAME": "CH_4", "IS_GAS": True,
-     'ADDRESS': 3, 'DAC_ADDRESS': 3, 'VAKUMETR_ADDRESS': 3,
-     },
-    {'PORT': 4, "NAME": "N_2", "IS_GAS": True,
-     'ADDRESS': 4, 'DAC_ADDRESS': 4, 'VAKUMETR_ADDRESS': 4,
-     },
-    {'PORT': 23, "NAME": "H_2", "IS_GAS": True,
-     'ADDRESS': 5, 'DAC_ADDRESS': 5, 'VAKUMETR_ADDRESS': 5,
-     },
+    },
+    {
+        'PORT': 25, "NAME": "C_2H_2", "IS_GAS": True,
+        'ADDRESS': 2, 'DAC_ADDRESS': 2, 'VAKUMETR_ADDRESS': 2,
+    },
+    {
+        'PORT': 24, "NAME": "CH_4", "IS_GAS": True,
+        'ADDRESS': 1, 'DAC_ADDRESS': 1, 'VAKUMETR_ADDRESS': 4,
+    },
+    {
+        'PORT': 4, "NAME": "N_2", "IS_GAS": True,
+        'ADDRESS': 3, 'DAC_ADDRESS': 3, 'VAKUMETR_ADDRESS': 3,
+    },
+    {
+        'PORT': 23, "NAME": "H_2", "IS_GAS": True,
+        'ADDRESS': 4, 'DAC_ADDRESS': 7, 'VAKUMETR_ADDRESS': 5,
+    },
     # {'PORT': 7, "NAME": "O_2", "IS_GAS": True},
     # {'PORT': 8, "NAME": "N_2", "IS_GAS": True},
     # {'PORT': 9, "NAME": "Ar", "IS_GAS": True},
@@ -80,6 +84,5 @@ ALL_GPIO_VALVES_CONFIG = VALVES_CONFIGURATION + \
 VALVE_LIST = list(map(lambda x: x.get('NAME'), ALL_GPIO_VALVES_CONFIG))
 # GAS_LIST = list(map(lambda x: x.get('NAME'), filter(lambda x: x.get("IS_GAS", False), VALVES_CONFIGURATION)))
 GAS_LIST = list(map(lambda x: x.get('NAME'), VALVES_CONFIGURATION))
-
 
 TABLE_COLUMN_NAMES = ["Процесс", "Аргумент 1", "Аргумент 2", "Аргумент 3", "Комментарий"]
