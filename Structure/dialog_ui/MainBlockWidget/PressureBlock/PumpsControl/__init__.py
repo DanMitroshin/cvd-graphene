@@ -19,6 +19,16 @@ styles = StyleSheet({
 # PUMPS_CONFIGURATION = settings.PUMPS_CONFIGURATION
 
 
+class PumpInfoColumnWidget(InfoColumnWidget):
+    down_latex_fon_size_mult = 1.1
+
+    def get_label_text_format(self, value: float):
+        s = "{:.1E}".format(value).lower()
+        num, degree = s.split('e')
+        formatted_value = f"{num}*10^{{{int(degree)}}}"
+        return f"${formatted_value}$ {self.unit}"
+
+
 class PumpsControlWidget(QWidget):
     update_pump_state_signal = pyqtSignal()
     on_update_pump_is_open_signal = pyqtSignal(bool)
@@ -43,7 +53,7 @@ class PumpsControlWidget(QWidget):
         self.pump_valve_b = ButterflyButton()
         self.throttle_b = ButterflyButton()
 
-        self.throttle_info = InfoColumnWidget(
+        self.throttle_info = PumpInfoColumnWidget(
             max_value=BACK_PRESSURE_VALVE_CONSTANTS.MAX_PRESSURE_BORDER,
             min_value=BACK_PRESSURE_VALVE_CONSTANTS.MIN_PRESSURE_BORDER,
             unit="mbar",
