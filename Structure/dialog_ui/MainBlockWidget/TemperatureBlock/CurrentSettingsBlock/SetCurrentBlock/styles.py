@@ -34,4 +34,10 @@ styles = StyleSheet({
         "background-color": "rgb(255, 255, 0)",
         "font-size": "28px",
     },
+    "waiting_power_button": {
+        "height": '60px',
+        'width': '60px',
+        "background-color": "rgb(170, 170, 170)",
+        "font-size": "28px",
+    }
 })

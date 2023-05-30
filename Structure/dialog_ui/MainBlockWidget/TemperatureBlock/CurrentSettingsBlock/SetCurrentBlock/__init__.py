@@ -1,5 +1,6 @@
 from time import sleep
 from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QGraphicsDropShadowEffect, QLabel
 
 from .buttons import ButtonPlus, ButtonMinus
@@ -8,6 +9,8 @@ from .styles import styles
 
 
 class SetCurrentBlock(QWidget):
+    on_update_is_power_signal = pyqtSignal(bool)
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -49,6 +52,8 @@ class SetCurrentBlock(QWidget):
         self.layout.addWidget(self.current_label_3, 0, 7,)
 
         self.is_power = True
+        self.is_power_waiting = False
+        self.on_update_is_power_signal.connect(self._on_update_is_power)
         self.power_button = QPushButton()
         self.power_button.setObjectName("power_button")
         self.power_button.setStyleSheet(styles.power_button)
@@ -107,13 +112,24 @@ class SetCurrentBlock(QWidget):
         self.set_value()
         self.set_value_function = None
 
-    def _on_press_power_button(self):
-        self.is_power = not self.is_power
+    def _on_update_is_power(self, is_power):
+        self.is_power = is_power
+        self.is_power_waiting = False
         self._update_power_button_ui()
+
+    def _on_press_power_button(self):
+        # self.is_power = not self.is_power
+        if not self.is_power_waiting:
+            self.is_power_waiting = True
+            self._update_power_button_ui()
 
     def _update_power_button_ui(self):
         text = "OFF" if self.is_power else "ON"
         self.power_button.setText(text)
+        if self.is_power_waiting:
+            self.power_button.setStyleSheet(styles.waiting_power_button)
+        else:
+            self.power_button.setStyleSheet(styles.power_button)
 
     def set_real_value(self, value):
         # sleep(5)

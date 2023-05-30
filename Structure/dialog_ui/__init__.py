@@ -171,6 +171,13 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         self.system.actual_voltage_effect.connect(
             self.milw.temperature_block.current_settings.set_voltage_value
         )
+
+        self.system.is_power_current_source_effect.connect(
+            self.milw.temperature_block.current_settings.set_current_block.on_update_is_power_signal.emit
+        )
+        self.milw.temperature_block.current_settings.set_current_block\
+            .power_button.clicked.connect(self.system.current_source_controller.toggle_power)
+
         # RAMP
         # self.milw.temperature_block.current_settings.rise_current_block\
         #     .ramp_button.clicked.connect(self.system.on_ramp_press_start)

@@ -275,6 +275,9 @@ class AppSystem(BaseSystem):
         self.actual_voltage_effect.connect(self._on_get_actual_voltage)
         self.current_source_controller.actual_voltage_effect.connect(self.actual_voltage_effect)
 
+        self.is_power_current_source_effect = SingleAnswerSystemEffect(system=self)
+        self.current_source_controller.is_power_effect.connect(self.is_power_current_source_effect)
+
         self.ramp_seconds_effect = SetRampSecondsEffect(system=self)
         self.target_current_ramp_effect = SetTargetCurrentRampEffect(system=self)
 
