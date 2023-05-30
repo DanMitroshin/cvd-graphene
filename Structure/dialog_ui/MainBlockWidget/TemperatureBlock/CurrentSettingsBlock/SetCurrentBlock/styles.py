@@ -23,7 +23,15 @@ styles = StyleSheet({
         # "max-width": "40px",
         # "border-width": "0",
         "font-size": "32px",
+
         # "font-weight": "bold",
         # "background-color": "rgba(0, 0, 0, 0)",
+        # "background-color": "rgb(138, 181, 120)",
+    },
+    "power_button": {
+        "height": '60px',
+        'width': '60px',
+        "background-color": "rgb(255, 255, 0)",
+        "font-size": "28px",
     },
 })

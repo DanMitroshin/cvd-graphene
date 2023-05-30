@@ -27,7 +27,7 @@ class SetCurrentBlock(QWidget):
         self.current_label.setText("I=")
         self.current_label.setObjectName("current_label_local")
         self.current_label.setStyleSheet(styles.label)
-        self.current_label.setAlignment(QtCore.Qt.AlignRight)
+        self.current_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         # self.current_label.setFixedWidth(30)
         # self.layout.setColumnStretch(0, 10)
         # self.layout.setColumnStretch(1, 1000)
@@ -45,10 +45,18 @@ class SetCurrentBlock(QWidget):
         self.current_label_3.setText("A")
         self.current_label_3.setObjectName("current_label_local")
         self.current_label_3.setStyleSheet(styles.label)
-        self.current_label_3.setAlignment(QtCore.Qt.AlignLeft)
+        self.current_label_3.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.layout.addWidget(self.current_label_3, 0, 7,)
 
-        #################### DIGITS AND BUTTONS #######################
+        self.is_power = True
+        self.power_button = QPushButton()
+        self.power_button.setObjectName("power_button")
+        self.power_button.setStyleSheet(styles.power_button)
+        self.power_button.clicked.connect(self._on_press_power_button)
+        self.layout.addWidget(self.power_button, 0, 8, )
+        self._update_power_button_ui()
+
+        # ################### DIGITS AND BUTTONS ###################### #
 
         # 100
         self.d1 = DigitLabel()
@@ -98,6 +106,14 @@ class SetCurrentBlock(QWidget):
 
         self.set_value()
         self.set_value_function = None
+
+    def _on_press_power_button(self):
+        self.is_power = not self.is_power
+        self._update_power_button_ui()
+
+    def _update_power_button_ui(self):
+        text = "OFF" if self.is_power else "ON"
+        self.power_button.setText(text)
 
     def set_real_value(self, value):
         # sleep(5)

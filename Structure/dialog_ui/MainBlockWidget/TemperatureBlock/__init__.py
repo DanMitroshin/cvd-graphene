@@ -22,5 +22,5 @@ class TemperatureBlock(QWidget):
         self.current_settings = CurrentSettingsBlock()
         self.layout.addWidget(self.current_settings)
 
-    def set_actual_temperature(self, value):
-        self.current_settings.set_actual_temperature(value)
+    # def set_actual_temperature(self, value):
+    #     self.current_settings.set_actual_temperature(value)

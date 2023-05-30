@@ -37,8 +37,8 @@ class CurrentSettingsBlock(QWidget):
 
         self.layout.addWidget(self.plot_block, alignment=QtCore.Qt.AlignTop)
 
-        self.actual_temperature = ActualTemperature()
-        self.layout.addWidget(self.actual_temperature, QtCore.Qt.AlignTop)
+        # self.actual_temperature = ActualTemperature()
+        # self.layout.addWidget(self.actual_temperature, QtCore.Qt.AlignTop)
 
         self.set_current_block = SetCurrentBlock()
         self.layout.addWidget(self.set_current_block, )
@@ -67,5 +67,5 @@ class CurrentSettingsBlock(QWidget):
         self.current_value = float(value if str(value) else 0.0)
         self.current_label.setText(f"I = {round(self.current_value, 3)}A")
 
-    def set_actual_temperature(self, value):
-        self.actual_temperature.set_actual_temperature(value)
+    # def set_actual_temperature(self, value):
+    #     self.actual_temperature.set_actual_temperature(value)
