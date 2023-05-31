@@ -22,6 +22,7 @@ from .effects import (
     ChangePumpManageStateEffect,
     SetTargetTemperatureSystemEffect,
     SetIsTemperatureRegulationActiveEffect,
+    SetTemperaturePidSpeedSystemEffect,
 )
 from coregraphene.components.controllers import (
     AbstractController,
@@ -52,6 +53,7 @@ class AppSystem(BaseSystem):
     ramp_waiting = False
 
     target_temperature = 0
+    pid_speed = 10.0
     temperature_regulation = False
 
     _default_controllers_kwargs = {
@@ -263,6 +265,7 @@ class AppSystem(BaseSystem):
         # ===== Temperature regulation ===== #
         self.target_temperature_effect = SetTargetTemperatureSystemEffect(system=self)
         self.is_temperature_regulation_active_effect = SetIsTemperatureRegulationActiveEffect(system=self)
+        self.temperature_pid_speed_effect = SetTemperaturePidSpeedSystemEffect(system=self)
 
         # ===== Current AKIP ========= #
         self.target_current_effect = SetTargetCurrentEffect(system=self)
@@ -311,7 +314,8 @@ class AppSystem(BaseSystem):
     def _init_values(self):
         self.accurate_vakumetr_value = 0.0
         self.pyrometer_temperature_value = 0.0
-        self.target_temperature = 0.0
+        self.target_temperature = 0
+        self.pid_speed = 10.0
         # self.current_value = 0.0
         # self.voltage_value = 0.0
 
@@ -503,6 +507,15 @@ class AppSystem(BaseSystem):
         except:
             self.target_temperature = 0
         return self.target_temperature
+
+    def set_temperature_pid_speed_value(self, value: float):
+        # print("SET TARGET [set_target_temperature_value]:", value)
+        try:
+            value = min(10000.0, max(0.01, float(value)))
+            self.pid_speed = value
+        except:
+            self.pid_speed = 10.0
+        return self.pid_speed
 
     # def set_is_temperature_regulation_active(self, value):
     #     self.temperature_regulation = bool(value)

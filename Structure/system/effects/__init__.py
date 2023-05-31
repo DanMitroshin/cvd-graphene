@@ -72,6 +72,12 @@ class SetTargetTemperatureSystemEffect(SystemEffect):
         return self._system.set_target_temperature_value(value)
 
 
+class SetTemperaturePidSpeedSystemEffect(SystemEffect):
+    def _call_function(self, value):
+        print(f'|> New PID speed: {value}')
+        return self._system.set_temperature_pid_speed_value(value)
+
+
 class SetIsTemperatureRegulationActiveEffect(SystemEffect):
     def _call_function(self, value):
         return value

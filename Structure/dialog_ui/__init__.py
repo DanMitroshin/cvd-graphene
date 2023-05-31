@@ -213,12 +213,21 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         ########################
 
         # TEMPERATURE REGULATION ############
+        # <target temperature>
         self.system.target_temperature_effect.connect(
             self.milw.pressure_control_block.set_temperature.target_temperature_signal.emit
         )
         self.milw.pressure_control_block.set_temperature.on_update_target_temperature_signal.connect(
             self.system.target_temperature_effect
         )
+        # <speed>
+        self.system.temperature_pid_speed_effect.connect(
+            self.milw.pressure_control_block.set_speed.speed_signal.emit
+        )
+        self.milw.pressure_control_block.set_speed.on_update_speed_signal.connect(
+            self.system.temperature_pid_speed_effect
+        )
+        # <power regulation>
         self.system.is_temperature_regulation_active_effect.connect(
             self.milw.pressure_control_block.set_temperature.active_regulation_signal.emit
         )

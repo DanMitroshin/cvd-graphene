@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QVBoxLayout, QLin
 
 from grapheneqtui.components import ShowPressureBlock, ShowTemperatureBlock
 from .FlowControlWidget import FlowControlWidget
+from .PidSpeedBlock import PidSpeedBlock
 # from .ShowPressureBlock import ShowPressureBlock
 from .SetTemperatureBlock import SetTemperatureBlock
 from .styles import styles
@@ -39,7 +40,10 @@ class PressureControlBlock(QWidget):
         self.set_temperature = SetTemperatureBlock()
         self.layout.addWidget(self.set_temperature, alignment=QtCore.Qt.AlignTop)
 
+        self.set_speed = PidSpeedBlock()
+        self.layout.addWidget(self.set_speed, alignment=QtCore.Qt.AlignTop)
+
         self.pump = FlowControlWidget(title="Pump")
         self.vent = FlowControlWidget(title="Vent")
-        self.layout.addWidget(self.pump)
-        self.layout.addWidget(self.vent)
+        self.layout.addWidget(self.pump, alignment=QtCore.Qt.AlignBottom)
+        self.layout.addWidget(self.vent, alignment=QtCore.Qt.AlignBottom)

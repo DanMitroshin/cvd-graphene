@@ -360,13 +360,15 @@ class TemperatureRegulationAction(AppAction):
 
     last_error = 0.0
     integral = 0.0
+    old_speed = 10.0
 
     def do_action(self):
         # target_temperature = self.system.target_temperature
+        self.old_speed = self.system.pid_speed
 
         # Define PID constants
         Kp = 0.01
-        Ki = 0.001
+        Ki = 0.01 * self.old_speed  # 0.001 / 10 * speed
         Kd = 0.0
 
         pause = 0.3
@@ -381,9 +383,15 @@ class TemperatureRegulationAction(AppAction):
 
         # Define function to calculate PID output
         def calculate_pid_output():
-            current_temperature = self.system.pyrometer_temperature_value
+            if abs(self.old_speed - self.system.pid_speed) >= 0.01 and \
+                    self.system.pid_speed > 0.0:
+                correct_integral_coef = self.old_speed / self.system.pid_speed
+                self.old_speed = self.system.pid_speed
+                self.integral *= correct_integral_coef
 
+            current_temperature = self.system.pyrometer_temperature_value
             error = self.system.target_temperature - current_temperature
+
             self.integral += error
             derivative = error - self.last_error
             self.last_error = error
