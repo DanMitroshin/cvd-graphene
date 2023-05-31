@@ -10,6 +10,7 @@ from .styles import styles
 
 class SetTemperatureBlock(QWidget):
     target_temperature_signal = pyqtSignal(int)
+    on_update_target_temperature_signal = pyqtSignal(int)
     active_regulation_signal = pyqtSignal(bool)
     on_regulation_press_signal = pyqtSignal()
 
@@ -83,9 +84,18 @@ class SetTemperatureBlock(QWidget):
 
         self.active_regulation_signal.connect(self._set_regulation_is_active)
         self.target_temperature_signal.connect(self._set_target_temperature)
+        self.input.returnPressed.connect(self._on_update_input_value)
 
     def _on_button_press(self):
         self.on_regulation_press_signal.emit()
+
+    def _on_update_input_value(self):
+        try:
+            input_value = self.input.text().replace(',', '.')
+            value = int(float(input_value))
+            self.on_update_target_temperature_signal.emit(value)
+        except:
+            self.input.setText('0')
 
     def _set_regulation_is_active(self, is_active):
         self.regulation_active = is_active

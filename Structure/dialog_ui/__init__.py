@@ -216,7 +216,7 @@ class AppMainDialogWindow(BaseMainDialogWindow):
         self.system.target_temperature_effect.connect(
             self.milw.pressure_control_block.set_temperature.target_temperature_signal.emit
         )
-        self.milw.pressure_control_block.set_temperature.input.textEdited.connect(
+        self.milw.pressure_control_block.set_temperature.on_update_target_temperature_signal.connect(
             self.system.target_temperature_effect
         )
         self.system.is_temperature_regulation_active_effect.connect(

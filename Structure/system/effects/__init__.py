@@ -68,6 +68,7 @@ class SetIsRampWaitingEffect(SystemEffect):
 
 class SetTargetTemperatureSystemEffect(SystemEffect):
     def _call_function(self, value):
+        print(f'|> New PID target temperature: {value}')
         return self._system.set_target_temperature_value(value)
 
 

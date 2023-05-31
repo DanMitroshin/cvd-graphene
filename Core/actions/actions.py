@@ -362,7 +362,7 @@ class TemperatureRegulationAction(AppAction):
     integral = 0.0
 
     def do_action(self):
-        target_temperature = self.system.target_temperature
+        # target_temperature = self.system.target_temperature
 
         # Define PID constants
         Kp = 0.01
@@ -383,7 +383,7 @@ class TemperatureRegulationAction(AppAction):
         def calculate_pid_output():
             current_temperature = self.system.pyrometer_temperature_value
 
-            error = target_temperature - current_temperature
+            error = self.system.target_temperature - current_temperature
             self.integral += error
             derivative = error - self.last_error
             self.last_error = error
