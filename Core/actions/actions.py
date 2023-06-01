@@ -396,7 +396,7 @@ class TemperatureRegulationAction(AppAction):
             derivative = error - self.last_error
             self.last_error = error
 
-            output = Kp * error + Ki * self.integral + Kd * derivative
+            output = Kp * error + Ki * self.old_speed * self.integral + Kd * derivative
 
             # print("PID additional current: ", output)
             # print("PID set current: ", self.start_current + output)
