@@ -42,9 +42,9 @@ class PidSpeedBlock(QWidget):
 
         self.input = QLineEdit()
         self.input.setStyleSheet(styles.input)
-        self.input.setText('10,0')
+        self.input.setText('10.0')
         # self.input.setMinimumWidth(1000)
-        self.input.setValidator(QDoubleValidator(0, 100000.0, 2))
+        # self.input.setValidator(QDoubleValidator(0, 100000.0, 2))
 
         self.bottom_layout.addWidget(self.label_1, stretch=1)
         self.bottom_layout.addWidget(self.input, stretch=4)
@@ -58,12 +58,12 @@ class PidSpeedBlock(QWidget):
 
     def _on_update_input_value(self):
         try:
-            input_value = self.input.text().replace(',', '.')
+            input_value = self.input.text()#.replace(',', '.')
             value = min(10000.0, max(0.01, (float(input_value))))
             self.on_update_speed_signal.emit(value)
         except:
-            self.input.setText('10,0')
+            self.input.setText('10.0')
 
     def _set_speed(self, value: float):
-        value = str(value).replace('.', ',')
+        value = str(value)#.replace('.', ',')
         self.input.setText(value)
