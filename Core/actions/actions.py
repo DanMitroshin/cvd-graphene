@@ -368,7 +368,7 @@ class TemperatureRegulationAction(AppAction):
 
         # Define PID constants
         Kp = 0.01
-        Ki = 0.01 * self.old_speed  # 0.001 / 10 * speed
+        Ki = 0.00001 * self.old_speed  # 0.001 / 10 * speed
         Kd = 0.0
 
         pause = 0.3
