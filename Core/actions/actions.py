@@ -191,6 +191,8 @@ class PumpOutCameraAction(AppAction):
         while self.system.get_accurate_vakumetr_value() >= 10.0:
             self.interrupt_if_stop_state()
 
+            time.sleep(0.1)
+
             delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
                 self.system.add_error_log(f"Откачка не завершилась до достижения максимального времени")
@@ -209,6 +211,7 @@ class PumpOutCameraAction(AppAction):
             self.interrupt_if_stop_state()
             # if self._is_stop_state():
             #     return
+            time.sleep(0.1)
 
             delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
