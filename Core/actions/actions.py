@@ -302,22 +302,25 @@ class RampAction(AppAction):
         self.system.is_active_ramp_effect(True)
 
         pause = 1  # secs
+        seconds = max(pause, seconds)
 
-        if seconds <= pause:
-            seconds = pause
         end_time = self.start_time + seconds
         left_time = end_time - time.time()
 
         current_value = self.system.current_value
-        local_current_value = current_value
+        start_current_value = current_value
+        # local_current_value = current_value
+        total_current_delta = target_current - current_value
 
         # # delta_value = target_current - current_value
 
         def get_next_target():
-            if left_time <= pause:
+            if left_time < pause * 0.5:
                 return target_current
-            delta_value = target_current - local_current_value
-            return delta_value / left_time * pause + local_current_value
+            time_coef = (time.time() - self.start_time) / seconds
+            return total_current_delta * time_coef + start_current_value
+            # delta_value = target_current - local_current_value
+            # return delta_value / left_time * pause + local_current_value
 
         while True:
             if self._is_stop_state():
@@ -325,6 +328,7 @@ class RampAction(AppAction):
 
             left_time = max(0.0, end_time - time.time())
             next_target_current = get_next_target()
+            # print("NEXT TARGET:", next_target_current)
             self.system.target_current_effect(next_target_current)
             self.system.ramp_seconds_effect(left_time)
 
@@ -334,7 +338,7 @@ class RampAction(AppAction):
             time.sleep(1)
 
             current_value = self.system.current_value
-            local_current_value = current_value
+            # local_current_value = current_value
 
             delta_time = time.time() - self.start_time
             if MAX_RECIPE_STEP_SECONDS and (delta_time >= MAX_RECIPE_STEP_SECONDS):
