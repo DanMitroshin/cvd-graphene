@@ -88,8 +88,9 @@ def start():
 
     # w.show()
     # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
-    # w.showFullScreen()
-    w.setWindowState(Qt.WindowFullScreen)
+    w.showFullScreen()
+
+    # w.setWindowState(Qt.WindowFullScreen)
     w.setVisible(True)
     # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
     # w.setWindowFlags(Qt.WindowType_Mask)
