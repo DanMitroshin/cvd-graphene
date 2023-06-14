@@ -1,4 +1,7 @@
 import os
+
+from PyQt5.QtQml import QQmlEngine
+
 os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'Core.settings')
 
 import tracemalloc
@@ -15,7 +18,7 @@ from Structure.system import AppSystem
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.environ["QML2_IMPORT_PATH"] = dir_path
-os.environ["QT_VIRTUALKEYBOARD_STYLE"] = "retro" #"testkeyboard1"
+os.environ["QT_VIRTUALKEYBOARD_STYLE"] = "default" #"testkeyboard1"
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 
@@ -88,9 +91,9 @@ def start():
 
     # w.show()
     # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
-    w.showFullScreen()
+    # w.showFullScreen()
 
-    # w.setWindowState(Qt.WindowFullScreen)
+    w.setWindowState(Qt.WindowFullScreen)
     w.setVisible(True)
     # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
     # w.setWindowFlags(Qt.WindowType_Mask)
