@@ -14,9 +14,9 @@ from Structure.system import AppSystem
 # from Tests.devices.rrg import test_rrg_3
 # from Tests.devices.vakumetr import test_1, test_2
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-os.environ["QML2_IMPORT_PATH"] = dir_path
-os.environ["QT_VIRTUALKEYBOARD_STYLE"] = "default" #"testkeyboard1"
+# dir_path = os.path.dirname(os.path.realpath(__file__))
+# os.environ["QML2_IMPORT_PATH"] = dir_path
+# os.environ["QT_VIRTUALKEYBOARD_STYLE"] = "default" #"testkeyboard1"
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 
