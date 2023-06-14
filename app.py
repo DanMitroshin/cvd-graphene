@@ -4,7 +4,6 @@ os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'Core.settings')
 import tracemalloc
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt, QProcessEnvironment
-from PyQt5.QtQml import QQmlApplicationEngine, QQmlEngine
 from Structure.dialog_ui import AppMainDialogWindow
 
 from Core.actions import ACTIONS
