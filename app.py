@@ -3,7 +3,8 @@ os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'Core.settings')
 
 import tracemalloc
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QProcessEnvironment
+from PyQt5.QtQml import QQmlApplicationEngine, QQmlEngine
 from Structure.dialog_ui import AppMainDialogWindow
 
 from Core.actions import ACTIONS
@@ -13,7 +14,14 @@ from Structure.system import AppSystem
 # from Tests.devices.rrg import test_rrg_3
 # from Tests.devices.vakumetr import test_1, test_2
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+os.environ["QML2_IMPORT_PATH"] = dir_path
+os.environ["QT_VIRTUALKEYBOARD_STYLE"] = "retro" #"testkeyboard1"
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
+
+
+# for i in QProcessEnvironment.systemEnvironment().keys():
+#     print(i)
 
 import faulthandler
 faulthandler.enable()
@@ -61,6 +69,15 @@ tracemalloc.start()
 def start():
     # sys.exit(0)
     app = QApplication([])
+
+    # engine = QQmlApplicationEngine()
+    # engine.load('keyboard.qml')
+    # print('path', dir_path)
+    # qq = QQmlEngine()
+    # qq.addImportPath(dir_path)
+    # print(qq.importPathList())
+    # return
+
     system = AppSystem(
         actions_list=ACTIONS
     )
