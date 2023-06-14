@@ -1,7 +1,5 @@
 import os
 
-from PyQt5.QtQml import QQmlEngine
-
 os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'Core.settings')
 
 import tracemalloc
