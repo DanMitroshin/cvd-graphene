@@ -125,7 +125,7 @@ def start():
     def is_visible():
         visible = inputMethod.isVisible()
         # visible = not visible
-        print("VISIBLEEEEEEEEE CHANGED", visible)
+        # print("VISIBLEEEEEEEEE CHANGED", visible)
         # print('SCREEN', app.desktop().screenGeometry().height())
         # print(inputMethod.anchorRectangle())
         pos_y = inputMethod.anchorRectangle().y()
