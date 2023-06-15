@@ -5,6 +5,8 @@ os.environ.setdefault('GRAPHENE_SETTINGS_MODULE', 'Core.settings')
 import tracemalloc
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt, QProcessEnvironment
+from PyQt5.QtQuick import QQuickView
+from PyQt5 import QtGui, QtCore
 from Structure.dialog_ui import AppMainDialogWindow
 
 from Core.actions import ACTIONS
@@ -16,7 +18,7 @@ from Structure.system import AppSystem
 
 # dir_path = os.path.dirname(os.path.realpath(__file__))
 # os.environ["QML2_IMPORT_PATH"] = dir_path
-# os.environ["QT_VIRTUALKEYBOARD_STYLE"] = "default" #"testkeyboard1"
+os.environ["QT_VIRTUALKEYBOARD_STYLE"] = "testkeyboard10" #"testkeyboard1"
 os.environ["QT_IM_MODULE"] = "qtvirtualkeyboard"
 
 
@@ -66,17 +68,30 @@ class Test:
 tracemalloc.start()
 
 
+def handleVisibleChanged():
+    if not QtGui.QGuiApplication.inputMethod().isVisible():
+        return
+    for w in QtGui.QGuiApplication.allWindows():
+        if w.metaObject().className() == "QtVirtualKeyboard::InputView":
+            keyboard = w.findChild(QtCore.QObject, "keyboard")
+            if keyboard is not None:
+                r = w.geometry()
+                r.moveTop(int(keyboard.property("y")))
+                w.setMask(QtGui.QRegion(r))
+                return
+
+
 def start():
     # sys.exit(0)
     app = QApplication([])
-
     # engine = QQmlApplicationEngine()
-    # engine.load('keyboard.qml')
-    # print('path', dir_path)
-    # qq = QQmlEngine()
-    # qq.addImportPath(dir_path)
-    # print(qq.importPathList())
+    # engine.load('main.qml')
     # return
+    #QtGui.QInputMethod().visibleChanged.connect(is_visible)
+    # QtGui.QInputMethod().setVisible(True)
+
+    inputMethod = app.inputMethod()
+    inputMethod.visibleChanged.connect(handleVisibleChanged)
 
     system = AppSystem(
         actions_list=ACTIONS
@@ -91,10 +106,56 @@ def start():
     # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
     # w.showFullScreen()
 
+    # QtGui.QGuiApplication.inputMethod().visibleChanged.connect(handleVisibleChanged)
     w.setWindowState(Qt.WindowFullScreen)
+    # w.setGeometry(app.desktop().screenGeometry())
     w.setVisible(True)
     # w.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowType_Mask)
     # w.setWindowFlags(Qt.WindowType_Mask)
+    # visible = False
+    screen_h = app.desktop().screenGeometry().height()
+    w.setFixedHeight(screen_h)
+    w.setFixedWidth(app.desktop().screenGeometry().width())
+
+    def is_visible():
+        visible = inputMethod.isVisible()
+        # visible = not visible
+        print("VISIBLEEEEEEEEE CHANGED", visible)
+        # print('SCREEN', app.desktop().screenGeometry().height())
+        # print(inputMethod.anchorRectangle())
+        print(inputMethod.anchorRectangle().y())
+        shift = 300
+        if visible:
+            shift *= -1
+        w.milw.move(0, shift)
+        # pg = w.milw.frameGeometry()
+        # if visible:
+        #     pass
+        #     # w.milw.hide()
+        #     # w.setMinimumHeight(200 + screen_h)
+        #     # w.setContentsMargins(-200, 0, 0, 200)
+        #     new_geometry = w.main_widget.geometry().adjusted(
+        #         0, -200,
+        #         0, pg.height() - 200,
+        #     )
+        #     w.milw.setGeometry(new_geometry)
+        # else:
+        #     pass
+        #     # w.milw.show()
+        #     # w.setMinimumHeight(screen_h)
+        #     # w.setContentsMargins(0, 0, 0, 0)
+        w.milw.setAttribute(Qt.WA_Moved, True)
+
+        # w.milw.move(pg.x(), pg.y() + shift)
+        # w.milw.layout.
+        # w.show()
+
+    inputMethod.visibleChanged.connect(is_visible)
+    # w.hide()
+    # w.show()
+    # w.milw.move(200, 200)
+    # w.milw.setAttribute(Qt.WA_Moved, True)
+
     app.exec()
 
 # from Core.actions import ACTIONS
