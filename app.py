@@ -114,8 +114,13 @@ def start():
     # w.setWindowFlags(Qt.WindowType_Mask)
     # visible = False
     screen_h = app.desktop().screenGeometry().height()
-    w.setFixedHeight(screen_h)
+    # w.setFixedHeight(screen_h + 300)
+    max_shift = screen_h
+    w.main_widget.setFixedHeight(screen_h + max_shift)
+    w.main_widget.setContentsMargins(0, max_shift, 0, 0)
     w.setFixedWidth(app.desktop().screenGeometry().width())
+    w.main_widget.setFixedWidth(app.desktop().screenGeometry().width())
+    w.main_widget.move(0, -max_shift)
 
     def is_visible():
         visible = inputMethod.isVisible()
@@ -123,33 +128,32 @@ def start():
         print("VISIBLEEEEEEEEE CHANGED", visible)
         # print('SCREEN', app.desktop().screenGeometry().height())
         # print(inputMethod.anchorRectangle())
-        print(inputMethod.anchorRectangle().y())
-        shift = 300
-        if visible:
-            shift *= -1
-        w.milw.move(0, shift)
-        # pg = w.milw.frameGeometry()
+        pos_y = inputMethod.anchorRectangle().y()
+        # print(pos_y)
+        shift_bottom = int(max(0, pos_y - screen_h * 0.4))
+        shift_top = max_shift - shift_bottom
         # if visible:
-        #     pass
-        #     # w.milw.hide()
-        #     # w.setMinimumHeight(200 + screen_h)
-        #     # w.setContentsMargins(-200, 0, 0, 200)
-        #     new_geometry = w.main_widget.geometry().adjusted(
-        #         0, -200,
-        #         0, pg.height() - 200,
-        #     )
-        #     w.milw.setGeometry(new_geometry)
-        # else:
-        #     pass
-        #     # w.milw.show()
-        #     # w.setMinimumHeight(screen_h)
-        #     # w.setContentsMargins(0, 0, 0, 0)
-        w.milw.setAttribute(Qt.WA_Moved, True)
+        #     shift *= -1
+        # w.main_widget.move(0, shift)
+
+        # pg = w.main_widget.frameGeometry()
+        # print('CURRENT:', pg.y())
+        # pg.moveTop(300)
+        # w.main_widget.setGeometry(pg)
+        if visible:
+            w.main_widget.setContentsMargins(0, shift_top, 0, shift_bottom)
+        else:
+            w.main_widget.setContentsMargins(0, max_shift, 0, 0)
+            # w.main_widget.move(0, 0)
+    w.main_widget.setAttribute(Qt.WA_Moved, True)
+    # w.setAttribute(Qt.WA_Moved, True)
 
         # w.milw.move(pg.x(), pg.y() + shift)
         # w.milw.layout.
         # w.show()
 
+    # w.main_widget.setFixedHeight(screen_h + 300)
+    # w.main_widget.setContentsMargins(0, 0, 0, 200)
     inputMethod.visibleChanged.connect(is_visible)
     # w.hide()
     # w.show()
