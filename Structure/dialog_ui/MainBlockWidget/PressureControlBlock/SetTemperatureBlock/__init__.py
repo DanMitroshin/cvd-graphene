@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QDoubleValidator
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsDropShadowEffect, \
     QLineEdit, QLabel, QHBoxLayout, QBoxLayout, QSizePolicy, QPushButton
@@ -51,6 +51,7 @@ class SetTemperatureBlock(QWidget):
         # self.label_2.setSizePolicy(sp_label_2)
 
         self.input = QLineEdit()
+        self.input.setInputMethodHints(Qt.ImhFormattedNumbersOnly)
         self.input.setStyleSheet(styles.input)
         # self.input.setMinimumWidth(1000)
         self.input.setValidator(QDoubleValidator(-10000.99, 10000.99, 2))

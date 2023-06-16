@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal, QObject, Qt
 from PyQt5.QtWidgets import QPushButton, QWidget, QGridLayout, QLabel, QHBoxLayout, QLineEdit
 
 from grapheneqtui.components import LatexWidget
@@ -63,8 +63,11 @@ class RiseCurrentBlock(QWidget):
         self.label_time_1.setAlignment(QtCore.Qt.AlignLeft)
 
         self.input_current = QLineEdit()
+        self.input_current.setInputMethodHints(Qt.ImhFormattedNumbersOnly)
         self.input_current.setStyleSheet(styles.input)
+
         self.input_time = QLineEdit()
+        self.input_time.setInputMethodHints(Qt.ImhFormattedNumbersOnly)
         self.input_time.setStyleSheet(styles.input)
         # self.input_time.textEdited()
         self.input_layout.addWidget(self.label_current, 0, 0, QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom)

@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QDoubleValidator
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGraphicsDropShadowEffect, \
     QLineEdit, QLabel, QHBoxLayout, QBoxLayout, QSizePolicy, QPushButton
@@ -41,6 +41,7 @@ class PidSpeedBlock(QWidget):
         self.label_2.setStyleSheet(styles.label)
 
         self.input = QLineEdit()
+        self.input.setInputMethodHints(Qt.ImhFormattedNumbersOnly)
         self.input.setStyleSheet(styles.input)
         self.input.setText('10.0')
         # self.input.setMinimumWidth(1000)
