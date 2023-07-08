@@ -130,7 +130,7 @@ def start():
         # print(inputMethod.anchorRectangle())
         pos_y = inputMethod.anchorRectangle().y()
         # print(pos_y)
-        shift_bottom = int(max(0, pos_y - screen_h * 0.4))
+        shift_bottom = int(max(0.0, pos_y - screen_h * 0.4))
         shift_top = max_shift - shift_bottom
         # if visible:
         #     shift *= -1
