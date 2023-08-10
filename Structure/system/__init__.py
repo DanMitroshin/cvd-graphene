@@ -1,7 +1,7 @@
 import gc
 import random
 import time
-from threading import Thread, get_ident, Lock
+from threading import Thread, get_ident
 
 from Core.actions import PidTemperatureBackgroundAction
 from Core.actions.actions import RampAction, PumpOutCameraAction, VentilateCameraAction
@@ -37,7 +37,7 @@ from coregraphene.components.controllers import (
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
-from coregraphene.utils import get_available_usb_ports
+from coregraphene.utils import get_available_ttyusb_ports
 
 VALVES_CONFIGURATION = settings.VALVES_CONFIGURATION
 LOCAL_MODE = settings.LOCAL_MODE
@@ -99,7 +99,7 @@ class AppSystem(BaseSystem):
             'current_source': CurrentSourceController,
         }
 
-        usb_ports = get_available_usb_ports()
+        usb_ports = get_available_ttyusb_ports()
         if LOCAL_MODE:
             usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2', '/dev/ttyUSB3']
         print("PORTS USB:", usb_ports)
