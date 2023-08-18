@@ -142,8 +142,10 @@ def start():
         # w.main_widget.setGeometry(pg)
         if visible:
             w.main_widget.setContentsMargins(0, shift_top, 0, shift_bottom)
+            w.table_widget.move(0, -shift_bottom)
         else:
             w.main_widget.setContentsMargins(0, max_shift, 0, 0)
+            w.table_widget.move(0, 0)
             # w.main_widget.move(0, 0)
     w.main_widget.setAttribute(Qt.WA_Moved, True)
     # w.setAttribute(Qt.WA_Moved, True)
