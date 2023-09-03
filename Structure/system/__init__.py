@@ -75,6 +75,7 @@ class AppSystem(BaseSystem):
             'baudrate': settings.BH_RRG_CONTROLLER_BAUDRATE,
             'port': settings.BH_RRG_CONTROLLER_USB_PORT,
             'rrg_config': VALVES_CONFIGURATION,
+            'timeout': 0.3,
         },
     }
 
