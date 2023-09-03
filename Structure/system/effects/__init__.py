@@ -25,17 +25,17 @@ class ChangePumpManageStateEffect(SystemEffect):
 # ======== RRG
 class SetTargetRrgSccmEffect(ManyDeviceSystemEffect):
     def _call_function(self, sccm, device_num):
-        return self._system.rrgs_controller.set_target_sccm(sccm, device_num)
+        return self._system.bh_rrg_controller.set_target_sccm(sccm, device_num)
 
 
 class FullCloseRrgEffect(ManyDeviceSystemEffect):
     def _call_function(self, device_num):
-        return self._system.rrgs_controller.full_close(device_num)
+        return self._system.bh_rrg_controller.full_close(device_num)
 
 
 class FullOpenRrgEffect(ManyDeviceSystemEffect):
     def _call_function(self, device_num):
-        return self._system.rrgs_controller.full_open(device_num)
+        return self._system.bh_rrg_controller.full_open(device_num)
 
 
 class SetTargetCurrentEffect(SystemEffect):

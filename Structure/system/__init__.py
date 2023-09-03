@@ -33,7 +33,7 @@ from coregraphene.components.controllers import (
     SeveralRrgAdcDacController,
     DigitalFuseController,
     BackPressureValveController,
-    VakumetrAdcController,
+    VakumetrAdcController, BhRrgController,
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
@@ -70,7 +70,12 @@ class AppSystem(BaseSystem):
         },
         'throttle': {
             'baudrate': settings.BACK_PRESSURE_VALVE_BAUDRATE,
-        }
+        },
+        'bh_rrg': {
+            'baudrate': settings.BH_RRG_CONTROLLER_BAUDRATE,
+            'port': settings.BH_RRG_CONTROLLER_USB_PORT,
+            'rrg_config': VALVES_CONFIGURATION,
+        },
     }
 
     _ports_attr_names = {
@@ -171,18 +176,23 @@ class AppSystem(BaseSystem):
 
     def _init_controllers(self):
         self.accurate_vakumetr_controller = AccurateVakumetrController(
-            get_potential_port=self.get_potential_controller_port,
+            get_potential_port=self.get_potential_controller_port_1,
             port=self.vakumetr_port,
             **self._default_controllers_kwargs.get('vakumetr'),
         )
         self.pyrometer_temperature_controller = PyrometerTemperatureController(
-            get_potential_port=self.get_potential_controller_port,
+            get_potential_port=self.get_potential_controller_port_1,
             port=self.pyrometer_temperature_port,
             **self._default_controllers_kwargs.get('pyrometer'),
         )
 
         self.air_valve_controller = ValveController(
             port=settings.AIR_VALVE_CONFIGURATION['PORT'],
+        )
+
+        self.bh_rrg_controller = BhRrgController(
+            get_potential_port=self.get_potential_controller_port_1,
+            **self._default_controllers_kwargs.get('bh_rrg'),
         )
 
         # PUMP BLOCK
@@ -193,7 +203,7 @@ class AppSystem(BaseSystem):
             port=settings.PUMP_CONFIGURATION['MANAGE_PORT'],
         )
         self.back_pressure_valve_controller = BackPressureValveController(
-            get_potential_port=self.get_potential_controller_port,
+            get_potential_port=self.get_potential_controller_port_1,
             port=self.back_pressure_valve_port,
             **self._default_controllers_kwargs.get('throttle'),
         )
@@ -205,14 +215,14 @@ class AppSystem(BaseSystem):
         for i, valve_conf in enumerate(VALVES_CONFIGURATION):
             self._valves[i] = ValveController(port=valve_conf["PORT"])
 
-        self.rrgs_controller = SeveralRrgAdcDacController(
-            config=VALVES_CONFIGURATION,
-            read_channel=settings.RRG_SPI_READ_CHANNEL,
-            write_channel=settings.RRG_SPI_WRITE_CHANNEL,
-            speed=settings.RRG_SPI_SPEED,
-            read_device=settings.RRG_SPI_READ_DEVICE,
-            write_device=settings.RRG_SPI_WRITE_DEVICE,
-        )
+        # self.rrgs_controller = SeveralRrgAdcDacController(
+        #     config=VALVES_CONFIGURATION,
+        #     read_channel=settings.RRG_SPI_READ_CHANNEL,
+        #     write_channel=settings.RRG_SPI_WRITE_CHANNEL,
+        #     speed=settings.RRG_SPI_SPEED,
+        #     read_device=settings.RRG_SPI_READ_DEVICE,
+        #     write_device=settings.RRG_SPI_WRITE_DEVICE,
+        # )
 
         self.gases_pressure_controller = VakumetrAdcController(
             config=VALVES_CONFIGURATION,
@@ -234,7 +244,8 @@ class AppSystem(BaseSystem):
             self.accurate_vakumetr_controller,
             self.air_valve_controller,
             self.pyrometer_temperature_controller,
-            self.rrgs_controller,
+            # self.rrgs_controller,
+            self.bh_rrg_controller,
             self.gases_pressure_controller,
             self.current_source_controller,
 
@@ -266,7 +277,8 @@ class AppSystem(BaseSystem):
         self.full_open_rrg_effect = FullOpenRrgEffect(system=self)
 
         self.current_rrg_sccm_effect = SingleAnswerSystemEffect(system=self)
-        self.rrgs_controller.get_current_flow.connect(self.current_rrg_sccm_effect)
+        # self.rrgs_controller.get_current_flow.connect(self.current_rrg_sccm_effect)
+        self.bh_rrg_controller.get_current_flow.connect(self.current_rrg_sccm_effect)
 
         # ===== Vakumetr gases ==== #
         self.current_gas_balloon_pressure_effect = SingleAnswerSystemEffect(system=self)
