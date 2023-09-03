@@ -77,6 +77,7 @@ class AppSystem(BaseSystem):
             'rrg_config': VALVES_CONFIGURATION,
             'timeout': 0.3,
             'create_instrument_delay': 3,
+            'max_rrg_voltage': settings.BH_RRG_CONTROLLER_MAX_RRG_VOLTAGE,
             # 'immediate_serial_read': True,
         },
     }

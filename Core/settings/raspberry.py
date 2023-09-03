@@ -26,6 +26,7 @@ BACK_PRESSURE_VALVE_BAUDRATE = 9600
 
 BH_RRG_CONTROLLER_USB_PORT = '/dev/ttyACM0'
 BH_RRG_CONTROLLER_BAUDRATE = 38400
+BH_RRG_CONTROLLER_MAX_RRG_VOLTAGE = 5.0
 
 AIR_VALVE_CONFIGURATION = {
     'PORT': 17, "NAME": "Air",
@@ -58,24 +59,31 @@ VALVES_CONFIGURATION = [
         'PORT': 3,  # GPIO PORT FOR RELE
         "IS_GAS": True,
         "MAX_SCCM": 200.0,  # NOT NECESSARY, IF NOT PROVIDED, WILL BE USED `MAX_DEFAULT_SCCM_VALUE`
+        'CONTROLLER_VOLTAGE_RATIO': 1,  # FOR BH CONTROLLER VOLTAGE SHIFTING (0, +inf)
         'ADDRESS': 0,  # RRG ADDRESS FOR SPI (from 0 to 7: 000, 001, ..., 111)
         'DAC_ADDRESS': 0,  # RRG ADDRESS FOR SPI DAC [SET VALUE] (from 0 to 7: 000, 001, ..., 111)
         'VAKUMETR_ADDRESS': 0,  # VAKUMETR ADDRESS FOR READING PRESSURE IN BALLOON
     },
     {
-        'PORT': 25, "NAME": "C_2H_2", "IS_GAS": True,
+        'PORT': 25,
+        "NAME": "C_2H_2",
+        "IS_GAS": True,
+        'CONTROLLER_VOLTAGE_RATIO': 1,
         'ADDRESS': 2, 'DAC_ADDRESS': 2, 'VAKUMETR_ADDRESS': 2,
     },
     {
         'PORT': 24, "NAME": "CH_4", "IS_GAS": True,
+        'CONTROLLER_VOLTAGE_RATIO': 1,
         'ADDRESS': 1, 'DAC_ADDRESS': 1, 'VAKUMETR_ADDRESS': 4,
     },
     {
         'PORT': 4, "NAME": "N_2", "IS_GAS": True,
+        'CONTROLLER_VOLTAGE_RATIO': 1,
         'ADDRESS': 3, 'DAC_ADDRESS': 3, 'VAKUMETR_ADDRESS': 3,
     },
     {
         'PORT': 23, "NAME": "H_2", "IS_GAS": True,
+        'CONTROLLER_VOLTAGE_RATIO': 1,
         'ADDRESS': 4, 'DAC_ADDRESS': 7, 'VAKUMETR_ADDRESS': 5,
     },
     # {'PORT': 7, "NAME": "O_2", "IS_GAS": True},
