@@ -37,7 +37,7 @@ from coregraphene.components.controllers import (
 )
 from coregraphene.system import BaseSystem
 from coregraphene.conf import settings
-from coregraphene.utils import get_available_ttyusb_ports
+from coregraphene.utils import get_available_ttyusb_ports, get_available_ttyusb_port_by_usb
 
 VALVES_CONFIGURATION = settings.VALVES_CONFIGURATION
 LOCAL_MODE = settings.LOCAL_MODE
@@ -73,6 +73,20 @@ class AppSystem(BaseSystem):
         }
     }
 
+    _ports_attr_names = {
+        'vakumetr': 'vakumetr_port',
+        'current_source': 'current_source_port',
+        'pyrometer': 'pyrometer_temperature_port',
+        'throttle': 'back_pressure_valve_port',
+    }
+
+    _usb_devices_ports = {
+        'vakumetr': settings.ACCURATE_VAKUMETR_USB_PORT,
+        'current_source': settings.CURRENT_SOURCE_USB_PORT,
+        'pyrometer': settings.PYROMETER_TEMPERATURE_USB_PORT,
+        'throttle': settings.BACK_PRESSURE_VALVE_USB_PORT,
+    }
+
     def _determine_attributes(self):
         used_ports = []
         self.vakumetr_port = None
@@ -86,12 +100,6 @@ class AppSystem(BaseSystem):
         # self.back_pressure_valve_port = settings.BACK_PRESSURE_VALVE_USB_PORT
 
         # return
-        self._ports_attr_names = {
-            'vakumetr': 'vakumetr_port',
-            'current_source': 'current_source_port',
-            'pyrometer': 'pyrometer_temperature_port',
-            'throttle': 'back_pressure_valve_port',
-        }
         self._controllers_check_classes = {
             'throttle': BackPressureValveController,
             'vakumetr': AccurateVakumetrController,
@@ -99,37 +107,46 @@ class AppSystem(BaseSystem):
             'current_source': CurrentSourceController,
         }
 
-        usb_ports = get_available_ttyusb_ports()
-        if LOCAL_MODE:
-            usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2', '/dev/ttyUSB3']
-        print("PORTS USB:", usb_ports)
-        ATTEMPTS = 3
-        for controller_code, controller_class in self._controllers_check_classes.items():
-            # break
-            for _ in range(ATTEMPTS):
-                found_port = False
-                for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
-                    if port in used_ports:
-                        continue
-                    controller: AbstractController = controller_class(
-                        port=port,
-                        **self._default_controllers_kwargs.get(controller_code, {})
-                    )
-                    try:
-                        controller.setup()
-                        is_good = controller.check_command()
-                        if is_good:
-                            setattr(self, self._ports_attr_names[controller_code], port)
-                            used_ports.append(port)
-                            found_port = True
-                            break
+        for controller_code, port_name_attr in self._ports_attr_names.items():
+            if LOCAL_MODE:
+                ttyusb_port = '/dev/ttyUSB0'
+            else:
+                ttyusb_port = get_available_ttyusb_port_by_usb(
+                    self._usb_devices_ports.get(controller_code, '')
+                )
+            setattr(self, self._ports_attr_names[controller_code], ttyusb_port)
 
-                        controller.destructor()
-                        del controller
-                    except Exception as e:
-                        print("Finding port error:", e)
-                if found_port:
-                    break
+        # usb_ports = get_available_ttyusb_ports()
+        # if LOCAL_MODE:
+        #     usb_ports = ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2', '/dev/ttyUSB3']
+        # print("PORTS USB:", usb_ports)
+        # ATTEMPTS = 3
+        # for controller_code, controller_class in self._controllers_check_classes.items():
+        #     # break
+        #     for _ in range(ATTEMPTS):
+        #         found_port = False
+        #         for port in usb_ports:  # ['/dev/ttyUSB0', '/dev/ttyUSB1', '/dev/ttyUSB2']:
+        #             if port in used_ports:
+        #                 continue
+        #             controller: AbstractController = controller_class(
+        #                 port=port,
+        #                 **self._default_controllers_kwargs.get(controller_code, {})
+        #             )
+        #             try:
+        #                 controller.setup()
+        #                 is_good = controller.check_command()
+        #                 if is_good:
+        #                     setattr(self, self._ports_attr_names[controller_code], port)
+        #                     used_ports.append(port)
+        #                     found_port = True
+        #                     break
+        #
+        #                 controller.destructor()
+        #                 del controller
+        #             except Exception as e:
+        #                 print("Finding port error:", e)
+        #         if found_port:
+        #             break
 
         print(
             "|> FOUND PORTS:",
