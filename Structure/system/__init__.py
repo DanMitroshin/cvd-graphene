@@ -77,6 +77,7 @@ class AppSystem(BaseSystem):
             'rrg_config': VALVES_CONFIGURATION,
             'timeout': 0.3,
             'create_instrument_delay': 3,
+            'immediate_serial_read': True,
         },
     }
 
