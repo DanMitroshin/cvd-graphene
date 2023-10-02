@@ -30,12 +30,12 @@ class SetTargetRrgSccmEffect(ManyDeviceSystemEffect):
 
 class FullCloseRrgEffect(ManyDeviceSystemEffect):
     def _call_function(self, device_num):
-        return self._system.bh_rrg_controller.full_close(device_num)
+        return self._system.bh_rrg_controller.full_rrg_close(device_num)
 
 
 class FullOpenRrgEffect(ManyDeviceSystemEffect):
     def _call_function(self, device_num):
-        return self._system.bh_rrg_controller.full_open(device_num)
+        return self._system.bh_rrg_controller.full_rrg_open(device_num)
 
 
 class SetTargetCurrentEffect(SystemEffect):
