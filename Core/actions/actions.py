@@ -179,13 +179,35 @@ class PumpOutCameraAction(AppAction):
         close_valves = self.sub_action(CloseAllValvesAction)
         close_valves.action()
 
-        # 2 - отправляется команда на клапан обратного давления открыться на 13%
+        # 2 - отправляется команда на клапан обратного давления открыться на 1%
         throttle_percent = self.sub_action(SetThrottlePercentAction)
-        throttle_percent.action(13.0)
+        throttle_percent.action(1.0)
 
         # 3 - включается насос
         turn_on_pump = self.sub_action(TurnOnPumpAction)
         turn_on_pump.action()
+
+        percent_list = [
+            [1, 30],  # [percent, seconds]
+            [2, 30],
+            [3, 30],
+            [4, 30],
+            [5, 30],
+            [6, 30],
+            [7, 30],
+            [8, 30],
+            [9, 30],
+            [10, 30],
+            [11, 30],
+            [12, 30],
+            [13, 1],
+        ]
+        pause = self.sub_action(PauseAction)
+
+        # ступенчато доходим до 13%
+        for percent, seconds_pause in percent_list:
+            throttle_percent.action(percent)
+            pause.action(seconds_pause)
 
         # 4 - ожидаем наступления давления 10 мбар
         while self.system.get_accurate_vakumetr_value() >= 10.0:
