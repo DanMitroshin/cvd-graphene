@@ -1,3 +1,6 @@
+import datetime
+import os
+
 from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QPushButton, QWidget, QHBoxLayout, QVBoxLayout, QGraphicsDropShadowEffect, QComboBox
@@ -6,6 +9,7 @@ from pyqtgraph import PlotWidget
 from PyQt5 import QtCore
 import numpy as np
 import pyqtgraph as pq
+import pyqtgraph.exporters  # pg.Required to call exporters
 
 
 class PlotBlock(QWidget):
@@ -53,8 +57,12 @@ class PlotBlock(QWidget):
         # self.y_box.setCurrentIndex(y_index)
         self.y_box.currentTextChanged.connect(self.on_y_name_changed)
 
+        self.save_btn = QPushButton('сохранить')
+        self.save_btn.clicked.connect(self.save_as_image)
+
         self.boxes_layout.addWidget(self.x_box, alignment=QtCore.Qt.AlignLeft)
-        self.boxes_layout.addWidget(self.y_box, alignment=QtCore.Qt.AlignRight)
+        self.boxes_layout.addWidget(self.y_box, alignment=QtCore.Qt.AlignCenter)
+        self.boxes_layout.addWidget(self.save_btn, alignment=QtCore.Qt.AlignRight)
 
         self.layout.addLayout(self.boxes_layout)
 
@@ -64,6 +72,21 @@ class PlotBlock(QWidget):
         self.timer.timeout.connect(self.update_data)
         # The timer interval is 50ms, which can be understood as refreshing data once in 50ms
         self.timer.start(500)
+
+    def save_as_image(self):
+        images_dir = 'images'
+        if not os.path.exists(images_dir):
+            os.makedirs(images_dir)
+        name = os.path.join(
+            images_dir,
+            str(datetime.datetime.now().replace(
+                # microsecond=0
+            ))
+            .replace('.', '_').replace(':', '_').replace(' ', '_') + '.png'
+        )
+        exporter = pq.exporters.ImageExporter(
+            self.plotWidget_ted.scene())  # Just before exporters pg.QtGui.QApplication.processEvents()Call!
+        exporter.export(name)
 
     def on_x_name_changed(self, value):
         self.x_name = value
