@@ -53,6 +53,10 @@ class PumpsControlWidget(QWidget):
         self.pump_valve_b = ButterflyButton()
         self.throttle_b = ButterflyButton()
 
+        throttle_layout = QVBoxLayout()
+        throttle_layout.addWidget(self.throttle_b)
+        throttle_layout.addWidget(QLabel('дроссель'), alignment=QtCore.Qt.AlignCenter)
+
         self.throttle_info = PumpInfoColumnWidget(
             max_value=BACK_PRESSURE_VALVE_CONSTANTS.MAX_PRESSURE_BORDER,
             min_value=BACK_PRESSURE_VALVE_CONSTANTS.MIN_PRESSURE_BORDER,
@@ -64,9 +68,13 @@ class PumpsControlWidget(QWidget):
         self.back_pressure_valve_layout.addWidget(
             self.throttle_info, stretch=2,
             alignment=QtCore.Qt.AlignLeft | QtCore.Qt.AlignHCenter)
-        self.back_pressure_valve_layout.addWidget(
-            self.throttle_b, stretch=2,
-            alignment=QtCore.Qt.AlignRight | QtCore.Qt.AlignHCenter)
+        # self.back_pressure_valve_layout.addWidget(
+        #     self.throttle_b, stretch=2,
+        #     alignment=QtCore.Qt.AlignRight | QtCore.Qt.AlignHCenter)
+        self.back_pressure_valve_layout.addLayout(
+            throttle_layout, stretch=2,
+            # alignment=QtCore.Qt.AlignRight | QtCore.Qt.AlignHCenter
+        )
 
         self.bottom_layout = QHBoxLayout()
         self.bottom_layout.addWidget(
