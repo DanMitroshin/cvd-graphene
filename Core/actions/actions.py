@@ -98,9 +98,9 @@ class CloseAllValvesAction(AppAction):
 class SetThrottlePercentAction(AppAction):
     name = TABLE_ACTIONS_NAMES.SET_THROTTLE_PERCENT
     key = ACTIONS_NAMES.SET_THROTTLE_PERCENT
-    args_info = [IntKeyArgument]
+    args_info = [FloatKeyArgument]
 
-    def do_action(self, target_percent: int):
+    def do_action(self, target_percent: float):
         self.system.back_pressure_valve_controller.set_target_percent(target_percent)
 
 
