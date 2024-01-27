@@ -66,26 +66,26 @@ VALVES_CONFIGURATION = [
         'VAKUMETR_ADDRESS': 0,  # VAKUMETR ADDRESS FOR READING PRESSURE IN BALLOON
     },
     {
+        'PORT': 24, "NAME": "CH_4", "IS_GAS": True,
+        'CONTROLLER_VOLTAGE_RATIO': 1, 'CONTROLLER_VOLTAGE_SHIFT': 0,
+        'ADDRESS': 1, 'DAC_ADDRESS': 1, 'VAKUMETR_ADDRESS': 4,
+    },
+    {
+        'PORT': 23, "NAME": "H_2", "IS_GAS": True,
+        'CONTROLLER_VOLTAGE_RATIO': 1, 'CONTROLLER_VOLTAGE_SHIFT': 0,
+        'ADDRESS': 4, 'DAC_ADDRESS': 7, 'VAKUMETR_ADDRESS': 5,
+    },
+        {
         'PORT': 25,
         "NAME": "C_2H_2",
         "IS_GAS": True,
         'CONTROLLER_VOLTAGE_RATIO': 1, 'CONTROLLER_VOLTAGE_SHIFT': 0,
         'ADDRESS': 2, 'DAC_ADDRESS': 2, 'VAKUMETR_ADDRESS': 2,
     },
-    {
-        'PORT': 24, "NAME": "CH_4", "IS_GAS": True,
-        'CONTROLLER_VOLTAGE_RATIO': 1, 'CONTROLLER_VOLTAGE_SHIFT': 0,
-        'ADDRESS': 1, 'DAC_ADDRESS': 1, 'VAKUMETR_ADDRESS': 4,
-    },
-    {
+        {
         'PORT': 4, "NAME": "N_2", "IS_GAS": True,
         'CONTROLLER_VOLTAGE_RATIO': 1, 'CONTROLLER_VOLTAGE_SHIFT': 0,
         'ADDRESS': 3, 'DAC_ADDRESS': 3, 'VAKUMETR_ADDRESS': 3,
-    },
-    {
-        'PORT': 23, "NAME": "H_2", "IS_GAS": True,
-        'CONTROLLER_VOLTAGE_RATIO': 1, 'CONTROLLER_VOLTAGE_SHIFT': 0,
-        'ADDRESS': 4, 'DAC_ADDRESS': 7, 'VAKUMETR_ADDRESS': 5,
     },
     # {'PORT': 7, "NAME": "O_2", "IS_GAS": True},
     # {'PORT': 8, "NAME": "N_2", "IS_GAS": True},
