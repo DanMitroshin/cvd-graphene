@@ -188,19 +188,14 @@ class PumpOutCameraAction(AppAction):
         turn_on_pump.action()
 
         percent_list = [
-            [1, 30],  # [percent, seconds]
-            [2, 30],
-            [3, 30],
-            [4, 30],
-            [5, 30],
-            [6, 30],
-            [7, 30],
+            [0, 5],  # [percent, seconds]
+            [7, 10],
+            [7.5, 10],
             [8, 30],
-            [9, 30],
-            [10, 30],
+            [8.5, 20],
+            [9, 20],
             [11, 30],
-            [12, 30],
-            [13, 1],
+            [13, 30],
         ]
         pause = self.sub_action(PauseAction)
 
