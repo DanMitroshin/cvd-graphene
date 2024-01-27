@@ -461,7 +461,7 @@ class StopTemperatureRegulationAction(AppAction):
 class StabilizePressureAction(AppAction):
     name = TABLE_ACTIONS_NAMES.STABILIZE_PRESSURE
     key = ACTIONS_NAMES.STABILIZE_PRESSURE
-    args_info = [FloatArgument, FloatKeyArgument, TimeEditArgument]
+    args_info = [FloatKeyArgument, FloatKeyArgument, TimeEditArgument]
 
     def do_action(self, target_pressure: float, error_rate: float, stabilize_seconds: int):
 
@@ -510,7 +510,7 @@ class StabilizePressureAction(AppAction):
 class WaitRaisePressureAction(AppAction):
     name = TABLE_ACTIONS_NAMES.RAISE_PRESSURE
     key = ACTIONS_NAMES.RAISE_PRESSURE
-    args_info = [FloatArgument, FloatKeyArgument, TimeEditArgument]
+    args_info = [FloatKeyArgument, FloatKeyArgument, TimeEditArgument]
 
     def do_action(self, target_pressure_raise: float, error_rate: float, stabilize_seconds: int):
         target_pressure = self.system.accurate_vakumetr_value + target_pressure_raise
